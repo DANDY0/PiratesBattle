@@ -14,6 +14,7 @@ namespace FusionDemo {
     public override void Spawned() {
       // get the NetworkCharacterController reference
       _cc = GetBehaviour<NetworkCharacterController>();
+      
     }
 
     public override void FixedUpdateNetwork() {
