@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52c49618463b4f3ea85af33b6bb9014e, type: 3}
+  m_Name: LocalizationDatabase
+  m_EditorClassIdentifier: 
+  _localizationSettings:
+    Languages:
+    - Language: 1
+      LocalizedTexts: []
+    - Language: 2
+      LocalizedTexts: []
+    - Language: 3
+      LocalizedTexts: []
+    - Language: 4
+      LocalizedTexts: []
+    - Language: 5
+      LocalizedTexts: []
+    - Language: 6
+      LocalizedTexts: []
+    - Language: 7
+      LocalizedTexts: []
+    - Language: 8
+      LocalizedTexts: []
+    - Language: 9
+      LocalizedTexts: []
+    - Language: 10
+      LocalizedTexts: []
+    - Language: 11
+      LocalizedTexts: []
+    - Language: 12
+      LocalizedTexts: []
+    - Language: 13
+      LocalizedTexts: []
+    - Language: 14
+      LocalizedTexts: []
+    - Language: 15
+      LocalizedTexts: []
+    - Language: 16
+      LocalizedTexts: []
+    - Language: 17
+      LocalizedTexts: []
+    - Language: 18
+      LocalizedTexts: []
+    - Language: 19
+      LocalizedTexts: []
+    - Language: 20
+      LocalizedTexts: []
+    - Language: 21
+      LocalizedTexts: []
+    - Language: 22
+      LocalizedTexts: []
+    - Language: 23
+      LocalizedTexts: []
+    - Language: 24
+      LocalizedTexts: []
+    DefaultLanguage: 1
+    LocalizationGoogleSpreadsheet: 14tBlI4ABEgEQj4FfivQs98ynZT4WMFa3NjyMeE2h2q4
+    RefreshLocalizationAtStart: 1
