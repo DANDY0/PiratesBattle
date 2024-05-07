@@ -15,6 +15,7 @@ namespace Installers.Menu
         
         [Header("Windows")]
         [SerializeField] private MenuSettingsView _menuSettingsView;
+        
         //[SerializeField] private SettingsView _settingsView;
 
         public override void InstallBindings()
@@ -29,6 +30,7 @@ namespace Installers.Menu
             
             //Container.AddWindowToQueue<SettingsController, SettingsView>(_settingsView, parent, 1);
             Container.AddWindowToQueue<MenuSettingsController, MenuSettingsView>(_menuSettingsView, parent, 0);
+            
             
             Container.BindWindows();
         }

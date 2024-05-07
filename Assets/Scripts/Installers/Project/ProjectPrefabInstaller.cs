@@ -2,6 +2,8 @@
 using Databases;
 using Databases.Impls;
 using Helpers;
+using Photon.Pun;
+using Services.PhotonNetwork;
 using UnityEngine;
 using Utils.Extensions;
 using Zenject;
@@ -19,6 +21,7 @@ namespace Installers.Project
         [SerializeField] private DataManagementDatabase _dataManagementDatabase;
 
         [Header("Common")] 
+        [SerializeField] private PunNetworkService _punNetworkService;
         [SerializeField] private CoroutineRunner _coroutineRunner;
         [SerializeField] private AudioMixerProvider _audioMixerProvider;
         [SerializeField] private GameRestarter _gameRestarter;
@@ -31,6 +34,7 @@ namespace Installers.Project
 
         private void BindPrefabs()  
         {
+            Container.BindPrefab(_punNetworkService);
             Container.BindPrefab(_coroutineRunner);
             Container.BindPrefab(_audioMixerProvider);
             Container.BindPrefab(_gameRestarter);

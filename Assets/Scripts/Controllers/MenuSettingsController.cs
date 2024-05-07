@@ -1,6 +1,7 @@
 ﻿using Core.Abstracts;
 using Databases;
 using Enums;
+using Services.PhotonNetwork;
 using Services.SceneLoading;
 using Services.Window;
 using UniRx;
@@ -16,23 +17,26 @@ namespace Controllers
         private readonly ISceneLoadingService _sceneLoadingService;
         private readonly IWindowService _windowService;
         private readonly ISettingsDatabase _settingsDatabase;
+        private readonly IPunNetworkService _punNetworkService;
 
         public MenuSettingsController
         (
             ISceneLoadingService sceneLoadingService,
             IWindowService windowService,
-            ISettingsDatabase settingsDatabase
+            ISettingsDatabase settingsDatabase,
+            IPunNetworkService punNetworkService
         )
         {
             _sceneLoadingService = sceneLoadingService;
             _windowService = windowService;
             _settingsDatabase = settingsDatabase;
+            _punNetworkService = punNetworkService;
         }
 
         public void Initialize()
         {
             View.Show();
-            View.PlayButton.OnClickAsObservable().Subscribe(_ => _sceneLoadingService.LoadScene(SceneNames.Game))
+            View.PlayButton.OnClickAsObservable().Subscribe(_ => Connect())
                 .AddTo(View);
             View.QuitButton.OnClickAsObservable().Subscribe(_ =>
             {
@@ -43,5 +47,12 @@ namespace Controllers
 #endif
             }).AddTo(View);
         }
+
+        private void Connect()
+        {
+            _punNetworkService.Connect();
+            // _sceneLoadingService.LoadScene(SceneNames.Game);
+        }
+        
     }
 }

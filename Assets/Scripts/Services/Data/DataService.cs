@@ -8,6 +8,7 @@ using Models;
 using Models.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Services.PhotonNetwork;
 using Services.Spreadsheets;
 using UnityEngine;
 using Utils;
@@ -20,6 +21,7 @@ namespace Services.Data
         private readonly ISpreadsheetsService _spreadsheetsService;
         private readonly ISpreadsheetsSettingsDatabase _spreadsheetsSettingsDatabase;
         private readonly IDataManagementDatabase _dataManagementDatabase;
+        private readonly IPunNetworkService _punNetworkService;
 
         private const string StaticDataPrivateKey = "FPXrKfU2RxYddZpQdJb2VjDW2DwAzReCtedVhvfUQvcALCJf44apEg2BfadsE7RyffBwnGSE";
         
@@ -45,12 +47,14 @@ namespace Services.Data
         (
             ISpreadsheetsService spreadsheetsService,
             ISpreadsheetsSettingsDatabase spreadsheetsSettingsDatabase,
-            IDataManagementDatabase dataManagementDatabase
+            IDataManagementDatabase dataManagementDatabase,
+            IPunNetworkService punNetworkService
         )
         {
             _spreadsheetsService = spreadsheetsService;
             _spreadsheetsSettingsDatabase = spreadsheetsSettingsDatabase;
             _dataManagementDatabase = dataManagementDatabase;
+            _punNetworkService = punNetworkService;
         }
 
         public void Initialize()
