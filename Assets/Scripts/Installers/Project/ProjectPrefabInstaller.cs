@@ -3,7 +3,7 @@ using Databases;
 using Databases.Impls;
 using Helpers;
 using Photon.Pun;
-using Services.PhotonNetwork;
+using Services.PunNetwork;
 using UnityEngine;
 using Utils.Extensions;
 using Zenject;
@@ -34,7 +34,6 @@ namespace Installers.Project
 
         private void BindPrefabs()  
         {
-            Container.BindPrefab(_punNetworkService);
             Container.BindPrefab(_coroutineRunner);
             Container.BindPrefab(_audioMixerProvider);
             Container.BindPrefab(_gameRestarter);

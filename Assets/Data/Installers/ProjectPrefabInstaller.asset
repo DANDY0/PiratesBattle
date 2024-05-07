@@ -12,11 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83af279edf4344ada9ebdc38deafd2de, type: 3}
   m_Name: ProjectPrefabInstaller
   m_EditorClassIdentifier: 
-  _localizationDatabase: {fileID: 11400000, guid: c7d98008be006ad4c9c8d0c607c01e44, type: 2}
-  _spreadsheetsSettingsDatabase: {fileID: 11400000, guid: 872b86a940c38aa4e8fe011638ae8533, type: 2}
+  _localizationDatabase: {fileID: 11400000, guid: c7d98008be006ad4c9c8d0c607c01e44,
+    type: 2}
+  _spreadsheetsSettingsDatabase: {fileID: 11400000, guid: 872b86a940c38aa4e8fe011638ae8533,
+    type: 2}
   _soundsDatabase: {fileID: 11400000, guid: 25f8c03e3b1a0734aae0f2b2c100f865, type: 2}
   _settingsDatabase: {fileID: 11400000, guid: add01a33d1faa4d44bd140152c80a5e3, type: 2}
-  _dataManagementDatabase: {fileID: 11400000, guid: bc15345275e9e4245a2d4ac71fb1c83d, type: 2}
-  _coroutineRunner: {fileID: 8174928821669084288, guid: cc722be62d36e8a4dbac8226fddf9561, type: 3}
-  _audioMixerProvider: {fileID: 2236593753699079988, guid: 137266e2bdf7bbc489d52758a2a1a7e4, type: 3}
-  _gameRestarter: {fileID: 6026580004360090486, guid: ef1ec35ba34b7a94b9c62d75fa3469ea, type: 3}
+  _dataManagementDatabase: {fileID: 11400000, guid: bc15345275e9e4245a2d4ac71fb1c83d,
+    type: 2}
+  _punNetworkService: {fileID: 2074970322684232785, guid: f89eb08488a269b48b1d17abda123244,
+    type: 3}
+  _coroutineRunner: {fileID: 8174928821669084288, guid: cc722be62d36e8a4dbac8226fddf9561,
+    type: 3}
+  _audioMixerProvider: {fileID: 2236593753699079988, guid: 137266e2bdf7bbc489d52758a2a1a7e4,
+    type: 3}
+  _gameRestarter: {fileID: 6026580004360090486, guid: ef1ec35ba34b7a94b9c62d75fa3469ea,
+    type: 3}

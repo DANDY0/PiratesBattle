@@ -1,11 +1,9 @@
-﻿using ModestTree;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Realtime;
-using Services.PhotonNetwork;
 using UnityEngine;
 using Utils;
 
-namespace Photon.Pun
+namespace Services.PunNetwork
 {
     public class PunNetworkService : MonoBehaviourPunCallbacks, IPunNetworkService
     {

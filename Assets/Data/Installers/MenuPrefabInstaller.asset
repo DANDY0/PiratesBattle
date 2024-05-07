@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: MenuPrefabInstaller
   m_EditorClassIdentifier: 
   _canvas: {fileID: 7639541237202281361, guid: fff7a856e9f9b8d428286d79be151039, type: 3}
-  _menuSettingsView: {fileID: 4629313566806275842, guid: 6f822e92959ece34596c68f7b01a76b5, type: 3}
+  _menuSettingsView: {fileID: 4629313566806275842, guid: 6f822e92959ece34596c68f7b01a76b5,
+    type: 3}
+  _punNetworkService: {fileID: 2074970322684232785, guid: f89eb08488a269b48b1d17abda123244,
+    type: 3}

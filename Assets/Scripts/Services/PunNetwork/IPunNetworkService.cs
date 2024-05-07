@@ -1,4 +1,4 @@
-﻿namespace Services.PhotonNetwork
+﻿    namespace Services.PunNetwork
 {
     public interface IPunNetworkService
     {

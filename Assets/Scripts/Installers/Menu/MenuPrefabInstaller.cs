@@ -1,4 +1,5 @@
 ﻿using Controllers;
+using Services.PunNetwork;
 using Services.Window;
 using UnityEngine;
 using Utils.Extensions;
@@ -15,12 +16,21 @@ namespace Installers.Menu
         
         [Header("Windows")]
         [SerializeField] private MenuSettingsView _menuSettingsView;
-        
+
+        [Header("PUN")]
+        [SerializeField] private PunNetworkService _punNetworkService;
+
         //[SerializeField] private SettingsView _settingsView;
 
         public override void InstallBindings()
         {
             BindWindows();
+            BindPrefabs();
+        }
+
+        private void BindPrefabs()
+        {
+            Container.BindPrefab(_punNetworkService);
         }
 
         private void BindWindows()

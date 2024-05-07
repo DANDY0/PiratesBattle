@@ -1,7 +1,7 @@
 ﻿using Core.Abstracts;
 using Databases;
 using Enums;
-using Services.PhotonNetwork;
+using Services.PunNetwork;
 using Services.SceneLoading;
 using Services.Window;
 using UniRx;
@@ -50,6 +50,7 @@ namespace Controllers
 
         private void Connect()
         {
+            //Object.FindObjectOfType<PunNetworkService>().Connect();
             _punNetworkService.Connect();
             // _sceneLoadingService.LoadScene(SceneNames.Game);
         }
