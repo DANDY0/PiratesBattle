@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ExitGames.Client.Photon;
+﻿using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -13,26 +10,25 @@ namespace Services.PunNetwork
 {
     public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService
     {
-        [SerializeField] private List<Vector3> _spawnPointsLeft;
-        [SerializeField] private List<Vector3> _spawnPointsRight;
-        
-        private TeamCreator _teamCreator;
+        [SerializeField] private Vector3[] _spawnPoints;
+
+        private PlayerView.TeamCreator _teamCreator;
         private PlayerSpawner _playerSpawner;
 
         private void Awake()
         {
-            _teamCreator = new TeamCreator();
-            _playerSpawner = new PlayerSpawner(_teamCreator, _spawnPointsLeft, _spawnPointsRight);
+            _teamCreator = new PlayerView.TeamCreator();
+            _playerSpawner = new PlayerSpawner(_teamCreator, _spawnPoints);
 
             /*
             var spawnPointsLeft = Resources.Load<GameObject>("Level/LeftSpawnPoints");
             var spawnPointsRight = Resources.Load<GameObject>("Level/RightSpawnPoints");
             List<Transform>  pointsLeft =  new List<Transform>();
             List<Transform>  pointsRight =  new List<Transform>();
-            
-            foreach (Transform point in spawnPointsLeft.transform) 
+
+            foreach (Transform point in spawnPointsLeft.transform)
                 pointsLeft.Add(point);
-            foreach (Transform point in spawnPointsRight.transform) 
+            foreach (Transform point in spawnPointsRight.transform)
                 pointsRight.Add(point);*/
 
             // _spawnPointsLeft = pointsLeft;
@@ -75,16 +71,15 @@ namespace Services.PunNetwork
 
         public override void OnJoinedRoom()
         {
-    
         }
-        
+
         public override void OnPlayerEnteredRoom(Player other)
         {
             Debug.Log("OnPlayerEnteredRoom() " + other.NickName); // not seen if you're the player connecting
 
             if (PhotonNetwork.IsMasterClient)
             {
-                Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}", 
+                Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}",
                     PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
 
                 LoadArena();
@@ -144,67 +139,20 @@ namespace Services.PunNetwork
 
     public class PlayerSpawner
     {
-        private readonly List<Vector3> _spawnPointsTeamLeft;
-        private readonly List<Vector3> _spawnPointsTeamRight;
-        
-        private TeamCreator _teamCreator;
-        
-        public PlayerSpawner(TeamCreator teamCreator,List<Vector3> spawnPointsTeamLeft, List<Vector3> spawnPointsTeamFight)
+        private readonly Vector3[] _spawnPoints;
+
+        private PlayerView.TeamCreator _teamCreator;
+
+        public PlayerSpawner(PlayerView.TeamCreator teamCreator, Vector3[] spawnPoints)
         {
             _teamCreator = teamCreator;
-            _spawnPointsTeamLeft = spawnPointsTeamLeft;
-            _spawnPointsTeamRight = spawnPointsTeamFight;
+            _spawnPoints = spawnPoints;
         }
-        
+
         public void SpawnPlayer()
         {
-            string prefabToUse = null;
-            int myTeam = _teamCreator.GetPlayerTeam(PhotonNetwork.LocalPlayer);
-            int spawnIndex = PhotonNetwork.LocalPlayer.ActorNumber % _spawnPointsTeamLeft.Capacity;
-
-            foreach (var p in PhotonNetwork.PlayerList)
-            {
-                if (p == PhotonNetwork.LocalPlayer)
-                    prefabToUse = Enumerators.PlayerType.MyPlayer.ToString();
-                else if (_teamCreator.GetPlayerTeam(p) == myTeam)
-                    prefabToUse = Enumerators.PlayerType.AllyPlayer.ToString();
-                else
-                    prefabToUse = Enumerators.PlayerType.EnemyPlayer.ToString();
-
-                Vector3 spawnPos = myTeam == 1 ? _spawnPointsTeamLeft[spawnIndex] : _spawnPointsTeamRight[spawnIndex];
-                PhotonNetwork.Instantiate(prefabToUse, spawnPos, Quaternion.identity);
-            }
+            PhotonNetwork.Instantiate("TeamPlayers\\" + Enumerators.TeamType.MyPlayer, Vector3.zero,
+                Quaternion.identity);
         }
     }
-    
-    public class TeamCreator
-    {
-        public const string TeamProperty = "Team";
-
-        public void AssignTeam()
-        {
-            var player = PhotonNetwork.LocalPlayer;
-            var players = PhotonNetwork.PlayerList;
-
-            int teamID = (players.ToList().IndexOf(player) % 2) + 1;
-            Hashtable props = new Hashtable
-            {
-                { TeamProperty, teamID }
-            };
-            
-            player.SetCustomProperties(props);
-        }
-
-        public int GetPlayerTeam(Player player)
-        {
-            object teamId;
-            if (player.CustomProperties.TryGetValue(TeamProperty, out teamId))
-            {
-                return (int)teamId;
-            }
-
-            return 0;
-        }
-    }
-
 }

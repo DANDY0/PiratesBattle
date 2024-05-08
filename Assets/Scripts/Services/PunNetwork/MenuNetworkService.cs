@@ -7,7 +7,7 @@ namespace Services.PunNetwork
 {
     public class MenuNetworkService : MonoBehaviourPunCallbacks, IMenuNetworkService
     {
-        private byte _maxPlayersPerRoom = 2;
+        private byte _maxPlayersPerRoom = 4;
         private string _gameVersion = "1";
         bool isConnecting;
         

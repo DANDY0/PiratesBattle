@@ -9,7 +9,7 @@
             Game
         }
 
-        public enum PlayerType
+        public enum TeamType
         {
             MyPlayer,
             AllyPlayer,

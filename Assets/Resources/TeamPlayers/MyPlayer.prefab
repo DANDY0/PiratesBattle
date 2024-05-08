@@ -2721,6 +2721,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7880970886039044016}
   - component: {fileID: 1203701763504678824}
+  - component: {fileID: 6148164053710085368}
   m_Layer: 0
   m_Name: MyPlayer
   m_TagString: Untagged
@@ -2766,6 +2767,21 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &6148164053710085368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7881807149238628900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca97164e8f5b47799fb2db85a4aa0c74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Info:
+    TeamId: 0
+    TeamType: 0
 --- !u!1 &7927236269272520591
 GameObject:
   m_ObjectHideFlags: 0
