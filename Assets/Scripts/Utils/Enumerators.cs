@@ -8,5 +8,12 @@
             Menu,
             Game
         }
+
+        public enum PlayerType
+        {
+            MyPlayer,
+            AllyPlayer,
+            EnemyPlayer,
+        }
     }
 }

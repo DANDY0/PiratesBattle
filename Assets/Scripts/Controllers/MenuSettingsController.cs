@@ -17,20 +17,20 @@ namespace Controllers
         private readonly ISceneLoadingService _sceneLoadingService;
         private readonly IWindowService _windowService;
         private readonly ISettingsDatabase _settingsDatabase;
-        private readonly IPunNetworkService _punNetworkService;
+        private readonly IMenuNetworkService _menuNetworkService;
 
         public MenuSettingsController
         (
             ISceneLoadingService sceneLoadingService,
             IWindowService windowService,
             ISettingsDatabase settingsDatabase,
-            IPunNetworkService punNetworkService
+            IMenuNetworkService menuNetworkService
         )
         {
             _sceneLoadingService = sceneLoadingService;
             _windowService = windowService;
             _settingsDatabase = settingsDatabase;
-            _punNetworkService = punNetworkService;
+            _menuNetworkService = menuNetworkService;
         }
 
         public void Initialize()
@@ -50,9 +50,7 @@ namespace Controllers
 
         private void Connect()
         {
-            //Object.FindObjectOfType<PunNetworkService>().Connect();
-            _punNetworkService.Connect();
-            // _sceneLoadingService.LoadScene(SceneNames.Game);
+            _menuNetworkService.Connect();
         }
         
     }

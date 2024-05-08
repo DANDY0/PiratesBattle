@@ -1,6 +1,6 @@
 ﻿    namespace Services.PunNetwork
 {
-    public interface IPunNetworkService
+    public interface IMenuNetworkService
     {
         void Connect();
     }

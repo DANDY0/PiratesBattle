@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2074970322684232784}
   - component: {fileID: 2074970322684232785}
   m_Layer: 0
-  m_Name: PunNetworkService
+  m_Name: MenuNetworkService
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,4 +1,5 @@
 ﻿using Controllers;
+using Services.PunNetwork;
 using Services.Window;
 using UnityEngine;
 using Utils.Extensions;
@@ -16,10 +17,23 @@ namespace Installers.Game
 
         [Header("Windows")] 
         [SerializeField] private MainView _mainView;
+        [SerializeField] private GameMenuView _gameMenuView;
+
+        [Header("Prefabs")] 
+        [SerializeField] private GameNetworkService _gameNetworkService;
+        // [SerializeField] private PlayerNetworkService _playerNetworkService;
+
 
         public override void InstallBindings()
         {
             BindWindows();
+            BindPrefabs();
+        }
+
+        private void BindPrefabs()
+        {
+            Container.BindPrefab(_gameNetworkService);
+            // Container.BindPrefab(_playerNetworkService);
         }
         
         private void BindWindows()
@@ -32,7 +46,8 @@ namespace Installers.Game
             var parent = canvas.transform;
             
             Container.AddWindowToQueue<MainController, MainView>(_mainView, parent, 0, isFocusable: true);
-            
+            Container.AddWindowToQueue<GameMenuController, GameMenuView>(_gameMenuView, parent, 0);
+
             Container.BindWindows();
         }
     }

@@ -2,6 +2,7 @@
 using Services.PunNetwork;
 using Services.Window;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils.Extensions;
 using Views;
 using Zenject;
@@ -18,7 +19,7 @@ namespace Installers.Menu
         [SerializeField] private MenuSettingsView _menuSettingsView;
 
         [Header("PUN")]
-        [SerializeField] private PunNetworkService _punNetworkService;
+        [SerializeField] private MenuNetworkService _menuNetworkService;
 
         //[SerializeField] private SettingsView _settingsView;
 
@@ -30,7 +31,7 @@ namespace Installers.Menu
 
         private void BindPrefabs()
         {
-            Container.BindPrefab(_punNetworkService);
+            Container.BindPrefab(_menuNetworkService);
         }
 
         private void BindWindows()
@@ -40,7 +41,7 @@ namespace Installers.Menu
             
             //Container.AddWindowToQueue<SettingsController, SettingsView>(_settingsView, parent, 1);
             Container.AddWindowToQueue<MenuSettingsController, MenuSettingsView>(_menuSettingsView, parent, 0);
-            
+
             
             Container.BindWindows();
         }

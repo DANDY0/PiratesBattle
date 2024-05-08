@@ -13,4 +13,9 @@ MonoBehaviour:
   m_Name: GamePrefabInstaller
   m_EditorClassIdentifier: 
   _canvas: {fileID: 7639541237202281361, guid: fff7a856e9f9b8d428286d79be151039, type: 3}
-  _mainView: {fileID: 1063423711776441880, guid: 608a08ed22547534db891c50362f4eca, type: 3}
+  _mainView: {fileID: 1063423711776441880, guid: 608a08ed22547534db891c50362f4eca,
+    type: 3}
+  _gameMenuView: {fileID: -4116120619548325717, guid: 6099754a25e3f774f9b570a84e58ac11,
+    type: 3}
+  _gameNetworkService: {fileID: -8012005430241376883, guid: 6dd235a838e739c47bb9a0866ac3925f,
+    type: 3}

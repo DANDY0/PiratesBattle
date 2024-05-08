@@ -5,6 +5,7 @@ using Helpers;
 using Photon.Pun;
 using Services.PunNetwork;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils.Extensions;
 using Zenject;
 
@@ -21,7 +22,6 @@ namespace Installers.Project
         [SerializeField] private DataManagementDatabase _dataManagementDatabase;
 
         [Header("Common")] 
-        [SerializeField] private PunNetworkService _punNetworkService;
         [SerializeField] private CoroutineRunner _coroutineRunner;
         [SerializeField] private AudioMixerProvider _audioMixerProvider;
         [SerializeField] private GameRestarter _gameRestarter;

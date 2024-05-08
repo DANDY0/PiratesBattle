@@ -236,7 +236,7 @@ namespace Photon.Pun
         /// <remarks>Check the RegionHandler class description, to make use of the provided values.</remarks>
         /// <param name="regionHandler">The currently used RegionHandler.</param>
         public virtual void OnRegionListReceived(RegionHandler regionHandler)
-        {
+         {
         }
 
         /// <summary>
