@@ -21,6 +21,7 @@ namespace Installers.Menu
 
         [Header("PUN")]
         [SerializeField] private MenuNetworkService _menuNetworkService;
+        [SerializeField] private PhotonTeamsManager _photonTeamsManager;
         
         public override void InstallBindings()
         {
@@ -31,6 +32,7 @@ namespace Installers.Menu
         private void BindPrefabs()
         {
             Container.BindPrefab(_menuNetworkService);
+            Container.BindPrefab(_photonTeamsManager);
         }
 
         private void BindWindows()

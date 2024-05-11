@@ -17,5 +17,5 @@ MonoBehaviour:
     type: 3}
   _menuNetworkService: {fileID: 2074970322684232785, guid: f89eb08488a269b48b1d17abda123244,
     type: 3}
-  _teamsManager: {fileID: -2087900634675833016, guid: 2902522268eeaac4d95c062b51fb5319,
+  _photonTeamsManager: {fileID: 6638683282978397697, guid: 8a6beebd0e712ba48af7f9a73cb2b420,
     type: 3}

@@ -1,4 +1,4 @@
-﻿    namespace Services.PunNetwork
+﻿    namespace Services.PunNetwork.Impls
 {
     public interface IMenuNetworkService
     {

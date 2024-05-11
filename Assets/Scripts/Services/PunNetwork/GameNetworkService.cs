@@ -2,6 +2,7 @@
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
+using Services.PunNetwork.Impls;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -45,7 +46,7 @@ namespace Services.PunNetwork
         {
             if (!PhotonNetwork.IsConnected)
             {
-                SceneManager.LoadScene(Enumerators.SceneName.Menu.ToString());
+                SceneManager.LoadScene(SceneNames.Menu);
                 return;
             }
 
@@ -114,7 +115,7 @@ namespace Services.PunNetwork
         /// </summary>
         public override void OnLeftRoom()
         {
-            SceneManager.LoadScene(Enumerators.SceneName.Menu.ToString());
+            SceneManager.LoadScene(SceneNames.Menu);
         }
 
         public void LeaveGameplay()

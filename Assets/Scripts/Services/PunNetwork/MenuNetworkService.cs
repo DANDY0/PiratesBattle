@@ -2,8 +2,10 @@
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
+using Services.PunNetwork.Impls;
 using UnityEngine;
 using Utils;
+using Zenject;
 
 namespace Services.PunNetwork
 {
@@ -13,12 +15,22 @@ namespace Services.PunNetwork
         private string _gameVersion = "1";
         bool isConnecting;
         private LoadBalancingClient lbc;
+        private IPhotonTeamsManager _photonTeamsManager;
 
+
+        [Inject]
+        private void Construct
+        (
+            IPhotonTeamsManager photonTeamsManager
+        )
+        {
+            _photonTeamsManager = photonTeamsManager;
+        }
         
         void Start()
         {
             lbc = new LoadBalancingClient();
-            lbc.AddCallbackTarget(PhotonTeamsManager.Instance);
+            lbc.AddCallbackTarget(_photonTeamsManager);
             
             PhotonNetwork.AutomaticallySyncScene = true;
 
@@ -59,7 +71,7 @@ namespace Services.PunNetwork
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                var availableTeam = PhotonTeamsManager.Instance.GetAvailableTeam();
+                var availableTeam = _photonTeamsManager.GetAvailableTeam();
                 PhotonNetwork.LocalPlayer.JoinTeam(availableTeam);
             }
             
@@ -71,7 +83,7 @@ namespace Services.PunNetwork
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                var availableTeam = PhotonTeamsManager.Instance.GetAvailableTeam();
+                var availableTeam = _photonTeamsManager.GetAvailableTeam();
                 newPlayer.JoinTeam(availableTeam);
             }
         }
@@ -81,7 +93,7 @@ namespace Services.PunNetwork
             if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == _maxPlayersPerRoom)
             {
                 Debug.Log("We load the Game scene");
-                PhotonNetwork.LoadLevel(Enumerators.SceneName.Game.ToString());
+                PhotonNetwork.LoadLevel(SceneNames.Game);
             }
         }
 

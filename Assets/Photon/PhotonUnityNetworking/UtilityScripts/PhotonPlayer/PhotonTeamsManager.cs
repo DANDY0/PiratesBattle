@@ -17,10 +17,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Photon.Realtime;
+using Zenject;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Photon.Pun.UtilityScripts
 {
+    public interface IPhotonTeamsManager
+    {
+        PhotonTeam GetAvailableTeam();
+        bool TryGetTeamMatesOfPlayer(Player player, out Player[] teamMates);
+        bool TryGetTeamByName(string teamName, out PhotonTeam team);
+        bool TryGetTeamByCode(byte teamCode, out PhotonTeam team);
+    }
+
     [Serializable]
     public class PhotonTeam
     {
@@ -41,7 +50,7 @@ namespace Photon.Pun.UtilityScripts
     /// There are no rules when / if you can join a team. You could add this in JoinTeam or something.
     /// </remarks>
     [DisallowMultipleComponent]
-    public class PhotonTeamsManager : MonoBehaviour, IMatchmakingCallbacks, IInRoomCallbacks
+    public class PhotonTeamsManager : MonoBehaviour, IMatchmakingCallbacks, IInRoomCallbacks, IPhotonTeamsManager 
     {
         #if UNITY_EDITOR
         #pragma warning disable 0414
@@ -62,6 +71,8 @@ namespace Photon.Pun.UtilityScripts
         
         /// <summary>The main list of teams with their player-lists. Automatically kept up to date.</summary>
         private Dictionary<byte, HashSet<Player>> playersPerTeam;
+        
+        private static DiContainer _container;
 
         /// <summary>Defines the player custom property name to use for team affinity of "this" player.</summary>
         public const string TeamPlayerProp = "_pt";
@@ -69,31 +80,31 @@ namespace Photon.Pun.UtilityScripts
         public static event Action<Player, PhotonTeam> PlayerJoinedTeam;
         public static event Action<Player, PhotonTeam> PlayerLeftTeam;
 
-        private static PhotonTeamsManager instance;
-        public static PhotonTeamsManager Instance
+        public static IPhotonTeamsManager Instance
         {
             get
             {
-                if (instance == null)
-                {
-                    instance = FindObjectOfType<PhotonTeamsManager>();
-                    if (instance == null)
-                    {
-                        GameObject obj = new GameObject();
-                        obj.name = "PhotonTeamsManager";
-                        instance = obj.AddComponent<PhotonTeamsManager>();
-                    }
-                    instance.Init();
-                }
-
-                return instance;
+                if (_container != null)
+                    return _container.Resolve<IPhotonTeamsManager>();
+                
+                throw new Exception($"[{nameof(PhotonTeamsManager)} Di container is null yet.");
             }
+        }
+
+        [Inject]
+        private void Construct
+        (
+            DiContainer container
+        )
+        {
+            _container = container;
         }
 
         #region MonoBehaviour
 
         private void Awake()
         {
+            Init();
             DontDestroyOnLoad(this);
             /*if (instance == null || ReferenceEquals(this, instance))
             {
