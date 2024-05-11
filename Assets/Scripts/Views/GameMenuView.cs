@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Views
 {
-    public class GameMenuView: Window
+    public class GameMenuView : Window
     {
         [SerializeField] private Button _leaveButton;
         

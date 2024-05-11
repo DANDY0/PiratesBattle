@@ -3,16 +3,18 @@ using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using Services.PunNetwork.Impls;
+using Services.SceneLoading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using Utils;
+using Zenject;
 
 namespace Services.PunNetwork
 {
     public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService
     {
-        private readonly IMenuNetworkService _menuNetworkService;
+        private ISceneLoadingService _sceneLoadingService;
         [SerializeField] private Vector3[] _spawnPoints;
 
         private PlayerView.TeamCreator _teamCreator;
@@ -20,9 +22,13 @@ namespace Services.PunNetwork
         private LoadBalancingClient lbc;
 
 
-        public GameNetworkService(IMenuNetworkService menuNetworkService)
+        [Inject]
+        private void Construct
+        (
+            ISceneLoadingService sceneLoadingService
+        )
         {
-            _menuNetworkService = menuNetworkService;
+            _sceneLoadingService = sceneLoadingService;
         }
         private void Awake()
         {
@@ -88,8 +94,6 @@ namespace Services.PunNetwork
             {
                 Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}",
                     PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-
-                LoadArena();
             }
         }
 
@@ -105,8 +109,6 @@ namespace Services.PunNetwork
             {
                 Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}",
                     PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-
-                LoadArena();
             }
         }
 
@@ -115,29 +117,15 @@ namespace Services.PunNetwork
         /// </summary>
         public override void OnLeftRoom()
         {
-            SceneManager.LoadScene(SceneNames.Menu);
+            _sceneLoadingService.LoadScene(SceneNames.Menu);
         }
 
         public void LeaveGameplay()
         {
+            PhotonNetwork.LocalPlayer.LeaveCurrentTeam();
             PhotonNetwork.LeaveRoom();
         }
-
-
-        void LoadArena()
-        {
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
-                return;
-            }
-
-
-            Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
-
-            PhotonNetwork.LoadLevel("PunBasics-Room for " + PhotonNetwork.CurrentRoom.PlayerCount);
-        }
-
+        
         public void QuitApplication()
         {
             Application.Quit();

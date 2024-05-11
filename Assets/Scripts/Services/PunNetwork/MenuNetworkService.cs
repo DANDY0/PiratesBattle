@@ -1,4 +1,5 @@
-﻿using Installers.Menu;
+﻿using System;
+using Installers.Menu;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
@@ -40,8 +41,16 @@ namespace Services.PunNetwork
                 PhotonNetwork.ConnectUsingSettings();
             }
 
-            PhotonTeamsManager.PlayerJoinedTeam += PlayerJoinedTeam;
+            _photonTeamsManager.PlayerJoinedTeam += PlayerJoinedTeam;
+            _photonTeamsManager.PlayerLeftTeam += PlayerLeftTeam;
+            
+        }
 
+        private void OnDestroy()
+        {
+            lbc.RemoveCallbackTarget(_photonTeamsManager);
+            _photonTeamsManager.PlayerJoinedTeam -= PlayerJoinedTeam;
+            _photonTeamsManager.PlayerLeftTeam -= PlayerLeftTeam;
         }
 
         public void Connect()
@@ -88,15 +97,6 @@ namespace Services.PunNetwork
             }
         }
 
-        private void PlayerJoinedTeam(Player player, PhotonTeam team)
-        {
-            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == _maxPlayersPerRoom)
-            {
-                Debug.Log("We load the Game scene");
-                PhotonNetwork.LoadLevel(SceneNames.Game);
-            }
-        }
-
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
             Debug.Log("Create a new Room");
@@ -111,9 +111,24 @@ namespace Services.PunNetwork
             Debug.LogError("PUN Basics Tutorial/Launcher:Disconnected");
 
             // #Critical: we failed to connect or got disconnected. There is not much we can do. Typically, a UI system should be in place to let the user attemp to connect again.
-
+            //PhotonNetwork.LocalPlayer.LeaveCurrentTeam();
+            
             isConnecting = false;
 
+        }
+
+        private void PlayerJoinedTeam(Player player, PhotonTeam team)
+        {
+            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == _maxPlayersPerRoom)
+            {
+                Debug.Log("We load the Game scene");
+                PhotonNetwork.LoadLevel(SceneNames.Game);
+            }
+        }
+        
+        private void PlayerLeftTeam(Player player, PhotonTeam team)
+        {
+            
         }
     }
 }

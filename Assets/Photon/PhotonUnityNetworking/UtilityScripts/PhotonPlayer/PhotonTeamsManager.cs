@@ -28,6 +28,8 @@ namespace Photon.Pun.UtilityScripts
         bool TryGetTeamMatesOfPlayer(Player player, out Player[] teamMates);
         bool TryGetTeamByName(string teamName, out PhotonTeam team);
         bool TryGetTeamByCode(byte teamCode, out PhotonTeam team);
+        event Action<Player, PhotonTeam> PlayerJoinedTeam;
+        event Action<Player, PhotonTeam> PlayerLeftTeam;
     }
 
     [Serializable]
@@ -77,8 +79,8 @@ namespace Photon.Pun.UtilityScripts
         /// <summary>Defines the player custom property name to use for team affinity of "this" player.</summary>
         public const string TeamPlayerProp = "_pt";
 
-        public static event Action<Player, PhotonTeam> PlayerJoinedTeam;
-        public static event Action<Player, PhotonTeam> PlayerLeftTeam;
+        public event Action<Player, PhotonTeam> PlayerJoinedTeam;
+        public event Action<Player, PhotonTeam> PlayerLeftTeam;
 
         public static IPhotonTeamsManager Instance
         {
@@ -153,6 +155,7 @@ namespace Photon.Pun.UtilityScripts
         void IMatchmakingCallbacks.OnLeftRoom()
         {
             this.ClearTeams();
+            Destroy(gameObject);
         }
 
         void IInRoomCallbacks.OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
