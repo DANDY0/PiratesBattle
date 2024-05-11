@@ -307,6 +307,29 @@ namespace Photon.Pun.UtilityScripts
             }
             return null;
         }
+        
+        public PhotonTeam GetAvailableTeam()
+        {
+            if (teamsList == null || teamsList.Count == 0)
+            {
+                return null; 
+            }
+
+            PhotonTeam leastPopulatedTeam = null;
+            int minPlayerCount = int.MaxValue;
+
+            foreach (PhotonTeam team in teamsList)
+            {
+                int teamMemberCount = GetTeamMembersCount(team);
+                if (teamMemberCount < minPlayerCount)
+                {
+                    leastPopulatedTeam = team; 
+                    minPlayerCount = teamMemberCount; 
+                }
+            }
+
+            return leastPopulatedTeam;
+        }
 
         /// <summary>
         /// Gets all players joined to a team using a team code.

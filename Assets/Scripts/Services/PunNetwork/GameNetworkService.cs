@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,29 +11,34 @@ namespace Services.PunNetwork
 {
     public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService
     {
+        private readonly IMenuNetworkService _menuNetworkService;
         [SerializeField] private Vector3[] _spawnPoints;
 
         private PlayerView.TeamCreator _teamCreator;
         private PlayerSpawner _playerSpawner;
+        private LoadBalancingClient lbc;
 
+
+        public GameNetworkService(IMenuNetworkService menuNetworkService)
+        {
+            _menuNetworkService = menuNetworkService;
+        }
         private void Awake()
         {
             _teamCreator = new PlayerView.TeamCreator();
             _playerSpawner = new PlayerSpawner(_teamCreator, _spawnPoints);
 
-            /*
-            var spawnPointsLeft = Resources.Load<GameObject>("Level/LeftSpawnPoints");
-            var spawnPointsRight = Resources.Load<GameObject>("Level/RightSpawnPoints");
-            List<Transform>  pointsLeft =  new List<Transform>();
-            List<Transform>  pointsRight =  new List<Transform>();
+            // PhotonTeamsManager.Instance.UpdateTeams();
+            /*if (PhotonNetwork.IsMasterClient)
+            {
+                foreach (var player in PhotonNetwork.PlayerList)
+                {
+                    var availableTeam = PhotonTeamsManager.Instance.GetAvailableTeam();
+                    player.JoinTeam(availableTeam); 
+                }
+             
+            }*/
 
-            foreach (Transform point in spawnPointsLeft.transform)
-                pointsLeft.Add(point);
-            foreach (Transform point in spawnPointsRight.transform)
-                pointsRight.Add(point);*/
-
-            // _spawnPointsLeft = pointsLeft;
-            // _spawnPointsRight = pointsRight;
         }
 
         void Start()
@@ -124,6 +130,7 @@ namespace Services.PunNetwork
                 Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
                 return;
             }
+
 
             Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
 

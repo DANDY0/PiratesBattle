@@ -1,4 +1,5 @@
 ﻿using Controllers;
+using Photon.Pun.UtilityScripts;
 using Services.PunNetwork;
 using Services.Window;
 using UnityEngine;
@@ -20,9 +21,7 @@ namespace Installers.Menu
 
         [Header("PUN")]
         [SerializeField] private MenuNetworkService _menuNetworkService;
-
-        //[SerializeField] private SettingsView _settingsView;
-
+        
         public override void InstallBindings()
         {
             BindWindows();
@@ -39,7 +38,6 @@ namespace Installers.Menu
             Container.Resolve<IWindowService>().ClearWindows();
             var parent = Instantiate(_canvas).transform;
             
-            //Container.AddWindowToQueue<SettingsController, SettingsView>(_settingsView, parent, 1);
             Container.AddWindowToQueue<MenuSettingsController, MenuSettingsView>(_menuSettingsView, parent, 0);
 
             

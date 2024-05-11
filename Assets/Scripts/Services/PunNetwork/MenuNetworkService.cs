@@ -1,4 +1,6 @@
-﻿using Photon.Pun;
+﻿using Installers.Menu;
+using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using UnityEngine;
 using Utils;
@@ -7,12 +9,17 @@ namespace Services.PunNetwork
 {
     public class MenuNetworkService : MonoBehaviourPunCallbacks, IMenuNetworkService
     {
-        private byte _maxPlayersPerRoom = 4;
+        private byte _maxPlayersPerRoom = 3;
         private string _gameVersion = "1";
         bool isConnecting;
+        private LoadBalancingClient lbc;
+
         
         void Start()
         {
+            lbc = new LoadBalancingClient();
+            lbc.AddCallbackTarget(PhotonTeamsManager.Instance);
+            
             PhotonNetwork.AutomaticallySyncScene = true;
 
             if (!PhotonNetwork.IsConnected)
@@ -20,6 +27,9 @@ namespace Services.PunNetwork
                 print("Connecting to server..");
                 PhotonNetwork.ConnectUsingSettings();
             }
+
+            PhotonTeamsManager.PlayerJoinedTeam += PlayerJoinedTeam;
+
         }
 
         public void Connect()
@@ -47,18 +57,28 @@ namespace Services.PunNetwork
 
         public override void OnJoinedRoom()
         {
-            Debug.Log("JoinedRoom");
-            
-            if (PhotonNetwork.CurrentRoom.PlayerCount == _maxPlayersPerRoom && PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient)
             {
-                Debug.Log("We load the Game scene");
-                PhotonNetwork.LoadLevel(Enumerators.SceneName.Game.ToString());
+                var availableTeam = PhotonTeamsManager.Instance.GetAvailableTeam();
+                PhotonNetwork.LocalPlayer.JoinTeam(availableTeam);
             }
+            
+            Debug.Log("JoinedRoom");
+  
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            if (PhotonNetwork.CurrentRoom.PlayerCount == _maxPlayersPerRoom && PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient)
+            {
+                var availableTeam = PhotonTeamsManager.Instance.GetAvailableTeam();
+                newPlayer.JoinTeam(availableTeam);
+            }
+        }
+
+        private void PlayerJoinedTeam(Player player, PhotonTeam team)
+        {
+            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == _maxPlayersPerRoom)
             {
                 Debug.Log("We load the Game scene");
                 PhotonNetwork.LoadLevel(Enumerators.SceneName.Game.ToString());
