@@ -48,7 +48,7 @@ namespace Installers.Game
             var parent = canvas.transform;
             
             Container.AddWindowToQueue<MainController, MainView>(_mainView, parent, 0, isFocusable: true);
-            Container.AddWindowToQueue<GameMenuController, GameMenuView>(_gameMenuView, parent, 0);
+            Container.AddWindowToQueue<GameMenuController, GameMenuView>(_gameMenuView, parent, 1);
 
             Container.BindWindows();
         }

@@ -1,30 +1,50 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Photon.Pun;
-using Zenject;
+using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
+using Services.PunNetwork.Impls;
+using UnityEngine;
+using Utils;
 
 namespace Services.PunNetwork
 {
-    public class PlayersInRoomService: MonoBehaviourPunCallbacks, IPlayersInRoomService
+    public class PlayersInRoomService : IPlayersInRoomService
     {
-        private ICustomPropertiesService _customPropertiesService;
+        private List<PlayerView> _playerViews = new();
 
-        [Inject]
-        private void Construct
-        (
-            ICustomPropertiesService customPropertiesService
-        )
+        public void CheckIfAllSpawned()
         {
-            _customPropertiesService = customPropertiesService;
-        }
+            var isAllReady = true;
+            foreach (var player in PhotonNetwork.PlayerList)
+                if (player.CustomProperties.TryGetValue(Enumerators.PlayerProperty.IsSpawned.ToString(),
+                        out var isSpawned))
+                {
+                    if ((bool)isSpawned) continue;
+                    isAllReady = false;
+                    break;
+                }
 
-        private void Awake()
-        {
-            _customPropertiesService.PlayersSpawnedEvent += PlayersSpawnedHandler;
-        }
+            if (isAllReady)
+            {
+                var playerViews = Object.FindObjectsOfType<PlayerView>();
+                foreach (var playerView in playerViews)
+                {
+                    _playerViews.Add(playerView);
+                    
+                    
+                    var player = playerView.GetComponent<PhotonView>().Owner;
 
-        private void PlayersSpawnedHandler()
-        {
-           
+                    Enumerators.TeamRole teamRole;
+                    if (player.IsLocal)
+                        teamRole = Enumerators.TeamRole.MyPlayer;
+                    else
+                        teamRole = player.GetPhotonTeam().Code == PhotonNetwork.LocalPlayer.GetPhotonTeam().Code
+                            ? Enumerators.TeamRole.AllyPlayer
+                            : Enumerators.TeamRole.EnemyPlayer;
+
+                    playerView.SetTeamMarker(teamRole);
+                }
+            }
         }
     }
 }

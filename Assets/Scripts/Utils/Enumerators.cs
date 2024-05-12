@@ -2,7 +2,7 @@
 {
     public class Enumerators
     {
-        public enum TeamType
+        public enum TeamRole
         {
             MyPlayer,
             AllyPlayer,
@@ -11,9 +11,9 @@
         
         public enum PlayerProperty
         {
+            PlayerNumber,
             IsSpawned,
-            Health,
-            PlayerNumber
+            IsReady
         }
     }
 }

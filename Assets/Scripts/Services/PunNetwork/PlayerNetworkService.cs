@@ -29,7 +29,6 @@ namespace Services.PunNetwork
         public void SpawnOurPlayer()
         {
             _playerSpawner.SpawnPlayer();
-            _customPropertiesService.SetPlayerProperty(Enumerators.PlayerProperty.IsSpawned, true);
         }
     }
     
@@ -38,7 +37,7 @@ namespace Services.PunNetwork
 
         public void SpawnPlayer()
         {
-            PhotonNetwork.Instantiate("TeamPlayers\\" + Enumerators.TeamType.MyPlayer, Vector3.zero, Quaternion.identity);
+            PhotonNetwork.Instantiate("TeamPlayers\\" + Enumerators.TeamRole.MyPlayer, Vector3.zero, Quaternion.identity);
         }
     }
 

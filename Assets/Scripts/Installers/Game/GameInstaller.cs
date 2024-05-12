@@ -1,4 +1,5 @@
 ﻿using Services;
+using Services.PunNetwork;
 using Signals;
 using Zenject;
 
@@ -20,6 +21,7 @@ namespace Installers.Game
         private void BindServices()
         {
             Container.BindInterfacesTo<GameStarter>().AsSingle();
+            Container.BindInterfacesTo<PlayersInRoomService>().AsSingle();
         }
     }
 }

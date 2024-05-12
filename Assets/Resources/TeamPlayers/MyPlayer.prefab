@@ -1994,6 +1994,7 @@ GameObject:
   - component: {fileID: 8571101136837861426}
   - component: {fileID: 3491735243055088109}
   - component: {fileID: 9172516618326251503}
+  - component: {fileID: 8071881476674391581}
   m_Layer: 0
   m_Name: TeamMarker
   m_TagString: Untagged
@@ -2080,6 +2081,18 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &8071881476674391581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6015084800504354966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f55b0fb48c7d4269a75f188682a34c46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6354591236272202379
 GameObject:
   m_ObjectHideFlags: 0
@@ -2977,9 +2990,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca97164e8f5b47799fb2db85a4aa0c74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Info:
-    TeamId: 0
-    TeamType: 0
+  _teamMarker: {fileID: 8071881476674391581}
 --- !u!1 &7927236269272520591
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,7 +3,9 @@ using System.Collections;
 using System.Linq;
 using Photon.Pun;
 using Photon.Realtime;
+using Services.PunNetwork.Impls;
 using UnityEngine;
+using Zenject;
 using static Utils.Enumerators;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -11,7 +13,17 @@ namespace Services.PunNetwork
 {
     public class CustomPropertiesService : MonoBehaviourPunCallbacks, ICustomPropertiesService
     {
+        private IPlayersInRoomService _playersInRoomService;
         public event Action PlayersSpawnedEvent;
+
+        [Inject]
+        private void Construct
+        (
+            IPlayersInRoomService playersInRoomService
+        )
+        {
+            _playersInRoomService = playersInRoomService;
+        }
         
         public void SetPlayerProperty(PlayerProperty property, object value)
         {
@@ -39,13 +51,11 @@ namespace Services.PunNetwork
         {
             switch (key)
             {
-                case PlayerProperty.IsSpawned:
-                    Debug.Log($"Player:{player.ActorNumber}, IsSpawned changed to {value}");
-                    if (CheckIsAllSpawned()) 
-                        PlayersSpawnedEvent?.Invoke();
-                    break;
                 case PlayerProperty.PlayerNumber:
                     Debug.Log($"Player:{player.ActorNumber}, PlayerNumber changed to {value}");
+                    break;
+                case PlayerProperty.IsSpawned:
+                    _playersInRoomService.CheckIfAllSpawned();
                     break;
                 default:
                     Debug.LogWarning($"Unknown property changed: {key}");
@@ -53,20 +63,5 @@ namespace Services.PunNetwork
             }
         }
 
-        private bool CheckIsAllSpawned()
-        {
-            foreach (Player player in PhotonNetwork.PlayerList)
-            {
-                object isSpawned;
-                if (player.CustomProperties.TryGetValue(PlayerProperty.IsSpawned.ToString(), out isSpawned))
-                {
-                    if (!(bool)isSpawned)
-                        return false;
-                }
-                else
-                    return false;
-            }
-            return true;
-        }
     }
 }

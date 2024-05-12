@@ -1,6 +1,4 @@
-﻿using System;
-using Installers.Menu;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using Services.PunNetwork.Impls;
@@ -12,7 +10,7 @@ namespace Services.PunNetwork
 {
     public class MenuNetworkService : MonoBehaviourPunCallbacks, IMenuNetworkService
     {
-        private byte _maxPlayersPerRoom = 3;
+        private byte _maxPlayersPerRoom = 4;
         private string _gameVersion = "1";
         bool isConnecting;
         private LoadBalancingClient lbc;

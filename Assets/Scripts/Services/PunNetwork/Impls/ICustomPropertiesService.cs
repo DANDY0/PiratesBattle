@@ -1,7 +1,7 @@
 ﻿using System;
 using Utils;
 
-namespace Services.PunNetwork
+namespace Services.PunNetwork.Impls
 {
     public interface ICustomPropertiesService
     {

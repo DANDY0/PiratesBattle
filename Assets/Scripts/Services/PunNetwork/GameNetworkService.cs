@@ -21,7 +21,6 @@ namespace Services.PunNetwork
         
         [SerializeField] private Vector3[] _spawnPoints;
 
-        private PlayerView.TeamCreator _teamCreator;
         private PlayerSpawner _playerSpawner;
         private LoadBalancingClient _lbc;
 
@@ -71,6 +70,10 @@ namespace Services.PunNetwork
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 QuitApplication();
+            }            
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                PhotonNetwork.Instantiate("ClickObject", Vector3.zero, Quaternion.identity);
             }
         }
 
