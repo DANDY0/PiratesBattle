@@ -12,6 +12,7 @@
         public enum PlayerProperty
         {
             IsSpawned,
+            Health,
             PlayerNumber
         }
     }

@@ -20,6 +20,7 @@ namespace Services.PunNetwork
         {
             _customPropertiesService = customPropertiesService;
         }
+        
         private void Start()
         {
             _playerSpawner = new PlayerSpawner();

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Linq;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -9,6 +11,8 @@ namespace Services.PunNetwork
 {
     public class CustomPropertiesService : MonoBehaviourPunCallbacks, ICustomPropertiesService
     {
+        public event Action PlayersSpawnedEvent;
+        
         public void SetPlayerProperty(PlayerProperty property, object value)
         {
             Hashtable props = new Hashtable
@@ -37,6 +41,8 @@ namespace Services.PunNetwork
             {
                 case PlayerProperty.IsSpawned:
                     Debug.Log($"Player:{player.ActorNumber}, IsSpawned changed to {value}");
+                    if (CheckIsAllSpawned()) 
+                        PlayersSpawnedEvent?.Invoke();
                     break;
                 case PlayerProperty.PlayerNumber:
                     Debug.Log($"Player:{player.ActorNumber}, PlayerNumber changed to {value}");
@@ -45,6 +51,22 @@ namespace Services.PunNetwork
                     Debug.LogWarning($"Unknown property changed: {key}");
                     break;
             }
+        }
+
+        private bool CheckIsAllSpawned()
+        {
+            foreach (Player player in PhotonNetwork.PlayerList)
+            {
+                object isSpawned;
+                if (player.CustomProperties.TryGetValue(PlayerProperty.IsSpawned.ToString(), out isSpawned))
+                {
+                    if (!(bool)isSpawned)
+                        return false;
+                }
+                else
+                    return false;
+            }
+            return true;
         }
     }
 }
