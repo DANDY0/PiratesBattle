@@ -8,5 +8,11 @@
             AllyPlayer,
             EnemyPlayer,
         }
+        
+        public enum PlayerProperty
+        {
+            IsSpawned,
+            PlayerNumber
+        }
     }
 }

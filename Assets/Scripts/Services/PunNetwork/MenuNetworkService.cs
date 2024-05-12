@@ -123,6 +123,7 @@ namespace Services.PunNetwork
             {
                 Debug.Log("We load the Game scene");
                 PhotonNetwork.LoadLevel(SceneNames.Game);
+                PhotonNetwork.CurrentRoom.IsOpen = false;
             }
         }
         

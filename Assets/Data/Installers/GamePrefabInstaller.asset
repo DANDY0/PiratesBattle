@@ -19,3 +19,7 @@ MonoBehaviour:
     type: 3}
   _gameNetworkService: {fileID: -8012005430241376883, guid: 6dd235a838e739c47bb9a0866ac3925f,
     type: 3}
+  _playerNetworkService: {fileID: -4467217416445005255, guid: 657698c137474b9489586f6179cd87e7,
+    type: 3}
+  _customPropertiesService: {fileID: -3956072073805407548, guid: 45f46346b59331f439acb34487948839,
+    type: 3}

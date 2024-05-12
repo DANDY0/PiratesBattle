@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
@@ -15,37 +16,34 @@ namespace Services.PunNetwork
     public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService
     {
         private ISceneLoadingService _sceneLoadingService;
+        private IPlayerNetworkService _playerNetworkService;
+        private ICustomPropertiesService _customPropertiesService;
+        
         [SerializeField] private Vector3[] _spawnPoints;
 
         private PlayerView.TeamCreator _teamCreator;
         private PlayerSpawner _playerSpawner;
-        private LoadBalancingClient lbc;
+        private LoadBalancingClient _lbc;
 
-
+    
         [Inject]
         private void Construct
         (
-            ISceneLoadingService sceneLoadingService
+            ISceneLoadingService sceneLoadingService,
+            IPlayerNetworkService playerNetworkService,
+            ICustomPropertiesService customPropertiesService
         )
         {
             _sceneLoadingService = sceneLoadingService;
+            _playerNetworkService = playerNetworkService;
+            _customPropertiesService = customPropertiesService;
         }
+
         private void Awake()
         {
-            _teamCreator = new PlayerView.TeamCreator();
-            _playerSpawner = new PlayerSpawner(_teamCreator, _spawnPoints);
-
-            // PhotonTeamsManager.Instance.UpdateTeams();
-            /*if (PhotonNetwork.IsMasterClient)
-            {
-                foreach (var player in PhotonNetwork.PlayerList)
-                {
-                    var availableTeam = PhotonTeamsManager.Instance.GetAvailableTeam();
-                    player.JoinTeam(availableTeam); 
-                }
-             
-            }*/
-
+            _lbc = new LoadBalancingClient();
+            // _lbc.AddCallbackTarget(_customPropertiesService);
+            // _lbc.AddCallbackTarget(_playerNetworkService);
         }
 
         void Start()
@@ -59,12 +57,7 @@ namespace Services.PunNetwork
             if (PhotonNetwork.InRoom)
             {
                 Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
-
-                // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-                // PhotonNetwork.Instantiate(this._playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
-                _teamCreator.AssignTeam();
-                _playerSpawner.SpawnPlayer();
-                // SpawnPlayer();
+                _playerNetworkService.SpawnOurPlayer();
             }
             else
             {
@@ -133,22 +126,4 @@ namespace Services.PunNetwork
     }
 
 
-    public class PlayerSpawner
-    {
-        private readonly Vector3[] _spawnPoints;
-
-        private PlayerView.TeamCreator _teamCreator;
-
-        public PlayerSpawner(PlayerView.TeamCreator teamCreator, Vector3[] spawnPoints)
-        {
-            _teamCreator = teamCreator;
-            _spawnPoints = spawnPoints;
-        }
-
-        public void SpawnPlayer()
-        {
-            PhotonNetwork.Instantiate("TeamPlayers\\" + Enumerators.TeamType.MyPlayer, Vector3.zero,
-                Quaternion.identity);
-        }
-    }
 }
