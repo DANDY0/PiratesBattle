@@ -13,23 +13,24 @@ namespace Services.PunNetwork
         private byte _maxPlayersPerRoom = 4;
         private string _gameVersion = "1";
         bool isConnecting;
-        private LoadBalancingClient lbc;
         private IPhotonTeamsManager _photonTeamsManager;
+        private ILoadBalancingClient _loadBalancingClient;
 
 
         [Inject]
         private void Construct
         (
-            IPhotonTeamsManager photonTeamsManager
+            IPhotonTeamsManager photonTeamsManager,
+            ILoadBalancingClient loadBalancingClient
         )
         {
             _photonTeamsManager = photonTeamsManager;
+            _loadBalancingClient = loadBalancingClient;
         }
-        
-        void Start()
+
+        private void Start()
         {
-            lbc = new LoadBalancingClient();
-            lbc.AddCallbackTarget(_photonTeamsManager);
+            _loadBalancingClient.AddCallbackTarget(_photonTeamsManager);
             
             PhotonNetwork.AutomaticallySyncScene = true;
 
@@ -46,7 +47,6 @@ namespace Services.PunNetwork
 
         private void OnDestroy()
         {
-            lbc.RemoveCallbackTarget(_photonTeamsManager);
             _photonTeamsManager.PlayerJoinedTeam -= PlayerJoinedTeam;
             _photonTeamsManager.PlayerLeftTeam -= PlayerLeftTeam;
         }

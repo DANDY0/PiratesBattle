@@ -24,7 +24,9 @@ namespace Services.PunNetwork
         {
             _playersInRoomService = playersInRoomService;
         }
-        
+
+        private void Awake() => DontDestroyOnLoad(this);
+
         public void SetPlayerProperty(PlayerProperty property, object value)
         {
             Hashtable props = new Hashtable
@@ -55,7 +57,8 @@ namespace Services.PunNetwork
                     Debug.Log($"Player:{player.ActorNumber}, PlayerNumber changed to {value}");
                     break;
                 case PlayerProperty.IsSpawned:
-                    _playersInRoomService.CheckIfAllSpawned();
+                    if (_playersInRoomService.IsAllReady())
+                        _playersInRoomService.OnAllSpawned();
                     break;
                 default:
                     Debug.LogWarning($"Unknown property changed: {key}");

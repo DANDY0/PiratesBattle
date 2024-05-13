@@ -2,6 +2,7 @@
 {
     public interface IPlayersInRoomService
     {
-        void CheckIfAllSpawned();
+        void OnAllSpawned();
+        bool IsAllReady();
     }
 }

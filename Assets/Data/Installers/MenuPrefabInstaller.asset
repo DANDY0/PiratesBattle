@@ -19,3 +19,5 @@ MonoBehaviour:
     type: 3}
   _photonTeamsManager: {fileID: 6638683282978397697, guid: 8a6beebd0e712ba48af7f9a73cb2b420,
     type: 3}
+  _customPropertiesService: {fileID: -3956072073805407548, guid: 45f46346b59331f439acb34487948839,
+    type: 3}

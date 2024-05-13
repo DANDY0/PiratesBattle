@@ -24,7 +24,7 @@ namespace Services.PunNetwork
                 _ => new Color()
             };
 
-            _meshRenderer.sharedMaterial.color = markerColor;
+            _meshRenderer.material.color = markerColor;
         }
     }
 }

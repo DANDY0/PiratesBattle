@@ -268,8 +268,43 @@ namespace Photon.Realtime
         public ushort GameServerPort;
     }
 
-
     #endregion
+
+    
+    public interface ILoadBalancingClient
+    {
+        /// <summary>
+        /// Registers an object for callbacks for the implemented callback-interfaces.
+        /// </summary>
+        /// <remarks>
+        /// Adding and removing callback targets is queued to not mess with callbacks in execution.
+        /// Internally, this means that the addition/removal is done before the LoadBalancingClient
+        /// calls the next callbacks. This detail should not affect a game's workflow.
+        ///
+        /// The covered callback interfaces are: IConnectionCallbacks, IMatchmakingCallbacks,
+        /// ILobbyCallbacks, IInRoomCallbacks, IOnEventCallback and IWebRpcCallback.
+        ///
+        /// See: <a href="https://doc.photonengine.com/en-us/realtime/current/reference/dotnet-callbacks">DotNet Callbacks</a>
+        /// </remarks>
+        /// <param name="target">The object that registers to get callbacks from this client.</param>
+        void AddCallbackTarget(object target);
+
+        /// <summary>
+        /// Unregisters an object from callbacks for the implemented callback-interfaces.
+        /// </summary>
+        /// <remarks>
+        /// Adding and removing callback targets is queued to not mess with callbacks in execution.
+        /// Internally, this means that the addition/removal is done before the LoadBalancingClient
+        /// calls the next callbacks. This detail should not affect a game's workflow.
+        ///
+        /// The covered callback interfaces are: IConnectionCallbacks, IMatchmakingCallbacks,
+        /// ILobbyCallbacks, IInRoomCallbacks, IOnEventCallback and IWebRpcCallback.
+        ///
+        /// See: <a href="https://doc.photonengine.com/en-us/realtime/current/reference/dotnet-callbacks"></a>
+        /// </remarks>
+        /// <param name="target">The object that unregisters from getting callbacks.</param>
+        void RemoveCallbackTarget(object target);
+    }
 
 
     /// <summary>
@@ -287,7 +322,7 @@ namespace Photon.Realtime
     /// want to react to and put it in a switch-case.
     /// We try to provide demo to each platform where this api can be used, so lookout for those.
     /// </remarks>
-    public class LoadBalancingClient : IPhotonPeerListener
+    public class LoadBalancingClient : IPhotonPeerListener, ILoadBalancingClient
     {
         /// <summary>
         /// The client uses a LoadBalancingPeer as API to communicate with the server.

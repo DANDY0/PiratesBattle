@@ -1,44 +1,36 @@
 ﻿using System;
 using Photon.Pun;
 using Services.PunNetwork.Impls;
+using Services.SpawnPoints;
 using UnityEngine;
 using Utils;
 using Zenject;
 
 namespace Services.PunNetwork
 {
-    public class PlayerNetworkService: MonoBehaviourPunCallbacks, IPlayerNetworkService
+    public class PlayerNetworkService : IPlayerNetworkService
     {
-        private PlayerSpawner _playerSpawner;
-        private ICustomPropertiesService _customPropertiesService;
+        private readonly ISpawnPointsService _spawnPointsService;
 
-        [Inject]
-        private void Construct
+        public PlayerNetworkService
         (
-            ICustomPropertiesService customPropertiesService
+            ISpawnPointsService spawnPointsService
         )
         {
-            _customPropertiesService = customPropertiesService;
+            _spawnPointsService = spawnPointsService;
         }
-        
-        private void Start()
-        {
-            _playerSpawner = new PlayerSpawner();
-        }
+
 
         public void SpawnOurPlayer()
         {
-            _playerSpawner.SpawnPlayer();
+            SpawnPlayer();
         }
-    }
-    
-    public class PlayerSpawner
-    {
 
-        public void SpawnPlayer()
+        private void SpawnPlayer()
         {
-            PhotonNetwork.Instantiate("TeamPlayers\\" + Enumerators.TeamRole.MyPlayer, Vector3.zero, Quaternion.identity);
+            PhotonNetwork.Instantiate("TeamPlayers\\" + Enumerators.TeamRole.MyPlayer,
+                _spawnPointsService.GetSpawnPoint(PhotonNetwork.PlayerList.Length,
+                    PhotonNetwork.LocalPlayer.ActorNumber - 1), Quaternion.identity);
         }
     }
-
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
@@ -7,7 +6,6 @@ using Services.PunNetwork.Impls;
 using Services.SceneLoading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using Utils;
 using Zenject;
 
@@ -17,36 +15,28 @@ namespace Services.PunNetwork
     {
         private ISceneLoadingService _sceneLoadingService;
         private IPlayerNetworkService _playerNetworkService;
+        private ILoadBalancingClient _loadBalancingClient;
         private ICustomPropertiesService _customPropertiesService;
-        
-        [SerializeField] private Vector3[] _spawnPoints;
 
-        private PlayerSpawner _playerSpawner;
-        private LoadBalancingClient _lbc;
 
-    
         [Inject]
         private void Construct
         (
             ISceneLoadingService sceneLoadingService,
             IPlayerNetworkService playerNetworkService,
+            ILoadBalancingClient loadBalancingClient,
             ICustomPropertiesService customPropertiesService
         )
         {
             _sceneLoadingService = sceneLoadingService;
             _playerNetworkService = playerNetworkService;
+            _loadBalancingClient = loadBalancingClient;
             _customPropertiesService = customPropertiesService;
         }
 
-        private void Awake()
+        private void Start()
         {
-            _lbc = new LoadBalancingClient();
-            // _lbc.AddCallbackTarget(_customPropertiesService);
-            // _lbc.AddCallbackTarget(_playerNetworkService);
-        }
-
-        void Start()
-        {
+            _loadBalancingClient.AddCallbackTarget(_customPropertiesService);
             if (!PhotonNetwork.IsConnected)
             {
                 SceneManager.LoadScene(SceneNames.Menu);
@@ -64,23 +54,12 @@ namespace Services.PunNetwork
             }
         }
 
-        void Update()
+        private void OnDestroy()
         {
-            // "back" button of phone equals "Escape". quit app if that's pressed
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                QuitApplication();
-            }            
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                PhotonNetwork.Instantiate("ClickObject", Vector3.zero, Quaternion.identity);
-            }
+            _loadBalancingClient.AddCallbackTarget(_customPropertiesService);
+
         }
 
-
-        public override void OnJoinedRoom()
-        {
-        }
 
         public override void OnPlayerEnteredRoom(Player other)
         {
@@ -121,8 +100,8 @@ namespace Services.PunNetwork
             PhotonNetwork.LocalPlayer.LeaveCurrentTeam();
             PhotonNetwork.LeaveRoom();
         }
-        
-        public void QuitApplication()
+
+        private void QuitApplication()
         {
             Application.Quit();
         }

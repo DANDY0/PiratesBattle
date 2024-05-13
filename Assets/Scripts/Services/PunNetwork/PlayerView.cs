@@ -11,7 +11,8 @@ namespace Services.PunNetwork
         
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
-            info.Sender.SetCustomProperties(new Hashtable { { Enumerators.PlayerProperty.IsSpawned.ToString(), true } });
+            if (info.Sender.IsLocal)
+                info.Sender.SetCustomProperties(new Hashtable { { Enumerators.PlayerProperty.IsSpawned.ToString(), true } });
         }
 
         public void SetTeamMarker(Enumerators.TeamRole role)

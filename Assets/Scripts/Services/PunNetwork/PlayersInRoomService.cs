@@ -12,7 +12,7 @@ namespace Services.PunNetwork
     {
         private List<PlayerView> _playerViews = new();
 
-        public void CheckIfAllSpawned()
+        public bool IsAllReady()
         {
             var isAllReady = true;
             foreach (var player in PhotonNetwork.PlayerList)
@@ -24,26 +24,28 @@ namespace Services.PunNetwork
                     break;
                 }
 
-            if (isAllReady)
+            return isAllReady;
+        }
+
+        public void OnAllSpawned()
+        {
+            var playerViews = Object.FindObjectsOfType<PlayerView>();
+            foreach (var playerView in playerViews)
             {
-                var playerViews = Object.FindObjectsOfType<PlayerView>();
-                foreach (var playerView in playerViews)
-                {
-                    _playerViews.Add(playerView);
-                    
-                    
-                    var player = playerView.GetComponent<PhotonView>().Owner;
+                _playerViews.Add(playerView);
 
-                    Enumerators.TeamRole teamRole;
-                    if (player.IsLocal)
-                        teamRole = Enumerators.TeamRole.MyPlayer;
-                    else
-                        teamRole = player.GetPhotonTeam().Code == PhotonNetwork.LocalPlayer.GetPhotonTeam().Code
-                            ? Enumerators.TeamRole.AllyPlayer
-                            : Enumerators.TeamRole.EnemyPlayer;
 
-                    playerView.SetTeamMarker(teamRole);
-                }
+                var player = playerView.GetComponent<PhotonView>().Owner;
+
+                Enumerators.TeamRole teamRole;
+                if (player.IsLocal)
+                    teamRole = Enumerators.TeamRole.MyPlayer;
+                else
+                    teamRole = player.GetPhotonTeam().Code == PhotonNetwork.LocalPlayer.GetPhotonTeam().Code
+                        ? Enumerators.TeamRole.AllyPlayer
+                        : Enumerators.TeamRole.EnemyPlayer;
+
+                playerView.SetTeamMarker(teamRole);
             }
         }
     }

@@ -1,3 +1,4 @@
+using Photon.Realtime;
 using Services.Data;
 using Services.Localization;
 using Services.Network;
@@ -19,6 +20,8 @@ namespace Installers.Project
 
         private void BindServices()
         {
+            var loadBalancingClient = new LoadBalancingClient();
+            Container.Bind<ILoadBalancingClient>().FromInstance(loadBalancingClient).AsSingle();
             Container.BindInterfacesTo<NetworkService>().AsSingle();
             Container.BindInterfacesTo<DataService>().AsSingle();
             Container.BindInterfacesTo<LocalizationService>().AsSingle();
