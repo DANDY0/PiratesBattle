@@ -1,5 +1,6 @@
 ﻿using System;
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using Services.PunNetwork.Impls;
 using Services.SpawnPoints;
 using UnityEngine;
@@ -29,8 +30,8 @@ namespace Services.PunNetwork
         private void SpawnPlayer()
         {
             PhotonNetwork.Instantiate("TeamPlayers\\" + Enumerators.TeamRole.MyPlayer,
-                _spawnPointsService.GetSpawnPoint(PhotonNetwork.PlayerList.Length,
-                    PhotonNetwork.LocalPlayer.ActorNumber - 1), Quaternion.identity);
+                _spawnPointsService.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1, 
+                    PhotonNetwork.LocalPlayer.GetPhotonTeam()), Quaternion.identity);
         }
     }
 }

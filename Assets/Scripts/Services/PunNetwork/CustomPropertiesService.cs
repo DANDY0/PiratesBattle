@@ -14,16 +14,7 @@ namespace Services.PunNetwork
     public class CustomPropertiesService : MonoBehaviourPunCallbacks, ICustomPropertiesService
     {
         private IPlayersInRoomService _playersInRoomService;
-        public event Action PlayersSpawnedEvent;
-
-        [Inject]
-        private void Construct
-        (
-            IPlayersInRoomService playersInRoomService
-        )
-        {
-            _playersInRoomService = playersInRoomService;
-        }
+        public event Action PlayerSpawnedEvent;
 
         private void Awake() => DontDestroyOnLoad(this);
 
@@ -43,7 +34,7 @@ namespace Services.PunNetwork
                 if (System.Enum.TryParse(entry.Key.ToString(), out PlayerProperty propKey))
                 {
                     object propValue = entry.Value;
-                    Debug.Log($"Property {propKey} was updated to {propValue}");
+                    Debug.Log($"OnPlayer {targetPlayer.ActorNumber}, Property {propKey} was updated to {propValue}");
                     HandlePropertyChange(propKey, propValue, targetPlayer);
                 }
             }
@@ -57,8 +48,8 @@ namespace Services.PunNetwork
                     Debug.Log($"Player:{player.ActorNumber}, PlayerNumber changed to {value}");
                     break;
                 case PlayerProperty.IsSpawned:
-                    if (_playersInRoomService.IsAllReady())
-                        _playersInRoomService.OnAllSpawned();
+                    Debug.Log($"Player spawned {player.ActorNumber} Key: {key}");
+                    PlayerSpawnedEvent?.Invoke();
                     break;
                 default:
                     Debug.LogWarning($"Unknown property changed: {key}");

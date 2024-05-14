@@ -3,6 +3,7 @@ using Databases;
 using Databases.Impls;
 using Helpers;
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using Services.PunNetwork;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -26,6 +27,11 @@ namespace Installers.Project
         [SerializeField] private AudioMixerProvider _audioMixerProvider;
         [SerializeField] private GameRestarter _gameRestarter;
 
+        [Header("Network")]
+        [SerializeField] private PhotonTeamsManager _photonTeamsManager;
+        [SerializeField] private CustomPropertiesService _customPropertiesService;
+
+
         public override void InstallBindings()
         {
             BindDatabases();
@@ -37,6 +43,8 @@ namespace Installers.Project
             Container.BindPrefab(_coroutineRunner);
             Container.BindPrefab(_audioMixerProvider);
             Container.BindPrefab(_gameRestarter);
+            Container.BindPrefab(_photonTeamsManager);
+            Container.BindPrefab(_customPropertiesService);
         }
 
         private void BindDatabases()

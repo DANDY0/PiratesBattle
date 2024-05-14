@@ -5,7 +5,7 @@ namespace Services.PunNetwork.Impls
 {
     public interface ICustomPropertiesService
     {
-        public event Action PlayersSpawnedEvent;
+        public event Action PlayerSpawnedEvent;
         public void SetPlayerProperty(Enumerators.PlayerProperty property, object value);
     }
 }

@@ -17,6 +17,7 @@ namespace Services.PunNetwork
 
         public void SetTeamMarker(Enumerators.TeamRole role)
         {
+            UnityEngine.Debug.Log($"{role}");
             _teamMarker.SetView(role);
         }
     }

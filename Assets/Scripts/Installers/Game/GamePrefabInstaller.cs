@@ -19,9 +19,8 @@ namespace Installers.Game
         [SerializeField] private MainView _mainView;
         [SerializeField] private GameMenuView _gameMenuView;
 
-        [Header("Prefabs")] 
+        [Header("Network")] 
         [SerializeField] private GameNetworkService _gameNetworkService;
-        [SerializeField] private CustomPropertiesService _customPropertiesService;
 
 
         public override void InstallBindings()
@@ -33,7 +32,6 @@ namespace Installers.Game
         private void BindPrefabs()
         {
             Container.BindPrefab(_gameNetworkService);
-            Container.BindPrefab(_customPropertiesService);
         }
         
         private void BindWindows()

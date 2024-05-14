@@ -20,11 +20,13 @@ MonoBehaviour:
   _settingsDatabase: {fileID: 11400000, guid: add01a33d1faa4d44bd140152c80a5e3, type: 2}
   _dataManagementDatabase: {fileID: 11400000, guid: bc15345275e9e4245a2d4ac71fb1c83d,
     type: 2}
-  _punNetworkService: {fileID: 2074970322684232785, guid: f89eb08488a269b48b1d17abda123244,
-    type: 3}
   _coroutineRunner: {fileID: 8174928821669084288, guid: cc722be62d36e8a4dbac8226fddf9561,
     type: 3}
   _audioMixerProvider: {fileID: 2236593753699079988, guid: 137266e2bdf7bbc489d52758a2a1a7e4,
     type: 3}
   _gameRestarter: {fileID: 6026580004360090486, guid: ef1ec35ba34b7a94b9c62d75fa3469ea,
+    type: 3}
+  _photonTeamsManager: {fileID: 6638683282978397697, guid: 8a6beebd0e712ba48af7f9a73cb2b420,
+    type: 3}
+  _customPropertiesService: {fileID: -3956072073805407548, guid: 45f46346b59331f439acb34487948839,
     type: 3}

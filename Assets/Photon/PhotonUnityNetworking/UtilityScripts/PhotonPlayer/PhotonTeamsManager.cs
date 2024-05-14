@@ -149,13 +149,13 @@ namespace Photon.Pun.UtilityScripts
 
         void IMatchmakingCallbacks.OnJoinedRoom()
         {
+            Init();
             this.UpdateTeams();
         }
 
         void IMatchmakingCallbacks.OnLeftRoom()
         {
             this.ClearTeams();
-            Destroy(gameObject);
         }
 
         void IInRoomCallbacks.OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
