@@ -7,7 +7,6 @@ namespace Helpers
     {
         private static string m_gameExecutablePath = string.Empty;
 
-        private void Awake() => DontDestroyOnLoad(gameObject);
 
         private void Start()
         {

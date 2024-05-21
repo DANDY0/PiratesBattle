@@ -1,16 +1,15 @@
 ﻿using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
-using Services.PunNetwork.Impls;
 using UnityEngine;
 using Utils;
 using Zenject;
 
-namespace Services.PunNetwork
+namespace PunNetwork.Services.Impls
 {
     public class MenuNetworkService : MonoBehaviourPunCallbacks, IMenuNetworkService
     {
-        private byte _maxPlayersPerRoom = 3;
+        private byte _maxPlayersPerRoom = 1;
         private string _gameVersion = "1";
         bool isConnecting;
         private IPhotonTeamsManager _photonTeamsManager;

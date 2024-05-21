@@ -4,7 +4,7 @@ using Databases.Impls;
 using Helpers;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
-using Services.PunNetwork;
+using PunNetwork.Services.Impls;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils.Extensions;
@@ -40,11 +40,11 @@ namespace Installers.Project
 
         private void BindPrefabs()  
         {
-            Container.BindPrefab(_coroutineRunner);
-            Container.BindPrefab(_audioMixerProvider);
-            Container.BindPrefab(_gameRestarter);
-            Container.BindPrefab(_photonTeamsManager);
-            Container.BindPrefab(_customPropertiesService);
+            Container.BindPrefab(_coroutineRunner, isDestroyOnLoad:true);
+            Container.BindPrefab(_audioMixerProvider, isDestroyOnLoad:true);
+            Container.BindPrefab(_gameRestarter, isDestroyOnLoad:true);
+            Container.BindPrefab(_photonTeamsManager, isDestroyOnLoad:true);
+            Container.BindPrefab(_customPropertiesService, isDestroyOnLoad:true);
         }
 
         private void BindDatabases()

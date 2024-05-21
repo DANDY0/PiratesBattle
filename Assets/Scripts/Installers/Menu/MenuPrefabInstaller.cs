@@ -1,6 +1,6 @@
 ﻿using Controllers;
 using Photon.Pun.UtilityScripts;
-using Services.PunNetwork;
+using PunNetwork.Services.Impls;
 using Services.Window;
 using UnityEngine;
 using UnityEngine.Serialization;

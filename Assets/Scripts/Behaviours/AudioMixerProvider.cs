@@ -18,8 +18,6 @@ namespace Behaviours
         public AudioMixerGroup AudioMixerEffects => _audioMixerGroups[EVolumeType.Effects];
         public AudioMixerGroup AudioMixerVideo => _audioMixerGroups[EVolumeType.Video];
         
-        private void Awake() => DontDestroyOnLoad(gameObject);
-
         private void OnEnable()
         {
             foreach (var audioMixerGroupVo in _audioMixerGroupVos)

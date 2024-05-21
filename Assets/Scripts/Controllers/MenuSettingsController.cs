@@ -1,8 +1,7 @@
 ﻿using Core.Abstracts;
 using Databases;
 using Enums;
-using Services.PunNetwork;
-using Services.PunNetwork.Impls;
+using PunNetwork.Services;
 using Services.SceneLoading;
 using Services.Window;
 using UniRx;

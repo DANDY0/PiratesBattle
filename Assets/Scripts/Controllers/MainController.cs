@@ -1,6 +1,4 @@
-﻿using System;
-using Core.Abstracts;
-using Services.Data;
+﻿using Core.Abstracts;
 using Signals;
 using UniRx;
 using Views;
@@ -10,16 +8,13 @@ namespace Controllers
 {
     public class MainController : Controller<MainView>, IInitializable
     {
-        private readonly IDataService _dataService;
         private readonly SignalBus _signalBus;
 
         public MainController
         (
-            IDataService dataService,
             SignalBus signalBus
         )
         {
-            _dataService = dataService;
             _signalBus = signalBus;
         }
 

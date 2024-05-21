@@ -1,6 +1,6 @@
-﻿using Services;
-using Services.PunNetwork;
-using Services.SpawnPoints;
+﻿using PunNetwork.Services;
+using PunNetwork.Services.Impls;
+using Services;
 using Signals;
 using UnityEngine;
 using Zenject;

@@ -4,6 +4,7 @@ using Core.Abstracts;
 using Core.Interfaces;
 using Models;
 using Services.Window;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -96,14 +97,19 @@ namespace Utils.Extensions
             where TConcrete : TFactory
             => container.Bind<TFactory>().To<TConcrete>().AsSingle();
 
-        public static void BindPrefab<TContent>(this DiContainer container, TContent prefab, Transform parent = null)
+        public static void BindPrefab<TContent>(this DiContainer container, TContent prefab, Transform parent = null, bool isDestroyOnLoad = false)
             where TContent : Object =>
             container.BindInterfacesTo<TContent>()
                 .FromComponentInNewPrefab(prefab)
 #if UNITY_EDITOR
                 .UnderTransform(parent)
 #endif
-                .AsSingle();
+                .AsSingle()
+                .OnInstantiated((_, o) =>
+                {
+                    if (isDestroyOnLoad)
+                        Object.DontDestroyOnLoad(o as MonoBehaviour);
+                });
 
         public static void BindPool<TItemContract, TPoolConcrete, TPoolContract>(this DiContainer container,
             TItemContract prefab, int size)

@@ -1,15 +1,17 @@
-﻿using System;
+﻿using System.Collections;
+using Controllers;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
-using Services.PunNetwork.Impls;
 using Services.SceneLoading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;
+using static Utils.Enumerators;
+using Utils.Extensions;
 using Zenject;
 
-namespace Services.PunNetwork
+namespace PunNetwork.Services.Impls
 {
     public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService
     {
@@ -17,6 +19,7 @@ namespace Services.PunNetwork
         private IPlayerNetworkService _playerNetworkService;
         private ILoadBalancingClient _loadBalancingClient;
         private ICustomPropertiesService _customPropertiesService;
+        private IPlayersInRoomService _playersInRoomService;
 
 
         [Inject]
@@ -25,21 +28,26 @@ namespace Services.PunNetwork
             ISceneLoadingService sceneLoadingService,
             IPlayerNetworkService playerNetworkService,
             ILoadBalancingClient loadBalancingClient,
-            ICustomPropertiesService customPropertiesService
+            ICustomPropertiesService customPropertiesService,
+            IPlayersInRoomService playersInRoomService
+            //GameMenuController gameMenuController
         )
         {
             _sceneLoadingService = sceneLoadingService;
             _playerNetworkService = playerNetworkService;
             _loadBalancingClient = loadBalancingClient;
             _customPropertiesService = customPropertiesService;
+            _playersInRoomService = playersInRoomService;
+            //_gameMenuController = gameMenuController;
         }
 
         private void Start()
         {
             _loadBalancingClient.AddCallbackTarget(_customPropertiesService);
+            _customPropertiesService.PlayerLivesChangedEvent += OnPlayerLivesChanged;
             if (!PhotonNetwork.IsConnected)
             {
-                SceneManager.LoadScene(SceneNames.Menu);
+                _sceneLoadingService.LoadScene(SceneNames.Menu);
                 return;
             }
 
@@ -57,7 +65,7 @@ namespace Services.PunNetwork
         private void OnDestroy()
         {
             _loadBalancingClient.AddCallbackTarget(_customPropertiesService);
-
+            _customPropertiesService.PlayerLivesChangedEvent += OnPlayerLivesChanged;
         }
 
 
@@ -80,6 +88,8 @@ namespace Services.PunNetwork
         {
             Debug.Log("OnPlayerLeftRoom() " + other.NickName); // seen when other disconnects
 
+            CheckEndOfGame();
+
             if (PhotonNetwork.IsMasterClient)
             {
                 Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}",
@@ -101,11 +111,49 @@ namespace Services.PunNetwork
             PhotonNetwork.LeaveRoom();
         }
 
-        private void QuitApplication()
+        private void OnPlayerLivesChanged()
         {
-            Application.Quit();
+            _playersInRoomService.UpdateHearts();
+            CheckEndOfGame();
         }
+
+        private void CheckEndOfGame()
+        {
+            if (!_playersInRoomService.IsAllEnemiesDestroyed()) 
+                return;
+
+            if (PhotonNetwork.IsMasterClient)
+                StopAllCoroutines();
+
+            var winner = "";
+            var score = -1;
+
+            foreach (var p in PhotonNetwork.PlayerList)
+            {
+                if (p.GetScore() <= score) continue;
+                winner = p.NickName;
+                score = p.GetScore();
+            }
+
+            StartCoroutine(EndOfGame(winner, score));
+        }
+        
+        private IEnumerator EndOfGame(string winner, int score)
+        {
+            var timer = 5.0f;
+
+            while (timer > 0.0f)
+            {
+                //_gameMenuController.SetWinnerInfo(winner, score, timer);
+
+                Debug.Log($"Player {winner} won with {score} points.\n\n\nReturning to login screen in {timer:n2} seconds.");
+                yield return new WaitForEndOfFrame();
+
+                timer -= Time.deltaTime;
+            }
+
+            PhotonNetwork.LeaveRoom();
+        }
+
     }
-
-
 }

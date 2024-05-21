@@ -1,13 +1,9 @@
-﻿using System;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Pun.UtilityScripts;
-using Services.PunNetwork.Impls;
-using Services.SpawnPoints;
 using UnityEngine;
 using Utils;
-using Zenject;
 
-namespace Services.PunNetwork
+namespace PunNetwork.Services.Impls
 {
     public class PlayerNetworkService : IPlayerNetworkService
     {
@@ -26,7 +22,7 @@ namespace Services.PunNetwork
         {
             SpawnPlayer();
         }
-
+        
         private void SpawnPlayer()
         {
             PhotonNetwork.Instantiate("TeamPlayers\\" + Enumerators.TeamRole.MyPlayer,

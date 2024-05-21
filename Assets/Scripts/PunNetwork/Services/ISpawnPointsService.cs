@@ -1,7 +1,7 @@
 using Photon.Pun.UtilityScripts;
 using UnityEngine;
 
-namespace Services.SpawnPoints
+namespace PunNetwork.Services
 {
     public interface ISpawnPointsService
     {

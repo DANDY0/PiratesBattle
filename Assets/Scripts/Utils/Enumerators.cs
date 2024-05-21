@@ -13,7 +13,7 @@
         {
             PlayerNumber,
             IsSpawned,
-            IsReady
+            PlayerLives
         }
     }
 }

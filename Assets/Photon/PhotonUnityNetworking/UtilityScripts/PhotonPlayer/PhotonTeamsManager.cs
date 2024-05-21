@@ -107,7 +107,6 @@ namespace Photon.Pun.UtilityScripts
         private void Awake()
         {
             Init();
-            DontDestroyOnLoad(this);
             /*if (instance == null || ReferenceEquals(this, instance))
             {
                 this.Init();

@@ -123,7 +123,7 @@ namespace Photon.Pun.Demo.Asteroids
         {
             yield return new WaitForSeconds(AsteroidsGame.PLAYER_RESPAWN_TIME);
 
-            photonView.RPC("RespawnSpaceship", RpcTarget.AllViaServer);
+            photonView.RPC(nameof(RespawnSpaceship), RpcTarget.AllViaServer);
         }
 
         #endregion
@@ -153,7 +153,7 @@ namespace Photon.Pun.Demo.Asteroids
 
                     if (((int) lives) > 1)
                     {
-                        StartCoroutine("WaitForRespawn");
+                        StartCoroutine(nameof(WaitForRespawn));
                     }
                 }
             }

@@ -1,9 +1,8 @@
-﻿using System;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using UnityEngine;
 
-namespace Services.SpawnPoints
+namespace PunNetwork.Services.Impls
 {
     public class SpawnPointsService : MonoBehaviour, ISpawnPointsService
     {
