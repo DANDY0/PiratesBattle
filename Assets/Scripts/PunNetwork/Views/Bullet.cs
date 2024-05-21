@@ -14,6 +14,7 @@ namespace PunNetwork.Views
         private bool _isDestroyed;
 
         private PhotonView _photonView;
+        private float _bulletSpeed = 10f;
 
         #region UNITY
 
@@ -22,19 +23,21 @@ namespace PunNetwork.Views
             _photonView = GetComponent<PhotonView>();
         }
 
-        private void Start() => DOVirtual.DelayedCall(3, DestroyBullet);
+        private void Start()
+        {
+            DOVirtual.DelayedCall(3, DestroyBullet);
+        }
 
-        private void OnCollisionEnter(Collision collision)
+        public void OnTriggerEnter(Collider collider)
         {
             if (_isDestroyed)
                 return;
 
-            var o = collision.gameObject;
-            var playerView = o.GetComponent<PlayerView>();
+            var playerView = collider.GetComponent<PlayerView>();
     
             if (_photonView.IsMine && playerView != null && playerView.TeamRole == Enumerators.TeamRole.EnemyPlayer)
             {
-                o.GetComponent<PhotonView>().RPC(nameof(PlayerView.RegisterHit), RpcTarget.All);
+                collider.GetComponent<PhotonView>().RPC(nameof(PlayerView.RegisterHit), RpcTarget.All);
                 _photonView.Owner.AddScore(1);
                 DestroyBullet();
             }
@@ -46,7 +49,7 @@ namespace PunNetwork.Views
             transform.forward = originalDirection;
 
             var rb = GetComponent<Rigidbody>();
-            rb.velocity = originalDirection * 200.0f;
+            rb.velocity = originalDirection * _bulletSpeed;
             rb.position += rb.velocity * lag;
         }
 

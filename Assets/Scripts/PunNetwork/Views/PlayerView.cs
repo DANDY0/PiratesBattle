@@ -3,6 +3,7 @@ using Photon.Pun.Demo.Asteroids;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.Services;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utils;
 using Utils.Extensions;
@@ -19,10 +20,9 @@ namespace PunNetwork.Views
     {
         public TeamRole TeamRole { get; private set; }
 
-        [SerializeField] private float _rotationSpeed = 90.0f;
+        [SerializeField] private float _rotationSpeed = 10.0f;
         [SerializeField] private MeshRenderer _teamMarker;
-        [SerializeField] private float _movementSpeed = 2.0f;
-        [SerializeField] private float _maxSpeed = 0.2f;
+        [SerializeField] private float _speed = 10f;
         [SerializeField] private ParticleSystem _destruction;
         [SerializeField] private GameObject _bulletPrefab;
         [SerializeField] private Image[] _heartImages;
@@ -32,6 +32,7 @@ namespace PunNetwork.Views
 
         private Rigidbody _rigidbody;
         private Collider _collider;
+        private CharacterController _characterController;
         private float _rotation;
         private float _acceleration;
         private float _shootingTimer;
@@ -46,17 +47,42 @@ namespace PunNetwork.Views
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<Collider>();
             _renderers = GetComponentsInChildren<MeshRenderer>();
+            _characterController = GetComponent<CharacterController>();
         }
-
-        public void Start()
+        
+        void Update()
         {
-            foreach (var r in GetComponentsInChildren<Renderer>())
-            {
-                r.material.color = AsteroidsGame.GetColor(PhotonView.Owner.GetPlayerNumber());
-            }
-        }
+            if (!PhotonView.AmOwner || !_controllable || !IsSpawnedOnServer)
+                return;
 
-        public void Update()
+            if (PhotonView.CreatorActorNr != PhotonNetwork.LocalPlayer.ActorNumber)
+                return;
+
+            Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+            if (move.magnitude > 1)
+                move.Normalize();
+
+            move *= _speed;
+
+            _characterController.Move(move * Time.deltaTime);
+
+            if (move != Vector3.zero)
+            {
+                Quaternion newRotation = Quaternion.LookRotation(move);
+                transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * _rotationSpeed);
+            }
+
+            if (Input.GetButton("Jump") && _shootingTimer <= 0.0f)
+            {
+                _shootingTimer = 0.2f;
+                PhotonView.RPC(nameof(Fire), RpcTarget.AllViaServer, transform.position, transform.rotation);
+            }
+
+            if (_shootingTimer > 0.0f)
+                _shootingTimer -= Time.deltaTime;
+        }        
+        /*public void Update()
         {
             if (!PhotonView.AmOwner || !_controllable || !IsSpawnedOnServer)
                 return;
@@ -72,7 +98,7 @@ namespace PunNetwork.Views
             {
                 _shootingTimer = 0.2f;
 
-                PhotonView.RPC(nameof(Fire), RpcTarget.AllViaServer, _rigidbody.position, _rigidbody.rotation);
+                PhotonView.RPC(nameof(Fire), RpcTarget.AllViaServer, gameObject.transform.position, gameObject.transform.rotation);
             }
 
             if (_shootingTimer > 0.0f)
@@ -84,17 +110,23 @@ namespace PunNetwork.Views
             if (!PhotonView.IsMine || !_controllable || !IsSpawnedOnServer)
                 return;
 
-            var rot = _rigidbody.rotation * Quaternion.Euler(0, _rotation * _rotationSpeed * Time.fixedDeltaTime, 0);
-            _rigidbody.MoveRotation(rot);
+            float moveHorizontal = Input.GetAxis("Horizontal");
+            float moveVertical = Input.GetAxis("Vertical");
 
-            var force = rot * Vector3.forward * _acceleration * 1000.0f * _movementSpeed * Time.fixedDeltaTime;
-            _rigidbody.AddForce(force);
+            Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
-            if (_rigidbody.velocity.magnitude > _maxSpeed * 1000.0f)
-                _rigidbody.velocity = _rigidbody.velocity.normalized * _maxSpeed * 1000.0f;
+            if (movement.magnitude > 1)
+                movement.Normalize();
 
-            //CheckExitScreen();
+            _rigidbody.velocity = movement * _maxSpeed * 100.0f;
+
+            if (_rigidbody.velocity.magnitude > _maxSpeed * 100.0f)
+                _rigidbody.velocity = _rigidbody.velocity.normalized * _maxSpeed * 100.0f;
+
+            if (movement != Vector3.zero)
+                _rigidbody.rotation = Quaternion.Slerp(_rigidbody.rotation, Quaternion.LookRotation(-movement), Time.fixedDeltaTime * _rotationSpeed);
         }
+        */
 
         #endregion
 
