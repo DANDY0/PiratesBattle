@@ -24,7 +24,6 @@ namespace PunNetwork.Views
         [SerializeField] private MeshRenderer _teamMarker;
         [SerializeField] private float _speed = 10f;
         [SerializeField] private ParticleSystem _destruction;
-        [SerializeField] private GameObject _bulletPrefab;
         [SerializeField] private Image[] _heartImages;
 
         public PhotonView PhotonView { get; private set; }
@@ -38,6 +37,8 @@ namespace PunNetwork.Views
         private float _shootingTimer;
         private bool _controllable = true;
         private MeshRenderer[] _renderers;
+
+        private string _bulletPath = "TeamPlayers/Bullet";
 
         #region UNITY
 
@@ -76,7 +77,18 @@ namespace PunNetwork.Views
             if (Input.GetButton("Jump") && _shootingTimer <= 0.0f)
             {
                 _shootingTimer = 0.2f;
-                PhotonView.RPC(nameof(Fire), RpcTarget.AllViaServer, transform.position, transform.rotation);
+
+                if (PhotonView.IsMine)
+                {
+                    var bullet =
+                        /** Use this if you want to fire one bullet at a time **/
+                        PhotonNetwork.Instantiate(_bulletPath, transform.position, transform.rotation);
+                    // Debug.Log("pos:" + bullet.transform.position);
+                    /*bullet.GetComponent<Bullet>()
+                        .InitializeBullet(transform.rotation * Vector3.forward);*/
+                }
+                
+                // PhotonView.RPC(nameof(Fire), RpcTarget.AllViaServer, transform.position, transform.rotation);
             }
 
             if (_shootingTimer > 0.0f)
@@ -174,11 +186,12 @@ namespace PunNetwork.Views
         {
             var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
 
-            var bullet =
-                /** Use this if you want to fire one bullet at a time **/
-                Instantiate(_bulletPrefab, position, Quaternion.identity);
+            /*var bullet =
+                /** Use this if you want to fire one bullet at a time *#1#
+                PhotonNetwork.Instantiate(_bulletPath, position, Quaternion.identity);
+            
             bullet.GetComponent<Bullet>()
-                .InitializeBullet(rotation * Vector3.forward, Mathf.Abs(lag));
+                .InitializeBullet(rotation * Vector3.forward, Mathf.Abs(lag));*/
 
 
             /** Use this if you want to fire two bullets at once **/

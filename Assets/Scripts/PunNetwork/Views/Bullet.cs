@@ -1,4 +1,5 @@
-﻿    using DG.Tweening;
+﻿    using System;
+    using DG.Tweening;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace PunNetwork.Views
         private bool _isDestroyed;
 
         private PhotonView _photonView;
+        private Rigidbody _rb;
         private float _bulletSpeed = 10f;
 
         #region UNITY
@@ -21,11 +23,18 @@ namespace PunNetwork.Views
         private void Awake()
         {
             _photonView = GetComponent<PhotonView>();
+            _rb = GetComponent<Rigidbody>();
         }
 
         private void Start()
         {
-            DOVirtual.DelayedCall(3, DestroyBullet);
+            // DOVirtual.DelayedCall(3, DestroyBullet);
+        }
+
+        private void FixedUpdate()
+        {
+            // transform.Translate(Vector3.forward * 0.1f);
+            _rb.velocity = transform.forward * _bulletSpeed;
         }
 
         public void OnTriggerEnter(Collider collider)
@@ -34,23 +43,29 @@ namespace PunNetwork.Views
                 return;
 
             var playerView = collider.GetComponent<PlayerView>();
-    
+
             if (_photonView.IsMine && playerView != null && playerView.TeamRole == Enumerators.TeamRole.EnemyPlayer)
             {
                 collider.GetComponent<PhotonView>().RPC(nameof(PlayerView.RegisterHit), RpcTarget.All);
                 _photonView.Owner.AddScore(1);
+                Debug.LogError($"Player{_photonView.Owner.ActorNumber} damaged Player{playerView.PhotonView.Owner.ActorNumber}");
                 DestroyBullet();
             }
+            if (_photonView.IsMine && collider.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+                DestroyBullet();
+            
         }
         #endregion
 
-        public void InitializeBullet(Vector3 originalDirection, float lag)
+        public void InitializeBullet(Vector3 originalDirection)
         {
-            transform.forward = originalDirection;
+            /*transform.forward = originalDirection;
 
             var rb = GetComponent<Rigidbody>();
             rb.velocity = originalDirection * _bulletSpeed;
-            rb.position += rb.velocity * lag;
+            rb.position += rb.velocity;
+            
+            Debug.Log("pos:" + rb.transform.position);*/
         }
 
         private void DestroyBullet()
