@@ -1,24 +1,23 @@
-﻿    using System;
-    using DG.Tweening;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using UnityEngine;
-using Utils;
+using Utils; 
 
 namespace PunNetwork.Views
 {
     [RequireComponent(typeof(Collider))]
     [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(Renderer))]
-    public class Bullet : MonoBehaviour
-    {
-        private bool _isDestroyed;
 
+    public class Bullet : MonoBehaviour, IPunObservable
+    {
         private PhotonView _photonView;
         private Rigidbody _rb;
+        private IBulletsPool _pool;
+    
         private float _bulletSpeed = 10f;
-
-        #region UNITY
+        private int _ownerID;
+        private bool _isDestroyed;
 
         private void Awake()
         {
@@ -26,22 +25,26 @@ namespace PunNetwork.Views
             _rb = GetComponent<Rigidbody>();
         }
 
-        private void Start()
+        public void Init(int ownerID, IBulletsPool pool)
         {
-            // DOVirtual.DelayedCall(3, DestroyBullet);
+            this._ownerID = ownerID;
+            _pool = pool;
+            _isDestroyed = false;
         }
 
         private void FixedUpdate()
         {
-            // transform.Translate(Vector3.forward * 0.1f);
+            if (!_photonView.IsMine)
+                return;
+        
             _rb.velocity = transform.forward * _bulletSpeed;
         }
 
-        public void OnTriggerEnter(Collider collider)
+        private void OnTriggerEnter(Collider collider)
         {
-            if (_isDestroyed)
+            if (_isDestroyed || !_photonView.IsMine)
                 return;
-
+        
             var playerView = collider.GetComponent<PlayerView>();
 
             if (_photonView.IsMine && playerView != null && playerView.TeamRole == Enumerators.TeamRole.EnemyPlayer)
@@ -49,33 +52,29 @@ namespace PunNetwork.Views
                 collider.GetComponent<PhotonView>().RPC(nameof(PlayerView.RegisterHit), RpcTarget.All);
                 _photonView.Owner.AddScore(1);
                 Debug.LogError($"Player{_photonView.Owner.ActorNumber} damaged Player{playerView.PhotonView.Owner.ActorNumber}");
-                DestroyBullet();
+                ReturnToPool();
             }
             if (_photonView.IsMine && collider.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
-                DestroyBullet();
-            
+                ReturnToPool();
         }
-        #endregion
 
-        public void InitializeBullet(Vector3 originalDirection)
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-            /*transform.forward = originalDirection;
-
-            var rb = GetComponent<Rigidbody>();
-            rb.velocity = originalDirection * _bulletSpeed;
-            rb.position += rb.velocity;
-            
-            Debug.Log("pos:" + rb.transform.position);*/
+            if (stream.IsWriting)
+            {
+                stream.SendNext(_ownerID);
+            }
+            else
+            {
+                _ownerID = (int)stream.ReceiveNext();
+            }
         }
 
-        private void DestroyBullet()
+        private void ReturnToPool()
         {
             _isDestroyed = true;
-            
-            GetComponent<Renderer>().enabled = false;
-            
-            if (_photonView.IsMine)
-                PhotonNetwork.Destroy(gameObject);
+            gameObject.SetActive(false);
+            _pool.ReturnBullet(this);
         }
     }
 }

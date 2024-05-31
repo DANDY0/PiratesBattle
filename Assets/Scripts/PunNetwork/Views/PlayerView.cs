@@ -39,7 +39,14 @@ namespace PunNetwork.Views
         private MeshRenderer[] _renderers;
 
         private string _bulletPath = "TeamPlayers/Bullet";
-
+        private IBulletsPool _bulletsPool;
+        
+        [Inject]
+        void Construct(IBulletsPool bulletsPool)
+        {
+            _bulletsPool = bulletsPool;
+        }
+        
         #region UNITY
 
         public void Awake()
@@ -80,9 +87,11 @@ namespace PunNetwork.Views
 
                 if (PhotonView.IsMine)
                 {
-                    var bullet =
+                    // var bullet =
                         /** Use this if you want to fire one bullet at a time **/
-                        PhotonNetwork.Instantiate(_bulletPath, transform.position, transform.rotation);
+                        // PhotonNetwork.Instantiate(_bulletPath, transform.position, transform.rotation);
+                    _bulletsPool.SpawnBullet(transform.position, transform.rotation, PhotonView.Owner.ActorNumber);
+                    
                     // Debug.Log("pos:" + bullet.transform.position);
                     /*bullet.GetComponent<Bullet>()
                         .InitializeBullet(transform.rotation * Vector3.forward);*/
