@@ -23,7 +23,6 @@ namespace Installers.Game
 
         [Header("Network")] 
         [SerializeField] private GameNetworkService _gameNetworkService;
-        [SerializeField] private BulletsPool _bulletPool;
 
 
         public override void InstallBindings()
@@ -35,7 +34,6 @@ namespace Installers.Game
         private void BindPrefabs()
         {
             Container.BindPrefab(_gameNetworkService);
-            Container.BindPrefab(_bulletPool);
         }
         
         private void BindWindows()

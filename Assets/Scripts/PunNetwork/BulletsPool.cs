@@ -1,5 +1,6 @@
 ﻿using PunNetwork.Views;
 using UnityEngine.Serialization;
+using Zenject;
 
 namespace PunNetwork
 {
@@ -7,63 +8,71 @@ namespace PunNetwork
     using Photon.Pun;
     using System.Collections.Generic;
 
-    public class BulletsPool : MonoBehaviourPunCallbacks, IBulletsPool
+    public class BulletsPool : IInitializable, IBulletsPool
     {
         public GameObject _bulletPrefab;
         public int _initialPoolSize = 20;
 
-        private List<Bullet> _bulletPool;
+        private Queue<Bullet> _bulletQueue;
         private int _poolIndex = 0;
+        private string _bulletPath = "TeamPlayers/Bullet";
 
-        void Start()
+        private Transform _parent;
+
+        public void Initialize()
         {
-            _bulletPool = new List<Bullet>();
-            for (int i = 0; i < _initialPoolSize; i++)
-            {
-                GameObject bulletObj = PhotonNetwork.InstantiateRoomObject(_bulletPrefab.name, Vector3.zero, Quaternion.identity);
-                Bullet bullet = bulletObj.GetComponent<Bullet>();
-                bulletObj.SetActive(false);
-                _bulletPool.Add(bullet);
-            }
+            _parent = new GameObject(nameof(BulletsPool)).transform;
+
+            _bulletQueue = new Queue<Bullet>();
+            if (!PhotonNetwork.IsMasterClient)
+                return;
+
+            for (var i = 0; i < _initialPoolSize; i++) 
+                CreateBullet();
         }
 
-        public Bullet GetBullet()
+        public Bullet SpawnBullet(Vector3 position, Quaternion rotation, int ownerID)
         {
-            for (int i = 0; i < _bulletPool.Count; i++)
-            {
-                _poolIndex = (_poolIndex + 1) % _bulletPool.Count;
-                if (!_bulletPool[_poolIndex].gameObject.activeInHierarchy)
-                {
-                    return _bulletPool[_poolIndex];
-                }
-            }
-
-            GameObject newBulletObj = PhotonNetwork.InstantiateRoomObject(_bulletPrefab.name, Vector3.zero, Quaternion.identity);
-            Bullet newBullet = newBulletObj.GetComponent<Bullet>();
-            newBulletObj.SetActive(false);
-            _bulletPool.Add(newBullet);
-            return newBullet;
-        }
-
-        public void SpawnBullet(Vector3 position, Quaternion rotation, int ownerID)
-        {
-            Bullet bullet = GetBullet();
+            var bullet = GetBullet();
+            
             bullet.transform.position = position;
             bullet.transform.rotation = rotation;
-            bullet.Init(ownerID, this);
-            bullet.gameObject.SetActive(true);
+            bullet.Init(ownerID);
+            bullet.SetActive(true);
+            
+            return bullet;
         }
 
         public void ReturnBullet(Bullet bullet)
         {
-            bullet.gameObject.SetActive(false);
+            bullet.SetActive(false);
+            _bulletQueue.Enqueue(bullet);
         }
+
+        public void Setup(Bullet bullet)
+        {
+            bullet.transform.SetParent(_parent);
+            bullet.SetActive(false);
+            _bulletQueue.Enqueue(bullet);
+        }
+
+        private Bullet CreateBullet()
+        {
+            var bulletObj = PhotonNetwork.InstantiateRoomObject(_bulletPath, Vector3.zero, Quaternion.identity);
+
+            var bullet = bulletObj.GetComponent<Bullet>();
+            Setup(bullet);
+            
+            return bullet;
+        }
+
+        private Bullet GetBullet() => _bulletQueue.TryDequeue(out var bullet) ? bullet : CreateBullet();
     }
 
     public interface IBulletsPool
     {
-        public Bullet GetBullet();
-        public void SpawnBullet(Vector3 position, Quaternion rotation, int ownerID);
+        public Bullet SpawnBullet(Vector3 position, Quaternion rotation, int ownerID);
         public void ReturnBullet(Bullet bullet);
+        void Setup(Bullet bullet);
     }
 }

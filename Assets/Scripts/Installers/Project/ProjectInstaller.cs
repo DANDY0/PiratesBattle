@@ -6,6 +6,7 @@ using Services.SceneLoading;
 using Services.Sound.Impls;
 using Services.Spreadsheets;
 using Services.Window;
+using Utils;
 using Zenject;
 
 namespace Installers.Project
@@ -14,6 +15,7 @@ namespace Installers.Project
     {
         public override void InstallBindings()
         {
+            DependencyInjector.Container = Container;
             SignalBusInstaller.Install(Container);
             BindServices();
         }

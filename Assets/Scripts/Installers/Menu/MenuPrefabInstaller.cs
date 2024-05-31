@@ -4,6 +4,7 @@ using PunNetwork.Services.Impls;
 using Services.Window;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Utils;
 using Utils.Extensions;
 using Views;
 using Zenject;
@@ -24,6 +25,7 @@ namespace Installers.Menu
         
         public override void InstallBindings()
         {
+            DependencyInjector.Container = Container;
             BindWindows();
             BindPrefabs();
         }

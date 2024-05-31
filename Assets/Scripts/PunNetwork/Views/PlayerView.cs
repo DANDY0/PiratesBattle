@@ -38,14 +38,7 @@ namespace PunNetwork.Views
         private bool _controllable = true;
         private MeshRenderer[] _renderers;
 
-        private string _bulletPath = "TeamPlayers/Bullet";
         private IBulletsPool _bulletsPool;
-        
-        [Inject]
-        void Construct(IBulletsPool bulletsPool)
-        {
-            _bulletsPool = bulletsPool;
-        }
         
         #region UNITY
 
@@ -56,6 +49,9 @@ namespace PunNetwork.Views
             _collider = GetComponent<Collider>();
             _renderers = GetComponentsInChildren<MeshRenderer>();
             _characterController = GetComponent<CharacterController>();
+            
+            
+            _bulletsPool = DependencyInjector.Container.Resolve<IBulletsPool>();
         }
         
         void Update()
@@ -103,51 +99,6 @@ namespace PunNetwork.Views
             if (_shootingTimer > 0.0f)
                 _shootingTimer -= Time.deltaTime;
         }        
-        /*public void Update()
-        {
-            if (!PhotonView.AmOwner || !_controllable || !IsSpawnedOnServer)
-                return;
-
-            // we don't want the master client to apply input to remote ships while the remote player is inactive
-            if (PhotonView.CreatorActorNr != PhotonNetwork.LocalPlayer.ActorNumber)
-                return;
-
-            _rotation = Input.GetAxis("Horizontal");
-            _acceleration = Input.GetAxis("Vertical");
-
-            if (Input.GetButton("Jump") && _shootingTimer <= 0.0)
-            {
-                _shootingTimer = 0.2f;
-
-                PhotonView.RPC(nameof(Fire), RpcTarget.AllViaServer, gameObject.transform.position, gameObject.transform.rotation);
-            }
-
-            if (_shootingTimer > 0.0f)
-                _shootingTimer -= Time.deltaTime;
-        }
-
-        public void FixedUpdate()
-        {
-            if (!PhotonView.IsMine || !_controllable || !IsSpawnedOnServer)
-                return;
-
-            float moveHorizontal = Input.GetAxis("Horizontal");
-            float moveVertical = Input.GetAxis("Vertical");
-
-            Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
-            if (movement.magnitude > 1)
-                movement.Normalize();
-
-            _rigidbody.velocity = movement * _maxSpeed * 100.0f;
-
-            if (_rigidbody.velocity.magnitude > _maxSpeed * 100.0f)
-                _rigidbody.velocity = _rigidbody.velocity.normalized * _maxSpeed * 100.0f;
-
-            if (movement != Vector3.zero)
-                _rigidbody.rotation = Quaternion.Slerp(_rigidbody.rotation, Quaternion.LookRotation(-movement), Time.fixedDeltaTime * _rotationSpeed);
-        }
-        */
 
         #endregion
 

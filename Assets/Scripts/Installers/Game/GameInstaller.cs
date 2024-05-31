@@ -1,8 +1,10 @@
-﻿using PunNetwork.Services;
+﻿using PunNetwork;
+using PunNetwork.Services;
 using PunNetwork.Services.Impls;
 using Services;
 using Signals;
 using UnityEngine;
+using Utils;
 using Zenject;
 
 namespace Installers.Game
@@ -13,6 +15,7 @@ namespace Installers.Game
         
         public override void InstallBindings()
         {
+            DependencyInjector.Container = Container;
             BindSignals();
             BindServices();
         }
@@ -28,6 +31,10 @@ namespace Installers.Game
             Container.BindInterfacesTo<GameStarter>().AsSingle();
             Container.BindInterfacesTo<PlayersInRoomService>().AsSingle();
             Container.BindInterfacesTo<PlayerNetworkService>().AsSingle();
+            
+
+
+            Container.BindInterfacesTo<BulletsPool>().AsSingle();
         }
     }
 }

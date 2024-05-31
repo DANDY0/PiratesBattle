@@ -3,6 +3,7 @@ using Controllers;
 using Services.Window;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 using Utils.Extensions;
 using Views;
 using Zenject;
@@ -20,6 +21,7 @@ namespace Installers.Initial
         
         public override void InstallBindings()
         {
+            DependencyInjector.Container = Container;
             BindWindows();
         }
 

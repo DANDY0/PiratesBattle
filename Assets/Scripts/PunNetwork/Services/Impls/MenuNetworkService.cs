@@ -9,7 +9,7 @@ namespace PunNetwork.Services.Impls
 {
     public class MenuNetworkService : MonoBehaviourPunCallbacks, IMenuNetworkService
     {
-        private byte _maxPlayersPerRoom = 2;
+        private byte _maxPlayersPerRoom = 1;
         private string _gameVersion = "1";
         bool isConnecting;
         private IPhotonTeamsManager _photonTeamsManager;
