@@ -42,6 +42,8 @@ MonoBehaviour:
   - RegisterHit
   - DestroyPlayer
   - RPCSetActive
+  - RPCDeactivate
+  - RPCFire
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

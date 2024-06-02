@@ -9,7 +9,7 @@ namespace PunNetwork.Services.Impls
 {
     public class MenuNetworkService : MonoBehaviourPunCallbacks, IMenuNetworkService
     {
-        private byte _maxPlayersPerRoom = 1;
+        private byte MaxPlayersPerRoom { get; set; }
         private string _gameVersion = "1";
         bool isConnecting;
         private IPhotonTeamsManager _photonTeamsManager;
@@ -49,6 +49,8 @@ namespace PunNetwork.Services.Impls
             _photonTeamsManager.PlayerJoinedTeam -= PlayerJoinedTeam;
             _photonTeamsManager.PlayerLeftTeam -= PlayerLeftTeam;
         }
+
+        public void SetMaxPlayers(byte count) => MaxPlayersPerRoom = count;
 
         public void Connect()
         {
@@ -99,7 +101,7 @@ namespace PunNetwork.Services.Impls
             Debug.Log("Create a new Room");
 
             // #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
-            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = _maxPlayersPerRoom});
+            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = MaxPlayersPerRoom});
         }
 
         public override void OnDisconnected(DisconnectCause cause)
@@ -116,7 +118,7 @@ namespace PunNetwork.Services.Impls
 
         private void PlayerJoinedTeam(Player player, PhotonTeam team)
         {
-            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == _maxPlayersPerRoom)
+            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == MaxPlayersPerRoom)
             {
                 Debug.Log("We load the Game scene");
                 PhotonNetwork.LoadLevel(SceneNames.Game);

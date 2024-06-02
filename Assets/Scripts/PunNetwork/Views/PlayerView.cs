@@ -50,7 +50,6 @@ namespace PunNetwork.Views
             _renderers = GetComponentsInChildren<MeshRenderer>();
             _characterController = GetComponent<CharacterController>();
             
-            
             _bulletsPool = DependencyInjector.Container.Resolve<IBulletsPool>();
         }
         
@@ -77,23 +76,13 @@ namespace PunNetwork.Views
                 transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * _rotationSpeed);
             }
 
-            if (Input.GetButton("Jump") && _shootingTimer <= 0.0f)
+            if ((Input.GetButton("Jump") || Input.GetMouseButtonDown(1)) && _shootingTimer <= 0.0f)
             {
                 _shootingTimer = 0.2f;
 
-                if (PhotonView.IsMine)
-                {
-                    // var bullet =
-                        /** Use this if you want to fire one bullet at a time **/
-                        // PhotonNetwork.Instantiate(_bulletPath, transform.position, transform.rotation);
-                    _bulletsPool.SpawnBullet(transform.position, transform.rotation, PhotonView.Owner.ActorNumber);
-                    
-                    // Debug.Log("pos:" + bullet.transform.position);
-                    /*bullet.GetComponent<Bullet>()
-                        .InitializeBullet(transform.rotation * Vector3.forward);*/
-                }
+                if (PhotonView.IsMine) 
+                    _bulletsPool.SpawnBullet(transform.position, transform.rotation);
                 
-                // PhotonView.RPC(nameof(Fire), RpcTarget.AllViaServer, transform.position, transform.rotation);
             }
 
             if (_shootingTimer > 0.0f)
@@ -136,35 +125,6 @@ namespace PunNetwork.Views
             _controllable = false;
 
             _destruction.Play();
-            
-            /*PhotonNetwork.LocalPlayer.LeaveCurrentTeam();
-            PhotonNetwork.LeaveRoom();*/
-        }
-
-        [PunRPC]
-        public void Fire(Vector3 position, Quaternion rotation, PhotonMessageInfo info)
-        {
-            var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
-
-            /*var bullet =
-                /** Use this if you want to fire one bullet at a time *#1#
-                PhotonNetwork.Instantiate(_bulletPath, position, Quaternion.identity);
-            
-            bullet.GetComponent<Bullet>()
-                .InitializeBullet(rotation * Vector3.forward, Mathf.Abs(lag));*/
-
-
-            /** Use this if you want to fire two bullets at once **/
-            //Vector3 baseX = rotation * Vector3.right;
-            //Vector3 baseZ = rotation * Vector3.forward;
-
-            //Vector3 offsetLeft = -1.5f * baseX - 0.5f * baseZ;
-            //Vector3 offsetRight = 1.5f * baseX - 0.5f * baseZ;
-
-            //bullet = Instantiate(BulletPrefab, rigidbody.position + offsetLeft, Quaternion.identity) as GameObject;
-            //bullet.GetComponent<Bullet>().InitializeBullet(photonView.Owner, baseZ, Mathf.Abs(lag));
-            //bullet = Instantiate(BulletPrefab, rigidbody.position + offsetRight, Quaternion.identity) as GameObject;
-            //bullet.GetComponent<Bullet>().InitializeBullet(photonView.Owner, baseZ, Mathf.Abs(lag));
         }
 
         #endregion
