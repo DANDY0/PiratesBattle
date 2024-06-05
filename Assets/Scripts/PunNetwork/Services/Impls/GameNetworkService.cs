@@ -1,50 +1,59 @@
-﻿using System.Collections;
-using Controllers;
+﻿using System;
+using System.Collections;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using Services.SceneLoading;
+using States;
+using States.Core;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Utils;
 using static Utils.Enumerators;
-using Utils.Extensions;
 using Zenject;
 
 namespace PunNetwork.Services.Impls
 {
-    public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService
+    public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService, IInitializable, IDisposable
     {
         private ISceneLoadingService _sceneLoadingService;
-        private IPlayerNetworkService _playerNetworkService;
-        private ILoadBalancingClient _loadBalancingClient;
         private ICustomPropertiesService _customPropertiesService;
         private IPlayersInRoomService _playersInRoomService;
+        private ISpawnPointsService _spawnPointsService;
+        private IGameStateMachine _gameStateMachine;
 
 
         [Inject]
         private void Construct
         (
             ISceneLoadingService sceneLoadingService,
-            IPlayerNetworkService playerNetworkService,
-            ILoadBalancingClient loadBalancingClient,
             ICustomPropertiesService customPropertiesService,
-            IPlayersInRoomService playersInRoomService
-            //GameMenuController gameMenuController
+            IPlayersInRoomService playersInRoomService,
+            ISpawnPointsService spawnPointsService,
+            IGameStateMachine stateMachine
         )
         {
             _sceneLoadingService = sceneLoadingService;
-            _playerNetworkService = playerNetworkService;
-            _loadBalancingClient = loadBalancingClient;
             _customPropertiesService = customPropertiesService;
             _playersInRoomService = playersInRoomService;
-            //_gameMenuController = gameMenuController;
+            _spawnPointsService = spawnPointsService;
+            _gameStateMachine = stateMachine;
         }
 
-        private void Start()
+        public void Initialize()
         {
-            _loadBalancingClient.AddCallbackTarget(_customPropertiesService);
             _customPropertiesService.PlayerLivesChangedEvent += OnPlayerLivesChanged;
+            PhotonNetwork.NetworkingClient.EventReceived += OnEventReceived;
+        }
+        
+        public void Dispose()
+        {
+            _customPropertiesService.PlayerLivesChangedEvent -= OnPlayerLivesChanged;
+            PhotonNetwork.NetworkingClient.EventReceived -= OnEventReceived;
+        }
+
+        public void Setup()
+        {
             if (!PhotonNetwork.IsConnected)
             {
                 _sceneLoadingService.LoadScene(SceneNames.Menu);
@@ -54,20 +63,13 @@ namespace PunNetwork.Services.Impls
             if (PhotonNetwork.InRoom)
             {
                 Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
-                _playerNetworkService.SpawnOurPlayer();
+                SpawnPlayer();
             }
             else
             {
                 Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
             }
         }
-
-        private void OnDestroy()
-        {
-            _loadBalancingClient.AddCallbackTarget(_customPropertiesService);
-            _customPropertiesService.PlayerLivesChangedEvent += OnPlayerLivesChanged;
-        }
-
 
         public override void OnPlayerEnteredRoom(Player other)
         {
@@ -92,7 +94,7 @@ namespace PunNetwork.Services.Impls
 
             if (PhotonNetwork.IsMasterClient)
             {
-                Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}",
+                Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}",
                     PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
             }
         }
@@ -100,21 +102,29 @@ namespace PunNetwork.Services.Impls
         /// <summary>
         /// Called when the local player left the room. We need to load the launcher scene.
         /// </summary>
-        public override void OnLeftRoom()
-        {
-            _sceneLoadingService.LoadScene(SceneNames.Menu);
-        }
 
         public void LeaveGameplay()
         {
-            PhotonNetwork.LocalPlayer.LeaveCurrentTeam();
-            PhotonNetwork.LeaveRoom();
+            _gameStateMachine.Enter<GameResultsState>();
         }
-
+        
+        private void OnEventReceived(EventData photonEvent)
+        {
+            if (photonEvent.Code == GameEventCodes.StartMatchEventCode) 
+                _gameStateMachine.Enter<GameplayState>();
+        }
+        
         private void OnPlayerLivesChanged()
         {
             _playersInRoomService.UpdateHearts();
             CheckEndOfGame();
+        }
+
+        private void SpawnPlayer()
+        {
+            PhotonNetwork.Instantiate("TeamPlayers\\" + TeamRole.MyPlayer,
+                _spawnPointsService.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1, 
+                    PhotonNetwork.LocalPlayer.GetPhotonTeam()), Quaternion.identity);
         }
 
         private void CheckEndOfGame()
@@ -137,7 +147,7 @@ namespace PunNetwork.Services.Impls
 
             StartCoroutine(EndOfGame(winner, score));
         }
-        
+
         private IEnumerator EndOfGame(string winner, int score)
         {
             var timer = 5.0f;
@@ -154,6 +164,5 @@ namespace PunNetwork.Services.Impls
 
             PhotonNetwork.LeaveRoom();
         }
-
     }
 }

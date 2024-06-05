@@ -3,6 +3,7 @@ using PunNetwork.Services;
 using PunNetwork.Services.Impls;
 using Services;
 using Signals;
+using States.Core;
 using UnityEngine;
 using Utils;
 using Zenject;
@@ -16,6 +17,7 @@ namespace Installers.Game
         public override void InstallBindings()
         {
             DependencyInjector.Container = Container;
+            ConfigureGameStateMachine();
             BindSignals();
             BindServices();
         }
@@ -27,14 +29,19 @@ namespace Installers.Game
         
         private void BindServices()
         {
+            Container.BindInterfacesTo<GameEntryPoint>().AsSingle();
             Container.Bind<ISpawnPointsService>().FromInstance(_spawnPointsService).AsSingle();
-            Container.BindInterfacesTo<GameStarter>().AsSingle();
             Container.BindInterfacesTo<PlayersInRoomService>().AsSingle();
-            Container.BindInterfacesTo<PlayerNetworkService>().AsSingle();
             
 
 
             Container.BindInterfacesTo<BulletsPool>().AsSingle();
+        }
+        
+        private void ConfigureGameStateMachine()
+        {
+            var gameStateMachine = ProjectContext.Instance.Container.Resolve<IGameStateMachine>();
+            gameStateMachine.SetSceneContainer(Container);
         }
     }
 }

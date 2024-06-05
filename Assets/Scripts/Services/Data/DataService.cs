@@ -13,7 +13,7 @@ using Zenject;
 
 namespace Services.Data
 {
-    public class DataService : IInitializable, IDisposable, IDataService
+    public class DataService : IDisposable, IDataService
     {
         private readonly ISpreadsheetsService _spreadsheetsService;
         private readonly ISpreadsheetsSettingsDatabase _spreadsheetsSettingsDatabase;
@@ -37,8 +37,7 @@ namespace Services.Data
         private Dictionary<EGameDataType, string> _gameDataPathes;
 
         public bool DataIsLoaded { get; private set; }
-
-
+        
         public DataService
         (
             ISpreadsheetsService spreadsheetsService,
@@ -51,7 +50,7 @@ namespace Services.Data
             _dataManagementDatabase = dataManagementDatabase;
         }
 
-        public void Initialize()
+        public void StartLoading()
         {
             _gameDataPathes = new Dictionary<EGameDataType, string>
             {

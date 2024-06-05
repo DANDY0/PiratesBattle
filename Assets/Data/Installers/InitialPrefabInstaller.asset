@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49924188dc7d4b1d93edf5447f2284dc, type: 3}
   m_Name: InitialPrefabInstaller
   m_EditorClassIdentifier: 
-  _canvas: {fileID: 7639541237202281361, guid: fff7a856e9f9b8d428286d79be151039, type: 3}
-  _waitingDataView: {fileID: 9041528081280758947, guid: 5b866e6f12dd387439ac0aa54971688f, type: 3}
+  _initialNetworkService: {fileID: 8594885579003746676, guid: f1635c87ea3ac6042aa2b2933647fe00,
+    type: 3}

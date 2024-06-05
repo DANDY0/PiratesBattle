@@ -4,8 +4,9 @@
     {
         //Common
         MenuSettings = 0,
-        Main = 1,
-        WaitingData = 2,
-        GameMain = 3,
+        Loading = 2,
+        MatchInfo = 3,
+        PreviewMatchAnimation = 4,
+        MatchResults = 5
     }
 }

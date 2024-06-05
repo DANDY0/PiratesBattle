@@ -18,14 +18,13 @@ namespace Installers.Menu
         [SerializeField] private Canvas _canvas;
         
         [Header("Windows")]
-        [SerializeField] private MenuSettingsView _menuSettingsView;
+        [SerializeField] private MainMenuView _mainMenuView;
 
         [Header("Network")]
         [SerializeField] private MenuNetworkService _menuNetworkService;
         
         public override void InstallBindings()
         {
-            DependencyInjector.Container = Container;
             BindWindows();
             BindPrefabs();
         }
@@ -40,7 +39,7 @@ namespace Installers.Menu
             Container.Resolve<IWindowService>().ClearWindows();
             var parent = Instantiate(_canvas).transform;
             
-            Container.AddWindowToQueue<MenuSettingsController, MenuSettingsView>(_menuSettingsView, parent, 0);
+            Container.AddWindowToQueue<MainMenuController, MainMenuView>(_mainMenuView, parent, 0);
 
             
             Container.BindWindows();

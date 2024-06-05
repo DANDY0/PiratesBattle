@@ -3,5 +3,6 @@
     public interface IGameNetworkService
     {
         void LeaveGameplay();
+        void Setup();
     }
 }

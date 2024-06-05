@@ -322,7 +322,7 @@ namespace Photon.Realtime
     /// want to react to and put it in a switch-case.
     /// We try to provide demo to each platform where this api can be used, so lookout for those.
     /// </remarks>
-    public class LoadBalancingClient : IPhotonPeerListener, ILoadBalancingClient
+    public class LoadBalancingClient : IPhotonPeerListener, ILoadBalancingClient, IDisposable
     {
         /// <summary>
         /// The client uses a LoadBalancingPeer as API to communicate with the server.
@@ -862,6 +862,7 @@ namespace Photon.Realtime
         }
 
         public int NameServerPortInAppSettings;
+        private List<object> _extraTargetsList = new();
 
         /// <summary>
         /// Gets the NameServer Address (with prefix and port), based on the set protocol (this.LoadBalancingPeer.UsedProtocol).
@@ -3644,6 +3645,7 @@ namespace Photon.Realtime
         /// <param name="target">The object that registers to get callbacks from this client.</param>
         public void AddCallbackTarget(object target)
         {
+            _extraTargetsList.Add(target);
             this.callbackTargetChanges.Enqueue(new CallbackTargetChange(target, true));
         }
 
@@ -3663,6 +3665,7 @@ namespace Photon.Realtime
         /// <param name="target">The object that unregisters from getting callbacks.</param>
         public void RemoveCallbackTarget(object target)
         {
+            _extraTargetsList.Remove(target);
             this.callbackTargetChanges.Enqueue(new CallbackTargetChange(target, false));
         }
 
@@ -3740,6 +3743,13 @@ namespace Photon.Realtime
                     container.Remove(target);
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            foreach (var target in _extraTargetsList) 
+                RemoveCallbackTarget(target);
+            _extraTargetsList.Clear();
         }
     }
 

@@ -96,8 +96,7 @@ namespace PunNetwork.Views
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             if (info.Sender.IsLocal)
-                info.Sender.SetCustomProperties(new Hashtable
-                    { { PlayerProperty.IsSpawned.ToString(), true } });
+                info.Sender.SetCustomProperty(PlayerProperty.IsSpawned, true);
         }
 
         [PunRPC]

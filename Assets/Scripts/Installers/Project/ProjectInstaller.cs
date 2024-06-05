@@ -1,4 +1,5 @@
 using Photon.Realtime;
+using PunNetwork.Services.Impls;
 using Services.Data;
 using Services.Localization;
 using Services.Network;
@@ -6,6 +7,7 @@ using Services.SceneLoading;
 using Services.Sound.Impls;
 using Services.Spreadsheets;
 using Services.Window;
+using States.Core;
 using Utils;
 using Zenject;
 
@@ -30,7 +32,7 @@ namespace Installers.Project
             Container.BindInterfacesTo<SpreadsheetsService>().AsSingle();
             Container.BindInterfacesTo<WindowService>().AsSingle();
             Container.BindInterfacesTo<SceneLoadingService>().AsSingle();
-            
+            Container.BindInterfacesTo<GameStateMachine>().AsSingle();
             Container.BindInterfacesTo<AudioSourcePool>().AsSingle();
             Container.BindInterfacesTo<SoundService>().AsSingle();
         }

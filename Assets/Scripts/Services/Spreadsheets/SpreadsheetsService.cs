@@ -18,7 +18,7 @@ namespace Services.Spreadsheets
         private readonly ILocalizationDatabase _localizationDatabase;
         private readonly INetworkService _networkService;
         private readonly IEnumerable<ISpreadsheetDatabase> _spreadsheetDatabases;
-        private Dictionary<ESpreadsheetDataType, SpreadsheetInfo> _spreadsheetsInfo;
+        private Dictionary<ESpreadsheetDataType, SpreadsheetInfo> _spreadsheetsInfo = new();
 
         public SpreadsheetsService
         (

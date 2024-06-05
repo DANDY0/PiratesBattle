@@ -38,17 +38,16 @@ namespace Utils.Extensions
         }
 
         public static void AddWindowToQueue<T, TU>(this DiContainer container, Object viewPrefab, Transform parent,
-            int orderNumber, bool isFocusable = false)
-            where TU : IWindow
-            where T : IController
+            int orderNumber, bool isFocusable = false, bool isDontDestroyOnLoad = false)
+            where TU : IWindow where T : IController
         {
             container.BindInterfacesAndSelfTo<T>().AsSingle();
-            container.AddWindowToQueue<TU>(viewPrefab, parent, orderNumber, isFocusable: isFocusable);
+            container.AddWindowToQueue<TU>(viewPrefab, parent, orderNumber, isFocusable: isFocusable,
+                isDontDestroyOnLoad: isDontDestroyOnLoad);
         }
 
         public static void AddWindowToQueue<T>(this DiContainer container, Object viewPrefab, Transform parent,
-            int orderNumber, bool isFocusable = false)
-            where T : IWindow
+            int orderNumber, bool isFocusable = false, bool isDontDestroyOnLoad = false) where T : IWindow
         {
             WindowsCount++;
             var windowInfo = new WindowBindingInfoVo
@@ -57,7 +56,8 @@ namespace Utils.Extensions
                 ViewPrefab = viewPrefab,
                 Parent = parent,
                 OrderNumber = orderNumber,
-                IsFocusable = isFocusable
+                IsFocusable = isFocusable,
+                IsDontDestroyOnLoad = isDontDestroyOnLoad
             };
             WindowQueue.Enqueue(windowInfo);
         }
@@ -67,7 +67,7 @@ namespace Utils.Extensions
             while (WindowQueue.Count != 0)
             {
                 var windowBindingInfoVo = WindowQueue.Dequeue();
-    
+
                 var binding = container.BindInterfacesAndSelfTo(windowBindingInfoVo.Type)
                     .FromComponentInNewPrefab(windowBindingInfoVo.ViewPrefab)
                     .UnderTransform(windowBindingInfoVo.Parent)
@@ -79,17 +79,18 @@ namespace Utils.Extensions
                     index++;
                     var window = instance as Window;
                     if (window == null)
-                        throw new Exception($"[{nameof(BindExtensions)}] Cannot convert {windowBindingInfoVo.ViewPrefab} to window");
-                    
+                        throw new Exception(
+                            $"[{nameof(BindExtensions)}] Cannot convert {windowBindingInfoVo.ViewPrefab} to window");
+
                     window.gameObject.SetActive(false);
                     var windowService = container.Resolve<IWindowService>();
-                    windowService.RegisterWindow(window, windowBindingInfoVo.IsFocusable, windowBindingInfoVo.OrderNumber);
-                    
+                    windowService.RegisterWindow(window, windowBindingInfoVo.IsFocusable,
+                        windowBindingInfoVo.OrderNumber, windowBindingInfoVo.IsDontDestroyOnLoad);
+
                     if (index == WindowsCount)
                         container.Resolve<IWindowService>().SortBySiblingIndex();
                 });
             }
-            
         }
 
         public static void BindFactory<TFactory, TConcrete>(this DiContainer container)
@@ -97,7 +98,8 @@ namespace Utils.Extensions
             where TConcrete : TFactory
             => container.Bind<TFactory>().To<TConcrete>().AsSingle();
 
-        public static void BindPrefab<TContent>(this DiContainer container, TContent prefab, Transform parent = null, bool isDestroyOnLoad = false)
+        public static void BindPrefab<TContent>(this DiContainer container, TContent prefab, Transform parent = null,
+            bool isDestroyOnLoad = false)
             where TContent : Object =>
             container.BindInterfacesTo<TContent>()
                 .FromComponentInNewPrefab(prefab)

@@ -1,32 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.Views;
+using States;
+using States.Core;
 using UnityEngine;
-using Utils;
 using Utils.Extensions;
 using Zenject;
 using static Utils.Enumerators;
+using Object = UnityEngine.Object;
 
 namespace PunNetwork.Services.Impls
 {
-    public class PlayersInRoomService : IPlayersInRoomService, IInitializable
+    public class PlayersInRoomService : IPlayersInRoomService, IInitializable, IDisposable
     {
         private readonly ICustomPropertiesService _customPropertiesService;
+        private readonly IGameStateMachine _gameStateMachine;
+        private readonly IProjectNetworkService _projectNetworkService;
         private readonly List<PlayerView> _playerViews = new();
 
         public PlayersInRoomService
         (
-            ICustomPropertiesService customPropertiesService
+            ICustomPropertiesService customPropertiesService,
+            IGameStateMachine gameStateMachine,
+            IProjectNetworkService projectNetworkService
         )
         {
             _customPropertiesService = customPropertiesService;
+            _gameStateMachine = gameStateMachine;
+            _projectNetworkService = projectNetworkService;
         }
 
         public void Initialize()
         {
             _customPropertiesService.PlayerSpawnedEvent += PlayerSpawnedHandler;
+        }
+
+        public void Dispose()
+        {
+            _customPropertiesService.PlayerSpawnedEvent -= PlayerSpawnedHandler;
         }
 
         public bool IsAllReady()
@@ -79,19 +93,30 @@ namespace PunNetwork.Services.Impls
                 _playerViews.Add(playerView);
 
 
-                var player = playerView.PhotonView.Owner;
-
-                TeamRole teamRole;
-                if (player.IsLocal)
-                    teamRole = TeamRole.MyPlayer;
-                else
-                    teamRole = player.GetPhotonTeam().Code == PhotonNetwork.LocalPlayer.GetPhotonTeam().Code
-                        ? TeamRole.AllyPlayer
-                        : TeamRole.EnemyPlayer;
-
-                playerView.SetTeamRole(teamRole);
+                SetTeamRole(playerView);
                 playerView.IsSpawnedOnServer = true;
+
+
+                if (_projectNetworkService.IsGameStarted)
+                    _gameStateMachine.Enter<GameplayState>();
+                else
+                    _gameStateMachine.Enter<MatchPreviewState>();
             }
+        }
+
+        private static void SetTeamRole(PlayerView playerView)
+        {
+            var player = playerView.PhotonView.Owner;
+
+            TeamRole teamRole;
+            if (player.IsLocal)
+                teamRole = TeamRole.MyPlayer;
+            else
+                teamRole = player.GetPhotonTeam().Code == PhotonNetwork.LocalPlayer.GetPhotonTeam().Code
+                    ? TeamRole.AllyPlayer
+                    : TeamRole.EnemyPlayer;
+
+            playerView.SetTeamRole(teamRole);
         }
 
         private void PlayerSpawnedHandler()

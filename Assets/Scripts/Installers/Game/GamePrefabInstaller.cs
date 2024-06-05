@@ -18,8 +18,9 @@ namespace Installers.Game
         [SerializeField] private Canvas _canvas;
 
         [Header("Windows")] 
-        [SerializeField] private MainView _mainView;
-        [SerializeField] private GameMenuView _gameMenuView;
+        [SerializeField] private MatchInfoView _matchInfoView;
+        [SerializeField] private PreviewMatchAnimationView _previewMatchAnimationView;
+        [SerializeField] private MatchResultsView _matchResultsView;
 
         [Header("Network")] 
         [SerializeField] private GameNetworkService _gameNetworkService;
@@ -45,8 +46,9 @@ namespace Installers.Game
             
             var parent = canvas.transform;
             
-            Container.AddWindowToQueue<MainController, MainView>(_mainView, parent, 0, isFocusable: true);
-            Container.AddWindowToQueue<GameMenuController, GameMenuView>(_gameMenuView, parent, 1);
+            Container.AddWindowToQueue<MatchInfoController, MatchInfoView>(_matchInfoView, parent, 0);
+            Container.AddWindowToQueue<PreviewMatchAnimationController, PreviewMatchAnimationView>(_previewMatchAnimationView, parent, 1);
+            Container.AddWindowToQueue<MatchResultsController, MatchResultsView>(_matchResultsView, parent, 2);
 
             Container.BindWindows();
         }

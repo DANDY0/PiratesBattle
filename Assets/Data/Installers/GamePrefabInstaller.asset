@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: GamePrefabInstaller
   m_EditorClassIdentifier: 
   _canvas: {fileID: 7639541237202281361, guid: fff7a856e9f9b8d428286d79be151039, type: 3}
-  _mainView: {fileID: 1063423711776441880, guid: 608a08ed22547534db891c50362f4eca,
+  _matchInfoView: {fileID: -4116120619548325717, guid: 6099754a25e3f774f9b570a84e58ac11,
     type: 3}
-  _gameMenuView: {fileID: -4116120619548325717, guid: 6099754a25e3f774f9b570a84e58ac11,
+  _previewMatchAnimationView: {fileID: 5747598055807857682, guid: 4f70193fc98280d4586b97d7d8f90772,
+    type: 3}
+  _matchResultsView: {fileID: 5213987971212625014, guid: 6d5a7564f16e0da409f179bbd90a2815,
     type: 3}
   _gameNetworkService: {fileID: -8012005430241376883, guid: 6dd235a838e739c47bb9a0866ac3925f,
-    type: 3}
-  _bulletPool: {fileID: 8913764385814803981, guid: 23064d753a77f15468cd80ffd1042c94,
     type: 3}

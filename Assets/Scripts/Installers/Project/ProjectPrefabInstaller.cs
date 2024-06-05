@@ -1,13 +1,16 @@
 ﻿using Behaviours;
+using Controllers;
 using Databases;
 using Databases.Impls;
 using Helpers;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.Services.Impls;
+using Services.Window;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils.Extensions;
+using Views;
 using Zenject;
 
 namespace Installers.Project
@@ -27,15 +30,42 @@ namespace Installers.Project
         [SerializeField] private AudioMixerProvider _audioMixerProvider;
         [SerializeField] private GameRestarter _gameRestarter;
 
-        [Header("Network")]
+        [Header("Photon")]
         [SerializeField] private PhotonTeamsManager _photonTeamsManager;
         [SerializeField] private CustomPropertiesService _customPropertiesService;
+        
+        [Header("Canvas")] 
+        [SerializeField] private Canvas _canvas;
+        
+        [Header("Windows")]
+        [SerializeField] private LoadingView _loadingView;
+
+        [Header("Network")]
+        [SerializeField] private ProjectNetworkService _projectNetworkService;
 
 
         public override void InstallBindings()
         {
             BindDatabases();
             BindPrefabs();
+            BindWindows();
+        }
+
+        private void BindWindows()
+        {
+            //Container.Resolve<IWindowService>().ClearWindows();
+            var parent = Instantiate(_canvas).transform;
+            
+            DontDestroyOnLoad(parent.gameObject);
+
+            var canvasComponent = parent.GetComponent<Canvas>();
+            if (canvasComponent != null) 
+                canvasComponent.sortingOrder = 1000; 
+            
+            Container.AddWindowToQueue<LoadingController, LoadingView>(_loadingView, parent, 0, isDontDestroyOnLoad:true);
+            
+            Container.BindWindows();
+
         }
 
         private void BindPrefabs()  
@@ -45,16 +75,15 @@ namespace Installers.Project
             Container.BindPrefab(_gameRestarter, isDestroyOnLoad:true);
             Container.BindPrefab(_photonTeamsManager, isDestroyOnLoad:true);
             Container.BindPrefab(_customPropertiesService, isDestroyOnLoad:true);
+            Container.BindPrefab(_projectNetworkService, isDestroyOnLoad:true);
         }
 
         private void BindDatabases()
         {
             Container.Bind<ILocalizationDatabase>().FromInstance(_localizationDatabase).AsSingle();
-            
             Container.Bind<ISpreadsheetsSettingsDatabase>().FromInstance(_spreadsheetsSettingsDatabase).AsSingle();
             Container.Bind<ISoundsDatabase>().FromInstance(_soundsDatabase).AsSingle();
             Container.Bind<ISettingsDatabase>().FromInstance(_settingsDatabase).AsSingle();
-
             Container.Bind<IDataManagementDatabase>().FromInstance(_dataManagementDatabase).AsSingle();
         }
     }

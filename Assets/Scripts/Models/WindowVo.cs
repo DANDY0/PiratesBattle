@@ -7,5 +7,6 @@ namespace Models
         public Window Window;
         public int OrderNumber;
         public bool IsFocusable;
+        public bool IsDontDestroyOnLoad;
     }
 }

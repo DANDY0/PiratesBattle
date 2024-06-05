@@ -8,5 +8,6 @@ namespace Services.Data
         event Action DataLoadedEvent;
         CachedUserData CachedUserLocalData { get; }
         bool DataIsLoaded { get; }
+        void StartLoading();
     }
 }
