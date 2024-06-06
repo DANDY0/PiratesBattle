@@ -1,5 +1,6 @@
 ﻿using Core.Abstracts;
 using Enums;
+using SimpleInputNamespace;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,7 +12,9 @@ namespace Views
         [SerializeField] private Button _leaveButton;
         [SerializeField] private TMP_Text _infoText;
         [SerializeField] private Image[] _heartImages;
-        
+        [SerializeField] private Joystick _moveJoystick;
+        [SerializeField] private Joystick _shootJoystick;
+
         public override EWindow Name => EWindow.MatchInfo;
 
         public Button LeaveButton => _leaveButton;

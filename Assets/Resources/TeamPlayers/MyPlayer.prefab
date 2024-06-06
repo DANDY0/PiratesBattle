@@ -4914,9 +4914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca97164e8f5b47799fb2db85a4aa0c74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rotationSpeed: 90
   _teamMarker: {fileID: 8045841505837438500}
-  _speed: 3
   _destruction: {fileID: 19801310}
   _heartImages:
   - {fileID: 2710793403650209771}

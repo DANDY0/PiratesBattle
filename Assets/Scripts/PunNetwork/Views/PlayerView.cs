@@ -2,6 +2,7 @@
 using Photon.Pun.Demo.Asteroids;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.Services;
+using Services.Input;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -19,27 +20,28 @@ namespace PunNetwork.Views
     public class PlayerView : MonoBehaviour, IPunInstantiateMagicCallback
     {
         public TeamRole TeamRole { get; private set; }
-
-        [SerializeField] private float _rotationSpeed = 10.0f;
-        [SerializeField] private MeshRenderer _teamMarker;
-        [SerializeField] private float _speed = 10f;
-        [SerializeField] private ParticleSystem _destruction;
-        [SerializeField] private Image[] _heartImages;
-
         public PhotonView PhotonView { get; private set; }
         public bool IsSpawnedOnServer { get; set; }
 
+        [SerializeField] private MeshRenderer _teamMarker;
+        [SerializeField] private ParticleSystem _destruction;
+        [SerializeField] private Image[] _heartImages;
+        
+        private IInputService _inputService;
+        private IBulletsPool _bulletsPool;
+        
         private Rigidbody _rigidbody;
         private Collider _collider;
         private CharacterController _characterController;
+        private MeshRenderer[] _renderers;
+        
+        private float _rotationSpeed = 150f;
+        private float _speed = 3f;
         private float _rotation;
         private float _acceleration;
         private float _shootingTimer;
         private bool _controllable = true;
-        private MeshRenderer[] _renderers;
 
-        private IBulletsPool _bulletsPool;
-        
         #region UNITY
 
         public void Awake()
@@ -51,17 +53,28 @@ namespace PunNetwork.Views
             _characterController = GetComponent<CharacterController>();
             
             _bulletsPool = DependencyInjector.Container.Resolve<IBulletsPool>();
+            _inputService = DependencyInjector.Container.Resolve<IInputService>();
+            
+            Debug.Log("InputService" + nameof(_inputService));
         }
         
         void Update()
         {
-            if (!PhotonView.AmOwner || !_controllable || !IsSpawnedOnServer)
+            if (!CanControl())
                 return;
 
-            if (PhotonView.CreatorActorNr != PhotonNetwork.LocalPlayer.ActorNumber)
-                return;
+            HandleMovementAndRotation();
+            HandleShooting();
+        }
 
-            Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        private bool CanControl()
+        {
+            return PhotonView.AmOwner && _controllable;
+        }
+
+        private void HandleMovementAndRotation()
+        {
+            Vector3 move = new Vector3(_inputService.MoveAxis.x, 0, _inputService.MoveAxis.y);
 
             if (move.magnitude > 1)
                 move.Normalize();
@@ -70,24 +83,32 @@ namespace PunNetwork.Views
 
             _characterController.Move(move * Time.deltaTime);
 
-            if (move != Vector3.zero)
+            Vector3 lookDirection = new Vector3(_inputService.LookAxis.x, 0, _inputService.LookAxis.y);
+            if (lookDirection != Vector3.zero)
+            {
+                Quaternion newRotation = Quaternion.LookRotation(lookDirection);
+                transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * _rotationSpeed);
+            }
+            else if (move != Vector3.zero)
             {
                 Quaternion newRotation = Quaternion.LookRotation(move);
                 transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * _rotationSpeed);
             }
+        }
 
-            if ((Input.GetButton("Jump") || Input.GetMouseButtonDown(1)) && _shootingTimer <= 0.0f)
+        private void HandleShooting()
+        {
+            if ((_inputService.IsAttackPressedDown() || Input.GetMouseButtonDown(1)) && _shootingTimer <= 0.0f)
             {
                 _shootingTimer = 0.2f;
 
-                if (PhotonView.IsMine) 
+                if (PhotonView.IsMine)
                     _bulletsPool.SpawnBullet(transform.position, transform.rotation);
-                
             }
 
             if (_shootingTimer > 0.0f)
                 _shootingTimer -= Time.deltaTime;
-        }        
+        }
 
         #endregion
 
