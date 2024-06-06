@@ -1,24 +1,29 @@
 ﻿using System;
+using SimpleInputNamespace;
 using UnityEngine;
+using Views;
 using Zenject;
 
 namespace Services.Input
 {
-    public class InputService : IInputService, IInitializable
+    public class InputService : IInputService
     {
-        private InputHandler _mainInput;
+        private readonly GameMenuView _gameMenuView;
+        public event Action FireStartedEvent;
+        public event Action FireFinishedEvent;
 
-        public Vector2 MoveAxis => _mainInput.MoveAxis;
-        public Vector2 LookAxis => _mainInput.LookAxis;
+        protected const string MoveHorizontal = "Horizontal";
+        protected const string MoveVertical = "Vertical";
+        protected const string LookHorizontal = "ShootHorizontal";
+        protected const string LookVertical = "ShootVertical";
+        protected const string Fire = "Fire";
+        
+        public Vector2 MoveAxis => GetSimpleInputAxis(MoveHorizontal, MoveVertical);
+        public Vector2 LookAxis => GetSimpleInputAxis(LookHorizontal, LookVertical);
 
-        public bool IsAttackPressedDown() => _mainInput.IsAttackPressedDown();
+        public bool IsAttackPressedDown() => SimpleInput.GetButtonDown(Fire);
 
-        public void Initialize()
-        {
-            if (Application.isEditor)
-                _mainInput = new StandaloneInputService();
-            else
-                _mainInput = new MobileInputService();
-        }
+        private Vector2 GetSimpleInputAxis(string horizontal, string vertical) => 
+            new Vector2(SimpleInput.GetAxis(horizontal), SimpleInput.GetAxis(vertical));
     }
 }
