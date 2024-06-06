@@ -8,7 +8,7 @@ namespace Services.Input
 {
     public class InputService : IInputService
     {
-        private readonly GameMenuView _gameMenuView;
+        private readonly MainMenuView _gameMenuView;
         public event Action FireStartedEvent;
         public event Action FireFinishedEvent;
 
