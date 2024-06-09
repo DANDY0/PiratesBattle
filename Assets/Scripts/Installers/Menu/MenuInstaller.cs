@@ -1,5 +1,6 @@
 ﻿using States.Core;
 using Utils;
+using Views;
 using Zenject;
 
 namespace Installers.Menu
@@ -11,13 +12,19 @@ namespace Installers.Menu
             DependencyInjector.Container = Container;
             ConfigureGameStateMachine();
             BindServices();
+            BindHandlers();
         }
 
         private void BindServices()
         {
             Container.BindInterfacesTo<MenuEntryPoint>().AsSingle();
         }
-        
+
+        private void BindHandlers()
+        {
+            Container.BindInterfacesAndSelfTo<ChooseCharacterHandler>().AsSingle();
+        }
+
         private void ConfigureGameStateMachine()
         {
             var gameStateMachine = ProjectContext.Instance.Container.Resolve<IGameStateMachine>();

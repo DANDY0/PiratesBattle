@@ -9,13 +9,16 @@ namespace Controllers
     public class MainMenuController : Controller<MainMenuView>
     {
         private readonly IMenuNetworkService _menuNetworkService;
+        private readonly ChooseCharacterHandler _chooseCharacterHandler;
 
         public MainMenuController
         (
-            IMenuNetworkService menuNetworkService
+            IMenuNetworkService menuNetworkService,
+            ChooseCharacterHandler chooseCharacterHandler
         )
         {
             _menuNetworkService = menuNetworkService;
+            _chooseCharacterHandler = chooseCharacterHandler;
         }
 
         public override void Initialize()
@@ -31,6 +34,8 @@ namespace Controllers
             Application.Quit();
 #endif
             }).AddTo(View);
+            
+            _chooseCharacterHandler.Setup(View.ChooseCharacterPanel);
         }
 
         public void Setup()

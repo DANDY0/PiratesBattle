@@ -26,15 +26,15 @@ namespace PunNetwork.Views
         [SerializeField] private MeshRenderer _teamMarker;
         [SerializeField] private ParticleSystem _destruction;
         [SerializeField] private Image[] _heartImages;
-        
+
         private IInputService _inputService;
         private IBulletsPool _bulletsPool;
-        
+
         private Rigidbody _rigidbody;
         private Collider _collider;
         private CharacterController _characterController;
         private MeshRenderer[] _renderers;
-        
+
         private float _rotationSpeed = 150f;
         private float _speed = 3f;
         private float _rotation;
@@ -51,63 +51,62 @@ namespace PunNetwork.Views
             _collider = GetComponent<Collider>();
             _renderers = GetComponentsInChildren<MeshRenderer>();
             _characterController = GetComponent<CharacterController>();
-            
+
             _bulletsPool = DependencyInjector.Container.Resolve<IBulletsPool>();
             _inputService = DependencyInjector.Container.Resolve<IInputService>();
-            
+
             Debug.Log("InputService" + nameof(_inputService));
+
         }
-        
+
         void Update()
         {
             if (!CanControl())
                 return;
 
-            HandleMovementAndRotation();
+            HandleMovement();
             HandleShooting();
         }
 
         private bool CanControl()
         {
-            return PhotonView.AmOwner && _controllable;
+            return PhotonView.IsMine && gameObject.activeInHierarchy;
         }
 
-        private void HandleMovementAndRotation()
+        private void HandleMovement()
         {
             Vector3 move = new Vector3(_inputService.MoveAxis.x, 0, _inputService.MoveAxis.y);
-
-            if (move.magnitude > 1)
+            if (move.sqrMagnitude > 1)
                 move.Normalize();
 
             move *= _speed;
-
             _characterController.Move(move * Time.deltaTime);
 
-            Vector3 lookDirection = new Vector3(_inputService.LookAxis.x, 0, _inputService.LookAxis.y);
-            if (lookDirection != Vector3.zero)
-            {
-                Quaternion newRotation = Quaternion.LookRotation(lookDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * _rotationSpeed);
-            }
-            else if (move != Vector3.zero)
-            {
-                Quaternion newRotation = Quaternion.LookRotation(move);
-                transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * _rotationSpeed);
-            }
+            if (_inputService.IsPreciseFiring)
+                RotateTowards(new Vector3(_inputService.LookAxis.x, 0, _inputService.LookAxis.y));
+            else
+                RotateTowards(move);
         }
 
         private void HandleShooting()
         {
-            if ((_inputService.IsAttackPressedDown() || Input.GetMouseButtonDown(1)) && _shootingTimer <= 0.0f)
+            if ((_inputService.IsFiring) && _shootingTimer <= 0.0f)
             {
-                _shootingTimer = 0.2f;
-
-                if (PhotonView.IsMine)
-                    _bulletsPool.SpawnBullet(transform.position, transform.rotation);
+                _shootingTimer = 0.2f;  // Reset shooting cooldown
+                _bulletsPool.SpawnBullet(transform.position, transform.rotation);
             }
 
             if (_shootingTimer > 0.0f)
                 _shootingTimer -= Time.deltaTime;
+        }
+
+        private void RotateTowards(Vector3 direction)
+        {
+            if (direction != Vector3.zero)
+            {
+                Quaternion newRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * _rotationSpeed);
+            }
         }
 
         #endregion
@@ -128,7 +127,7 @@ namespace PunNetwork.Views
             var currentLives = (int)lives <= 1 ? 0 : (int)lives - 1;
             PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.PlayerLives, currentLives);
 
-            if (currentLives == 0) 
+            if (currentLives == 0)
                 PhotonView.RPC(nameof(DestroyPlayer), RpcTarget.All);
         }
 
@@ -139,7 +138,7 @@ namespace PunNetwork.Views
             _rigidbody.angularVelocity = Vector3.zero;
 
             _collider.enabled = false;
-            foreach (var meshRenderer in _renderers) 
+            foreach (var meshRenderer in _renderers)
                 meshRenderer.enabled = false;
 
             _controllable = false;

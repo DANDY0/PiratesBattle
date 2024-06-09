@@ -1,5 +1,6 @@
 ﻿//#define GET_AXIS_USE_MOVE_TOWARDS
 
+using System;
 using SimpleInputNamespace;
 using System.Collections.Generic;
 using UnityEngine;
@@ -191,6 +192,10 @@ public class SimpleInput : MonoBehaviour
 
 	public delegate void UpdateCallback();
 	public static event UpdateCallback OnUpdate;
+	
+	public static event Action<bool> FireTriggeredEvent;
+
+	public static void FireTrigger(bool state) => FireTriggeredEvent?.Invoke(state);
 
 	[RuntimeInitializeOnLoadMethod( RuntimeInitializeLoadType.AfterSceneLoad )]
 	static void Init()

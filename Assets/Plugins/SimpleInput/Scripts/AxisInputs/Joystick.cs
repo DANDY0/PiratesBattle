@@ -6,6 +6,7 @@ namespace SimpleInputNamespace
 {
 	public class Joystick : MonoBehaviour, ISimpleInputDraggable
 	{
+		public bool IsFireJoystick;
 		public enum MovementAxes { XandY, X, Y };
 
 		public SimpleInput.AxisInput xAxis = new SimpleInput.AxisInput( "Horizontal" );
@@ -18,9 +19,12 @@ namespace SimpleInputNamespace
 		public float valueMultiplier = 1f;
 
 #pragma warning disable 0649
+
 		[SerializeField]
 		private Image thumb;
+
 		private RectTransform thumbTR;
+
 
 		[SerializeField]
 		private float movementAreaRadius = 75f;
@@ -52,6 +56,7 @@ namespace SimpleInputNamespace
 
 		private Vector2 m_value = Vector2.zero;
 		public Vector2 Value { get { return m_value; } }
+
 
 		private void Awake()
 		{
@@ -139,9 +144,13 @@ namespace SimpleInputNamespace
 		}
 #endif
 
+
 		public void OnPointerDown( PointerEventData eventData )
 		{
 			joystickHeld = true;
+	
+			if(IsFireJoystick)
+				SimpleInput.FireTrigger(joystickHeld); 
 
 			if( isDynamicJoystick )
 			{
@@ -157,7 +166,8 @@ namespace SimpleInputNamespace
 
 		public void OnDrag( PointerEventData eventData )
 		{
-			Vector2 pointerPos;
+
+		Vector2 pointerPos;
 			RectTransformUtility.ScreenPointToLocalPointInRectangle( joystickTR, eventData.position, eventData.pressEventCamera, out pointerPos );
 
 			Vector2 direction = pointerPos - pointerInitialPos;
@@ -191,6 +201,10 @@ namespace SimpleInputNamespace
 		public void OnPointerUp( PointerEventData eventData )
 		{
 			joystickHeld = false;
+			
+			if(IsFireJoystick)
+				SimpleInput.FireTrigger(joystickHeld); 
+			
 			m_value = Vector2.zero;
 
 			thumbTR.localPosition = Vector3.zero;
@@ -200,6 +214,7 @@ namespace SimpleInputNamespace
 			xAxis.value = 0f;
 			yAxis.value = 0f;
 		}
+
 
 		private void OnUpdate()
 		{

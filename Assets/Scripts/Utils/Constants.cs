@@ -2,6 +2,6 @@
 {
     public class Constants
     {
-        public const bool EnableLogs = true;
+        public const bool EnableLogs = false;
     }
 }

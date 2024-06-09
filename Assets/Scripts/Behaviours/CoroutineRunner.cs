@@ -10,5 +10,6 @@ namespace Behaviours
     public interface ICoroutineRunner
     {
         Coroutine StartCoroutine(IEnumerator coroutine);
+        void StopCoroutine(Coroutine routine);
     }
 }
