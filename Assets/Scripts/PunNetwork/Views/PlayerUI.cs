@@ -5,17 +5,15 @@ using TMPro;
 
 namespace PunNetwork.Views
 {
- 
-
     public class PlayerUI : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _nicknameText;
         [SerializeField] private Image _fillHealthImage;
 
-        private readonly float _healthChangeDuration = 0.5f; 
-        
+        private const float HealthChangeDuration = .5f;
+
         public void SetNickName(string value) => _nicknameText.text = value;
-            
+
         public void SetHealthPoints(float currentHp, float maxHp)
         {
             if (maxHp <= 0)
@@ -24,8 +22,8 @@ namespace PunNetwork.Views
                 return;
             }
 
-            float targetFillAmount = currentHp / maxHp;
-            _fillHealthImage.DOFillAmount(targetFillAmount, _healthChangeDuration); 
+            var targetFillAmount = currentHp / maxHp;
+            _fillHealthImage.DOFillAmount(targetFillAmount, HealthChangeDuration);
         }
     }
 }

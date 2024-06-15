@@ -6,9 +6,9 @@ namespace Helpers
     {
         private Camera _mainCamera;
 
-        void Start() => _mainCamera = Camera.main;
+        private void Start() => _mainCamera = Camera.main;
 
-        void Update()
+        private void Update()
         {
             if (_mainCamera != null)
                 transform.LookAt(transform.position + _mainCamera.transform.rotation * Vector3.forward,
