@@ -1,15 +1,10 @@
-﻿using Photon.Pun;
-using Photon.Pun.Demo.Asteroids;
-using Photon.Pun.UtilityScripts;
-using PunNetwork.Services;
+﻿using DG.Tweening;
+using Photon.Pun;
 using Services.Input;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utils;
 using Utils.Extensions;
-using Zenject;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 using static Utils.Enumerators;
 
 namespace PunNetwork.Views
@@ -26,6 +21,7 @@ namespace PunNetwork.Views
         [SerializeField] private MeshRenderer _teamMarker;
         [SerializeField] private ParticleSystem _destruction;
         [SerializeField] private Image[] _heartImages;
+        [SerializeField] private EnemiesTriggerCollider _enemiesTriggerCollider;
 
         private IInputService _inputService;
         private IBulletsPool _bulletsPool;
@@ -41,6 +37,8 @@ namespace PunNetwork.Views
         private float _acceleration;
         private float _shootingTimer;
         private bool _controllable = true;
+        private Tween _animationTween;
+        private bool _isFiring;
 
         #region UNITY
 
@@ -55,11 +53,38 @@ namespace PunNetwork.Views
             _bulletsPool = DependencyInjector.Container.Resolve<IBulletsPool>();
             _inputService = DependencyInjector.Container.Resolve<IInputService>();
 
-            Debug.Log("InputService" + nameof(_inputService));
+            if (PhotonView.IsMine)
+                _inputService.FireTriggeredEvent += FireJoystickTriggered;
 
+            Debug.Log("InputService" + nameof(_inputService));
         }
 
-        void Update()
+        private void OnDestroy()
+        {
+            if (PhotonView.IsMine)
+                _inputService.FireTriggeredEvent -= FireJoystickTriggered;
+        }
+
+        private void FireJoystickTriggered(bool state)
+        {
+            if (state)
+                StartFiring();
+            else
+            {
+                _isFiring = false;
+                if (_animationTween == null) return;
+                _animationTween.Kill();
+                _animationTween = null;
+            }
+        }
+
+        private void StartFiring()
+        {
+            _isFiring = true;
+            _animationTween = DOVirtual.DelayedCall(.25f, () => _shootingTimer = 0);
+        }
+
+        private void Update()
         {
             if (!CanControl())
                 return;
@@ -75,38 +100,56 @@ namespace PunNetwork.Views
 
         private void HandleMovement()
         {
-            Vector3 move = new Vector3(_inputService.MoveAxis.x, 0, _inputService.MoveAxis.y);
+            var move = new Vector3(_inputService.MoveAxis.x, 0, _inputService.MoveAxis.y);
             if (move.sqrMagnitude > 1)
                 move.Normalize();
 
             move *= _speed;
             _characterController.Move(move * Time.deltaTime);
 
-            if (_inputService.IsPreciseFiring)
-                RotateTowards(new Vector3(_inputService.LookAxis.x, 0, _inputService.LookAxis.y));
+            HandleRotation(move);
+        }
+
+        private void HandleRotation(Vector3 move)
+        {
+            const float lookAxisThreshold = .1f;
+
+            if (_isFiring)
+            {
+                if (_inputService.LookAxis.sqrMagnitude < lookAxisThreshold * lookAxisThreshold)
+                {
+                    if (_enemiesTriggerCollider.TryGetNearestEnemy(out var enemy)) 
+                        RotateTowards(enemy.position - transform.position);
+                }
+                else
+                    RotateTowards(new Vector3(_inputService.LookAxis.x, 0, _inputService.LookAxis.y));
+            }
             else
                 RotateTowards(move);
         }
 
+        private void RotateTowards(Vector3 direction)
+        {
+            direction.y = 0;
+
+            if (direction == Vector3.zero) return;
+            var newRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * _rotationSpeed);
+        }
+
+
         private void HandleShooting()
         {
-            if ((_inputService.IsFiring) && _shootingTimer <= 0.0f)
+            if (!_isFiring)
+                return;
+            if (_shootingTimer <= 0)
             {
-                _shootingTimer = 0.2f;  // Reset shooting cooldown
+                _shootingTimer = .2f;
                 _bulletsPool.SpawnBullet(transform.position, transform.rotation);
             }
 
-            if (_shootingTimer > 0.0f)
+            if (_shootingTimer > 0)
                 _shootingTimer -= Time.deltaTime;
-        }
-
-        private void RotateTowards(Vector3 direction)
-        {
-            if (direction != Vector3.zero)
-            {
-                Quaternion newRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * _rotationSpeed);
-            }
         }
 
         #endregion

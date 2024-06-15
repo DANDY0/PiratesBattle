@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Abstracts;
+﻿using Core.Abstracts;
 using DG.Tweening;
 using Enums;
 using UnityEngine;

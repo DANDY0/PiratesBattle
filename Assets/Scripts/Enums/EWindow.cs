@@ -2,8 +2,7 @@
 {
     public enum EWindow
     {
-        //Common
-        MenuSettings = 0,
+        MainMenu = 0,
         Loading = 2,
         MatchInfo = 3,
         PreviewMatchAnimation = 4,

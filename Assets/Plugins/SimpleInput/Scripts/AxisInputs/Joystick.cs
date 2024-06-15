@@ -148,8 +148,8 @@ namespace SimpleInputNamespace
 		public void OnPointerDown( PointerEventData eventData )
 		{
 			joystickHeld = true;
-	
-			if(IsFireJoystick)
+
+			if (IsFireJoystick) 
 				SimpleInput.FireTrigger(joystickHeld); 
 
 			if( isDynamicJoystick )
@@ -201,8 +201,8 @@ namespace SimpleInputNamespace
 		public void OnPointerUp( PointerEventData eventData )
 		{
 			joystickHeld = false;
-			
-			if(IsFireJoystick)
+
+			if (IsFireJoystick) 
 				SimpleInput.FireTrigger(joystickHeld); 
 			
 			m_value = Vector2.zero;

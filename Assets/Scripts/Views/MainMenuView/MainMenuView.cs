@@ -14,7 +14,7 @@ namespace Views
         [SerializeField] private TMP_InputField _inputField;
         [SerializeField] private ChooseCharacterPanel _chooseCharacterPanel;
 
-        public override EWindow Name => EWindow.MenuSettings;
+        public override EWindow Name => EWindow.MainMenu;
 
         public Button PlayButton1 => _playButton1;
         public Button PlayButton2 => _playButton2;

@@ -31,7 +31,7 @@ MonoBehaviour:
   _customPropertiesService: {fileID: -3956072073805407548, guid: 45f46346b59331f439acb34487948839,
     type: 3}
   _canvas: {fileID: 7639541237202281361, guid: fff7a856e9f9b8d428286d79be151039, type: 3}
-  _loadingView: {fileID: 9041528081280758947, guid: bb182180a62978f47a6a8045feb0d4aa,
+  _loadingView: {fileID: 9041528081280758947, guid: 5b866e6f12dd387439ac0aa54971688f,
     type: 3}
   _projectNetworkService: {fileID: 174660147552874731, guid: 1d6cfa63aeccb3b43be12fc966dd738c,
     type: 3}
