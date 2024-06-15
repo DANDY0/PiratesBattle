@@ -5,5 +5,7 @@ namespace Models.Data
     public class CachedUserData
     {
         public ELanguage AppLanguage;
+        public string NickName;
+
     }
 }

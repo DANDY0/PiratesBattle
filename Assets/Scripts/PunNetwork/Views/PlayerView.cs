@@ -2,6 +2,7 @@
 using Photon.Pun.Demo.Asteroids;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.Services;
+using Services.Data;
 using Services.Input;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -26,8 +27,10 @@ namespace PunNetwork.Views
         [SerializeField] private MeshRenderer _teamMarker;
         [SerializeField] private ParticleSystem _destruction;
         [SerializeField] private Image[] _heartImages;
-
+        [SerializeField] private PlayerUI _playerUI;
+        
         private IInputService _inputService;
+        private IDataService _dataService;
         private IBulletsPool _bulletsPool;
 
         private Rigidbody _rigidbody;
@@ -54,6 +57,7 @@ namespace PunNetwork.Views
 
             _bulletsPool = DependencyInjector.Container.Resolve<IBulletsPool>();
             _inputService = DependencyInjector.Container.Resolve<IInputService>();
+            _dataService = DependencyInjector.Container.Resolve<IDataService>();
 
             Debug.Log("InputService" + nameof(_inputService));
 
@@ -116,7 +120,9 @@ namespace PunNetwork.Views
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             if (info.Sender.IsLocal)
+            {
                 info.Sender.SetCustomProperty(PlayerProperty.IsSpawned, true);
+            }
         }
 
         [PunRPC]
@@ -155,6 +161,9 @@ namespace PunNetwork.Views
             var markerColor = TeamMarker.GetColor(role);
             _teamMarker.material.color = markerColor;
         }
+
+        public void SetNickname(string nickname) 
+            => _playerUI.SetNickName(nickname);
 
         public void UpdateHearts(int currentLives)
         {

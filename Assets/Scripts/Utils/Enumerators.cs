@@ -13,7 +13,8 @@
         {
             PlayerNumber,
             IsSpawned,
-            PlayerLives
+            PlayerLives,
+            PlayerSpawnedData,
         }
     }
 }

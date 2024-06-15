@@ -23,6 +23,7 @@ namespace Installers.Menu
         private void BindHandlers()
         {
             Container.BindInterfacesAndSelfTo<ChooseCharacterHandler>().AsSingle();
+            Container.BindInterfacesAndSelfTo<MenuProfileHandler>().AsSingle();
         }
 
         private void ConfigureGameStateMachine()

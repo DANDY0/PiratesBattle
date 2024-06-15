@@ -10,6 +10,7 @@ using Services.Spreadsheets;
 using UnityEngine;
 using Utils;
 using Zenject;
+using Random = UnityEngine.Random;
 
 namespace Services.Data
 {
@@ -127,6 +128,7 @@ namespace Services.Data
                     {
                         CachedUserLocalData = new CachedUserData
                         {
+                            NickName = $"Player_{Random.Range(10000,99999)}"
                         };
 
                         SaveData(EGameDataType.UserData);

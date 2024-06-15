@@ -1,4 +1,5 @@
 ﻿using System;
+using PunNetwork.NetworkData;
 using Utils;
 
 namespace PunNetwork.Services
@@ -7,5 +8,6 @@ namespace PunNetwork.Services
     {
         public event Action PlayerSpawnedEvent;
         event Action PlayerLivesChangedEvent;
+        public event Action<NetworkDataModel.PlayerSpawnedData> GetPlayerSpawnedDataEvent;
     }
 }
