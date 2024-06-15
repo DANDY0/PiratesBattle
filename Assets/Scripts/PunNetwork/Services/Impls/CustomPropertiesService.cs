@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections;
+using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Realtime;
+using Services.Data;
 using UnityEngine;
+using Utils.Extensions;
+using static PunNetwork.NetworkData.NetworkDataModel;
 using static Utils.Enumerators;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -10,9 +14,16 @@ namespace PunNetwork.Services.Impls
 {
     public class CustomPropertiesService : MonoBehaviourPunCallbacks, ICustomPropertiesService
     {
+        private readonly IDataService _dataService;
         public event Action PlayerSpawnedEvent;
         public event Action PlayerLivesChangedEvent;
+        public event Action<PlayerSpawnedData> GetPlayerSpawnedDataEvent;
 
+        public CustomPropertiesService(IDataService dataService)
+        {
+            _dataService = dataService;
+        }
+        
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             foreach (var entry in changedProps)
@@ -28,12 +39,16 @@ namespace PunNetwork.Services.Impls
         {
             switch (key)
             {
-                case PlayerProperty.PlayerNumber:
-                    Debug.Log($"Player:{player.ActorNumber}, PlayerNumber changed to {value}");
-                    break;
                 case PlayerProperty.IsSpawned:
                     Debug.Log($"Player spawned {player.ActorNumber} Key: {key}");
                     PlayerSpawnedEvent?.Invoke();
+                    break;
+                case PlayerProperty.PlayerSpawnedData:
+                    PlayerSpawnedData resultData = JsonConvert.DeserializeObject<PlayerSpawnedData>(value.ToString());
+                    GetPlayerSpawnedDataEvent?.Invoke(resultData);
+                    break;
+                case PlayerProperty.PlayerNumber:
+                    Debug.Log($"Player:{player.ActorNumber}, PlayerNumber changed to {value}");
                     break;
                 case PlayerProperty.PlayerLives:
                     PlayerLivesChangedEvent?.Invoke();
@@ -44,5 +59,6 @@ namespace PunNetwork.Services.Impls
             }
         }
 
+     
     }
 }

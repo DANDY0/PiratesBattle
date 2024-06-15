@@ -1,5 +1,6 @@
 ﻿using Core.Abstracts;
 using PunNetwork.Services;
+using Services.Data;
 using UniRx;
 using Views;
 using UnityEngine;
@@ -9,16 +10,22 @@ namespace Controllers
     public class MainMenuController : Controller<MainMenuView>
     {
         private readonly IMenuNetworkService _menuNetworkService;
+        private readonly IDataService _dataService;
         private readonly ChooseCharacterHandler _chooseCharacterHandler;
+        private readonly MenuProfileHandler _menuProfileHandler;
 
         public MainMenuController
         (
             IMenuNetworkService menuNetworkService,
-            ChooseCharacterHandler chooseCharacterHandler
+            IDataService dataService,
+            ChooseCharacterHandler chooseCharacterHandler,
+            MenuProfileHandler menuProfileHandler
         )
         {
             _menuNetworkService = menuNetworkService;
+            _dataService = dataService;
             _chooseCharacterHandler = chooseCharacterHandler;
+            _menuProfileHandler = menuProfileHandler;
         }
 
         public override void Initialize()
@@ -34,8 +41,12 @@ namespace Controllers
             Application.Quit();
 #endif
             }).AddTo(View);
+
+            _dataService.DataLoadedEvent += DataLoadedHandler;
             
             _chooseCharacterHandler.Setup(View.ChooseCharacterPanel);
+            _menuProfileHandler.Setup(View.MenuProfilePanel);
+
         }
 
         public void Setup()
@@ -53,6 +64,11 @@ namespace Controllers
         {
             _menuNetworkService.SetMaxPlayers(2);
             _menuNetworkService.Connect();
+        }
+
+        private void DataLoadedHandler()
+        {
+            
         }
     }
 }
