@@ -25,7 +25,6 @@ namespace PunNetwork.Views
 		[SerializeField] private PlayerUI _playerUI;
 		[SerializeField] private EnemiesTriggerCollider _enemiesTriggerCollider;
         private IInputService _inputService;
-        private IDataService _dataService;
         private IBulletsPool _bulletsPool;
 
         private Rigidbody _rigidbody;
@@ -54,7 +53,6 @@ namespace PunNetwork.Views
 
             _bulletsPool = DependencyInjector.Container.Resolve<IBulletsPool>();
             _inputService = DependencyInjector.Container.Resolve<IInputService>();
-            _dataService = DependencyInjector.Container.Resolve<IDataService>();
 
             if (PhotonView.IsMine)
                 _inputService.FireTriggeredEvent += FireJoystickTriggered;
