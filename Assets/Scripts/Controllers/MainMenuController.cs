@@ -11,20 +11,20 @@ namespace Controllers
     {
         private readonly IMenuNetworkService _menuNetworkService;
         private readonly IDataService _dataService;
-        private readonly ChooseCharacterHandler _chooseCharacterHandler;
+        private readonly SelectedCharacterHandler _selectedCharacterHandler;
         private readonly MenuProfileHandler _menuProfileHandler;
 
         public MainMenuController
         (
             IMenuNetworkService menuNetworkService,
             IDataService dataService,
-            ChooseCharacterHandler chooseCharacterHandler,
+            SelectedCharacterHandler selectedCharacterHandler,
             MenuProfileHandler menuProfileHandler
         )
         {
             _menuNetworkService = menuNetworkService;
             _dataService = dataService;
-            _chooseCharacterHandler = chooseCharacterHandler;
+            _selectedCharacterHandler = selectedCharacterHandler;
             _menuProfileHandler = menuProfileHandler;
         }
 
@@ -44,9 +44,8 @@ namespace Controllers
 
             _dataService.DataLoadedEvent += DataLoadedHandler;
             
-            _chooseCharacterHandler.Setup(View.ChooseCharacterPanel);
+            _selectedCharacterHandler.Setup(View.SelectedCharacterPanel);
             _menuProfileHandler.Setup(View.MenuProfilePanel);
-
         }
 
         public void Setup()

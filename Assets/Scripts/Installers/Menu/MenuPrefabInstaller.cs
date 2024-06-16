@@ -19,9 +19,13 @@ namespace Installers.Menu
         
         [Header("Windows")]
         [SerializeField] private MainMenuView _mainMenuView;
+        [SerializeField] private SelectCharacterView _selectCharacterView;
 
         [Header("Network")]
         [SerializeField] private MenuNetworkService _menuNetworkService;
+
+        [Header("Prefabs")]
+        [SerializeField] private CharacterElementView _characterElementView;
         
         public override void InstallBindings()
         {
@@ -32,6 +36,8 @@ namespace Installers.Menu
         private void BindPrefabs()
         {
             Container.BindPrefab(_menuNetworkService);
+            
+            Container.BindInstances(_characterElementView);
         }
 
         private void BindWindows()
@@ -40,7 +46,7 @@ namespace Installers.Menu
             var parent = Instantiate(_canvas).transform;
             
             Container.AddWindowToQueue<MainMenuController, MainMenuView>(_mainMenuView, parent, 0);
-
+            Container.AddWindowToQueue<SelectCharacterController, SelectCharacterView>(_selectCharacterView, parent, 0, true);
             
             Container.BindWindows();
         }

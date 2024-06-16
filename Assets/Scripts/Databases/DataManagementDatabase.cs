@@ -7,7 +7,7 @@ namespace Databases.Impls
     class DataManagementDatabase : ScriptableObject, IDataManagementDatabase
     {
         [SerializeField] private DataManagementVo _settings;
-
+        
         public DataManagementVo Settings => _settings;
     }
 }

@@ -9,20 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a35a68842fc8c44690b8578be614480, type: 3}
-  m_Name: DataManagementDatabase
+  m_Script: {fileID: 11500000, guid: 99020b6a78f3434b897c7e9817f114c3, type: 3}
+  m_Name: CharactersVisualDatabase
   m_EditorClassIdentifier: 
-  _settings:
-    IsDataEncrypted: 0
-    IsDataSave: 1
-  _characters:
+  _charactersData:
     CharactersData:
     - Character: 0
       AvatarImage: {fileID: 21300000, guid: 3273d22879e631545a175cd203944737, type: 3}
       FullImage: {fileID: 21300000, guid: 456cfd6c095fa664a85bd52887255aa7, type: 3}
     - Character: 1
-      AvatarImage: {fileID: 21300000, guid: ac1d11c9bbafe554aa227a215d0ecd7e, type: 3}
-      FullImage: {fileID: 21300000, guid: deb8d23afe587f344b9990ab88a6c0d5, type: 3}
-    - Character: 2
       AvatarImage: {fileID: 21300000, guid: ea90831ef6dc9b449824c90c4650353d, type: 3}
       FullImage: {fileID: 21300000, guid: e4cad11dfe98bbb4aa1f08f378e9c478, type: 3}
+    - Character: 2
+      AvatarImage: {fileID: 21300000, guid: ac1d11c9bbafe554aa227a215d0ecd7e, type: 3}
+      FullImage: {fileID: 21300000, guid: deb8d23afe587f344b9990ab88a6c0d5, type: 3}

@@ -1,5 +1,7 @@
-﻿using States.Core;
+﻿using Factories;
+using States.Core;
 using Utils;
+using Utils.Extensions;
 using Views;
 using Zenject;
 
@@ -13,6 +15,7 @@ namespace Installers.Menu
             ConfigureGameStateMachine();
             BindServices();
             BindHandlers();
+            BindFactories();
         }
 
         private void BindServices()
@@ -22,8 +25,16 @@ namespace Installers.Menu
 
         private void BindHandlers()
         {
-            Container.BindInterfacesAndSelfTo<ChooseCharacterHandler>().AsSingle();
             Container.BindInterfacesAndSelfTo<MenuProfileHandler>().AsSingle();
+            Container.BindInterfacesAndSelfTo<SelectedCharacterHandler>().AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<CharactersListHandler>().AsSingle();
+            Container.BindInterfacesAndSelfTo<CharacterPageHandler>().AsSingle();
+        }
+
+        private void BindFactories()
+        {
+            Container.BindFactory<IFactory<CharacterElementView>, MenuCharactersFactory>();
         }
 
         private void ConfigureGameStateMachine()

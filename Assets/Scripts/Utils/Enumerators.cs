@@ -16,5 +16,12 @@
             PlayerLives,
             PlayerSpawnedData,
         }
+
+        public enum Character
+        {
+            Primo,
+            Voron,
+            Rocket
+        }
     }
 }
