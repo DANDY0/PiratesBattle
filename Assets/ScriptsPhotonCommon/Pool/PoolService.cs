@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ScriptsPhotonCommon.Factory;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ScriptsPhotonCommon.Pool
 {
@@ -22,7 +23,7 @@ namespace ScriptsPhotonCommon.Pool
         {
             if (!_poolDictionary.ContainsKey(key))
             {
-                var objectPool = new Queue<object>();
+                var objectPool = new Queue<Component>();
                 var parent = new GameObject($"[Pool] {key}").transform;
 
                 for (var i = 0; i < amount; i++)
@@ -42,22 +43,22 @@ namespace ScriptsPhotonCommon.Pool
             }
         }
 
-        public void AddObjectToPool(string key, object obj)
+        public void AddObjectToPool(string key, Component obj)
         {
             if (!_poolDictionary.ContainsKey(key))
             {
                 var parent = new GameObject($"[Pool] {key}").transform;
 
-                _poolDictionary.Add(key, new PoolInfoVo(new Queue<object>(), parent));
+                _poolDictionary.Add(key, new PoolInfoVo(new Queue<Component>(), parent));
             }
 
             var poolInfoVo = _poolDictionary[key];
-            
+
             poolInfoVo.Objects.Enqueue(obj);
 
-            if (obj is not Component castedObj) return;
-            castedObj.transform.SetParent(poolInfoVo.Parent);
-            castedObj.gameObject.SetActive(false);
+            if (obj is null) return;
+            obj.transform.SetParent(poolInfoVo.Parent);
+            obj.gameObject.SetActive(false);
         }
 
         public T ActivatePoolItem<T>(string key, Vector3 position, Quaternion rotation) where T : class
@@ -69,19 +70,25 @@ namespace ScriptsPhotonCommon.Pool
             }
 
             var objectToSpawn = poolInfoVo.Objects.Count == 0
-                ? CreateAndReturnNewInstance<T>(key)
+                ? CreateAndReturnNewInstance<Component>(key)
                 : poolInfoVo.Objects.Dequeue();
-            if (objectToSpawn is not T castedObject) return null;
-            if (castedObject is not Component comp) return castedObject;
-            comp.gameObject.SetActive(true);
-            comp.transform.position = position;
-            comp.transform.rotation = rotation;
-            comp.transform.SetParent(poolInfoVo.Parent);
 
-            return castedObject;
+            var go = objectToSpawn.gameObject;
+            go.SetActive(true);
+            go.transform.position = position;
+            go.transform.rotation = rotation;
+            go.transform.SetParent(poolInfoVo.Parent);
+
+            if (typeof(T) == typeof(GameObject))
+                return go as T;
+
+            if (objectToSpawn is T castedObject)
+                return castedObject;
+
+            return null;
         }
 
-        public void DisablePoolItem(string key, object obj)
+        public void DisablePoolItem<T>(string key, T obj) where T : class
         {
             if (!_poolDictionary.ContainsKey(key))
             {
@@ -89,14 +96,40 @@ namespace ScriptsPhotonCommon.Pool
                 return;
             }
 
-            if (obj is Component comp)
+            if (obj == null)
             {
-                comp.gameObject.SetActive(false);
+                Debug.LogWarning("The object to disable is null.");
+                return;
             }
 
-            _poolDictionary[key].Objects.Enqueue(obj);
-        }
+            GameObject go = null;
+            Component component = null;
 
+            switch (obj)
+            {
+                case GameObject gameObject:
+                    go = gameObject;
+                    component = go.GetComponent<Component>();
+                    break;
+                case Component comp:
+                    go = comp.gameObject;
+                    component = comp;
+                    break;
+            }
+
+            if (go != null)
+                go.SetActive(false);
+            else
+            {
+                Debug.LogWarning("The object is neither a GameObject nor a Component.");
+                return;
+            }
+
+            if (component != null)
+                _poolDictionary[key].Objects.Enqueue(component);
+            else
+                Debug.LogWarning("No component found to add to the pool.");
+        }
 
         public void RemovePool(string key)
         {

@@ -31,8 +31,7 @@ namespace States
 
         public void Enter()
         {
-            if (PhotonNetwork.IsMasterClient)
-                _gamePoolsService.PreparePools();
+            _gamePoolsService.PreparePools();
             _gameNetworkService.Setup();
         }
 

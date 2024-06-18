@@ -23,7 +23,9 @@ namespace Services.GamePools
         
         public void PreparePools()
         {
-            SpawnPhotonPool(GameObjectEntryKey.Bullet.ToString(), 20);
+            InitializePoolSizes();
+            if (PhotonNetwork.IsMasterClient)
+                SpawnPhotonPools();
         }
 
         public void SetItemReady(string key, Component component)
@@ -37,6 +39,20 @@ namespace Services.GamePools
             CheckPoolsAreReady();
         }
 
+        private void InitializePoolSizes()
+        {
+            InitializePool(GameObjectEntryKey.Bullet, 50);
+        }
+
+        private void InitializePool(GameObjectEntryKey gameObjectEntryKey, int size) => _dictionary.Add(gameObjectEntryKey.ToString(), new PreparationPoolVo(size));
+
+        private void SpawnPhotonPools()
+        {
+            foreach (var key in _dictionary.Keys)
+                for (var i = 0; i < _dictionary[key].InitialSize; i++) 
+                    PhotonNetwork.InstantiatePoolObject(key, Vector3.zero, Quaternion.identity, true);
+        }
+
         private void CheckPoolsAreReady()
         {
             var isAllReady = _dictionary.Keys.All(key => _dictionary[key].IsReady);
@@ -44,19 +60,18 @@ namespace Services.GamePools
             if (isAllReady) 
                 PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.IsPoolsPrepared, true);
         }
-
-        private void SpawnPhotonPool(string key, int amount)
-        {
-            _dictionary.Add(key, new PreparationPoolVo { Components = new List<Component>(), InitialSize = amount });
-            for (var i = 0; i < amount; i++)
-                PhotonNetwork.InstantiatePoolObject(key, Vector3.zero, Quaternion.identity, true);
-        }
     }
 
     public class PreparationPoolVo
     {
-        public List<Component> Components;
-        public int InitialSize;
+        public readonly List<Component> Components;
+        public readonly int InitialSize;
         public bool IsReady;
+        
+        public PreparationPoolVo(int initialSize)
+        {
+            Components = new List<Component>();
+            InitialSize = initialSize;
+        }
     }
 }

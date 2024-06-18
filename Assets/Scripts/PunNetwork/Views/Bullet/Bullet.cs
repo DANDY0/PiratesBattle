@@ -118,7 +118,7 @@ namespace PunNetwork.Views.Bullet
         public override void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             base.OnPhotonInstantiate(info);
-            SetOwner(PhotonNetwork.LocalPlayer.ActorNumber);
+            SetOwner(info.Sender.ActorNumber);
         }
     }
 }

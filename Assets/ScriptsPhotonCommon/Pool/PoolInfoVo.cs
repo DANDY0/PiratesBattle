@@ -5,10 +5,10 @@ namespace ScriptsPhotonCommon.Pool
 {
     public class PoolInfoVo
     {
-        public Queue<object> Objects;
+        public Queue<Component> Objects;
         public Transform Parent;
 
-        public PoolInfoVo(Queue<object> objectPool, Transform parent)
+        public PoolInfoVo(Queue<Component> objectPool, Transform parent)
         {
             Objects = objectPool;
             Parent = parent;

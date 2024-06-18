@@ -153,7 +153,7 @@ namespace PunNetwork.Views.Player
             if (_shootingTimer <= 0)
             {
                 _shootingTimer = .2f;
-                var bullet = PhotonNetwork.InstantiatePoolRoomObject(GameObjectEntryKey.Bullet.ToString(), transform.position,
+                var bullet = PhotonNetwork.InstantiatePoolObject(GameObjectEntryKey.Bullet.ToString(), transform.position,
                     transform.rotation);
                 bullet.GetComponent<Bullet.Bullet>().Fire(transform.position, transform.rotation);
             }

@@ -1,6 +1,7 @@
 ﻿using ScriptsPhotonCommon.Factory;
 using ScriptsPhotonCommon.Pool;
 using UnityEngine;
+using Component = System.ComponentModel.Component;
 
 namespace ScriptsPhotonCommon.PhotonFactory
 {
@@ -19,7 +20,7 @@ namespace ScriptsPhotonCommon.PhotonFactory
             _poolService = poolService;
         }
         
-        public T Instantiate<T>(string key, Vector3 position, Quaternion rotation) where T : class
+        public T Instantiate<T>(string key, Vector3 position, Quaternion rotation) where T : Object
         {
             if (_poolService.ContainsPool(key))
                 return _poolService.ActivatePoolItem<T>(key, position, rotation);
