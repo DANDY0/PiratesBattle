@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Views
+namespace Views.MainMenuView
 {
     public class MenuProfilePanel: MonoBehaviour
     {

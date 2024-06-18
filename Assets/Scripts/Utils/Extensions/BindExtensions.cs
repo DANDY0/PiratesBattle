@@ -4,10 +4,12 @@ using Core.Abstracts;
 using Core.Interfaces;
 using Models;
 using Services.Window;
-using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
+using IPrefabProvider = ScriptsPhotonCommon.PrefabProvider.IPrefabProvider;
 using Object = UnityEngine.Object;
+using PrefabProvider = ScriptsPhotonCommon.PrefabProvider.PrefabProvider;
+using static Utils.Enumerators;
 
 namespace Utils.Extensions
 {
@@ -93,11 +95,6 @@ namespace Utils.Extensions
             }
         }
 
-        public static void BindFactory<TFactory, TConcrete>(this DiContainer container)
-            where TFactory : IFactory
-            where TConcrete : TFactory
-            => container.Bind<TFactory>().To<TConcrete>().AsSingle();
-
         public static void BindPrefab<TContent>(this DiContainer container, TContent prefab, Transform parent = null,
             bool isDestroyOnLoad = false)
             where TContent : Object =>
@@ -112,22 +109,19 @@ namespace Utils.Extensions
                     if (isDestroyOnLoad)
                         Object.DontDestroyOnLoad(o as MonoBehaviour);
                 });
-
-        public static void BindPool<TItemContract, TPoolConcrete, TPoolContract>(this DiContainer container,
-            TItemContract prefab, int size)
-            where TItemContract : MonoBehaviour
-            where TPoolConcrete : TPoolContract, IMemoryPool
-            where TPoolContract : IMemoryPool
+        
+        public static void BindPrefabs(this DiContainer container, IEnumerable<GameObjectEntry> entries)
         {
-            var poolContainerName = "[Pool] " + prefab;
-            container.BindMemoryPoolCustomInterface<TItemContract, TPoolConcrete, TPoolContract>()
-                .WithInitialSize(size)
-                .FromComponentInNewPrefab(prefab)
-#if UNITY_EDITOR
-                .UnderTransformGroup(poolContainerName)
-#endif
-                .AsCached()
-                .OnInstantiated((_, item) => (item as MonoBehaviour)?.gameObject.SetActive(false));
+            var entriesDictionary = new Dictionary<string, GameObject>();
+
+            foreach (var entry in entries)
+            {
+                if (entriesDictionary.TryGetValue(entry.Key.ToString(), out var gameObject)) 
+                    Debug.LogError($"{nameof(BindExtensions)} Duplicate key {entry.Key} on {gameObject} and {entry.GameObject}");
+                entriesDictionary[entry.Key.ToString()] = entry.GameObject;
+            }
+
+            container.Bind<IPrefabProvider>().To<PrefabProvider>().AsSingle().WithArguments(entriesDictionary);
         }
     }
 }

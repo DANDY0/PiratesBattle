@@ -2,7 +2,7 @@
 using Services.Data;
 using UnityEngine;
 
-namespace Views
+namespace Views.MainMenuView
 {
     public class MenuProfileHandler: Handler<MenuProfilePanel>
     {

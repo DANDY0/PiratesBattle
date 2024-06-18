@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
-using Controllers;
+﻿using Controllers;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
-using PunNetwork.Services;
-using PunNetwork.Services.Impls;
+using PunNetwork.Services.CustomProperties;
+using PunNetwork.Services.ProjectNetwork;
+using States.Core;
 using UnityEngine;
+using Utils;
 
-namespace States.Core
+namespace States
 {
     public class PhotonConnectionState : IState
     {
@@ -60,6 +61,7 @@ namespace States.Core
 
         private void OnConnectedToMaster()
         {
+            CustomTypes.Register();
             _gameStateMachine.Enter<LoadDataState>();
         }
     }

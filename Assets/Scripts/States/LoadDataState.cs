@@ -1,6 +1,7 @@
 ﻿using System;
 using Photon.Pun;
-using PunNetwork.Services.Impls;
+using PunNetwork.Services;
+using PunNetwork.Services.ProjectNetwork;
 using Services.Data;
 using Services.SceneLoading;
 using States.Core;

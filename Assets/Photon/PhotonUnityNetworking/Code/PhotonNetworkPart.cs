@@ -9,6 +9,7 @@
 // ----------------------------------------------------------------------------
 
 
+
 namespace Photon.Pun
 {
     using System;
@@ -180,7 +181,7 @@ namespace Photon.Pun
                 if (value == null)
                 {
                     Debug.LogWarning("PhotonNetwork.PrefabPool cannot be set to null. It will default back to using the 'DefaultPool' Pool");
-                    prefabPool = new DefaultPool();
+                    prefabPool = new PhotonPool();
                 }
                 else
                 {

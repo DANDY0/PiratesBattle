@@ -9,6 +9,11 @@
 // ----------------------------------------------------------------------------
 
 
+using System.Linq;
+using ScriptsPhotonCommon;
+using ScriptsPhotonCommon.PhotonFactory;
+using ScriptsPhotonCommon.Pool;
+
 #pragma warning disable 1587
 /// \defgroup publicApi Public API
 /// \brief Groups the most important classes that you need to understand early on.
@@ -895,6 +900,29 @@ namespace Photon.Pun
         public void Destroy(GameObject gameObject)
         {
             GameObject.Destroy(gameObject);
+        }
+    }
+    
+    public class PhotonPool : IPunPrefabPool
+    {
+        private IPhotonFactory _photonFactory;
+
+        public GameObject Instantiate(string prefabId, Vector3 position, Quaternion rotation)
+        {
+            _photonFactory ??= Di.Container.Resolve<IPhotonFactory>();
+            var instance = _photonFactory.Instantiate<GameObject>(prefabId, position, rotation);
+            return instance;
+        }
+        
+        public void Destroy(GameObject gameObject)
+        {
+            var photonView = gameObject.GetPhotonView();
+                
+            string key = null;
+            if (photonView.InstantiationData?.Last() is PoolObjectDataVo dataVo)
+                key = dataVo.Key;
+
+            _photonFactory.Destroy(gameObject, key);
         }
     }
 

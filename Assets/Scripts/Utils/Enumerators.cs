@@ -15,6 +15,13 @@
             IsSpawned,
             PlayerLives,
             PlayerSpawnedData,
+            IsPoolsPrepared
+        }
+
+        public enum GameObjectEntryKey
+        {
+            Bullet = 0,
+            Player = 1
         }
     }
 }

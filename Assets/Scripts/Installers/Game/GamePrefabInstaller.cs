@@ -1,7 +1,8 @@
-﻿using Controllers;
-using ObjectPooling;
-using PunNetwork;
-using PunNetwork.Services.Impls;
+﻿using System.Collections.Generic;
+using Controllers;
+using Models;
+using PunNetwork.Services.GameNetwork;
+using ScriptsPhotonCommon;
 using Services.Window;
 using UnityEngine;
 using Utils.Extensions;
@@ -25,7 +26,9 @@ namespace Installers.Game
         [Header("Network")] 
         [SerializeField] private GameNetworkService _gameNetworkService;
 
-
+        [Header("Prefabs")] 
+        [SerializeField] private GameObjectEntry[] _gameObjectEntries;
+        
         public override void InstallBindings()
         {
             BindWindows();
@@ -34,7 +37,10 @@ namespace Installers.Game
 
         private void BindPrefabs()
         {
+            Container.BindPrefabs(_gameObjectEntries);
+            
             Container.BindPrefab(_gameNetworkService);
+
         }
         
         private void BindWindows()

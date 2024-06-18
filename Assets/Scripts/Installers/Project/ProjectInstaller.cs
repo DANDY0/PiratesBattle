@@ -1,5 +1,5 @@
 using Photon.Realtime;
-using PunNetwork.Services.Impls;
+using ScriptsPhotonCommon;
 using Services.Data;
 using Services.Input;
 using Services.Localization;
@@ -18,7 +18,7 @@ namespace Installers.Project
     {
         public override void InstallBindings()
         {
-            DependencyInjector.Container = Container;
+            Di.Container = Container;
             SignalBusInstaller.Install(Container);
             BindServices();
         }
@@ -33,8 +33,8 @@ namespace Installers.Project
             Container.BindInterfacesTo<SpreadsheetsService>().AsSingle();
             Container.BindInterfacesTo<WindowService>().AsSingle();
             Container.BindInterfacesTo<SceneLoadingService>().AsSingle();
-            Container.BindInterfacesTo<InputService>().AsSingle();
 			Container.BindInterfacesTo<GameStateMachine>().AsSingle();
+
             Container.BindInterfacesTo<AudioSourcePool>().AsSingle();
             Container.BindInterfacesTo<SoundService>().AsSingle();
         }

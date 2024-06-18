@@ -1,4 +1,5 @@
-﻿using States.Core;
+﻿using ScriptsPhotonCommon;
+using States.Core;
 using Utils;
 using Zenject;
 
@@ -8,7 +9,7 @@ namespace Installers.Initial
     {
         public override void InstallBindings()
         {
-            DependencyInjector.Container = Container;
+            Di.Container = Container;
             ConfigureGameStateMachine();
             BindServices();
         }

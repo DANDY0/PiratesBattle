@@ -1,12 +1,13 @@
 ﻿using Controllers;
 using Photon.Pun.UtilityScripts;
-using PunNetwork.Services.Impls;
+using PunNetwork.Services.MenuNetwork;
 using Services.Window;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
 using Utils.Extensions;
 using Views;
+using Views.MainMenuView;
 using Zenject;
 
 namespace Installers.Menu

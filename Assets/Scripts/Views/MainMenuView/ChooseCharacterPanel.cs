@@ -1,8 +1,6 @@
-﻿using System;
-using Core.Abstracts;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Views
+namespace Views.MainMenuView
 {
     public class ChooseCharacterPanel: MonoBehaviour 
     {

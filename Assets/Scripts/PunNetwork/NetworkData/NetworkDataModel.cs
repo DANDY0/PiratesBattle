@@ -20,7 +20,6 @@ namespace PunNetwork.NetworkData
                 CharacterID = characterID;
                 AvatarID = avatarID;
             }
-            
         }
     }
 }

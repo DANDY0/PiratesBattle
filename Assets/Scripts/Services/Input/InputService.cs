@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Services.Input
 {
-    public class InputService : IInputService, IInitializable, IDisposable
+    public class InputService : IInputService, IDisposable
     {
         public event Action<bool> FireTriggeredEvent;
         public Vector2 MoveAxis => GetInputAxis(MoveHorizontal, MoveVertical);
@@ -15,7 +15,7 @@ namespace Services.Input
         private const string LookHorizontal = "ShootHorizontal";
         private const string LookVertical = "ShootVertical";
 
-        public void Initialize()
+        public void Enable()
         {
             SimpleInput.FireTriggeredEvent += OnFireTriggeredEvent;
         }

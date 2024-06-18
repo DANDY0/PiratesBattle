@@ -1,7 +1,7 @@
 ﻿using Core.Abstracts;
 using UnityEngine;
 
-namespace Views
+namespace Views.MainMenuView
 {
     public class ChooseCharacterHandler: Handler<ChooseCharacterPanel>
     {

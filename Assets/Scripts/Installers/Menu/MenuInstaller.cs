@@ -1,6 +1,10 @@
-﻿using States.Core;
+﻿using ScriptsPhotonCommon;
+using ScriptsPhotonCommon.Factory;
+using ScriptsPhotonCommon.Pool;
+using States.Core;
 using Utils;
 using Views;
+using Views.MainMenuView;
 using Zenject;
 
 namespace Installers.Menu
@@ -9,7 +13,7 @@ namespace Installers.Menu
     {
         public override void InstallBindings()
         {
-            DependencyInjector.Container = Container;
+            Di.Container = Container;
             ConfigureGameStateMachine();
             BindServices();
             BindHandlers();
@@ -18,6 +22,8 @@ namespace Installers.Menu
         private void BindServices()
         {
             Container.BindInterfacesTo<MenuEntryPoint>().AsSingle();
+            Container.BindInterfacesTo<GameFactory>().AsSingle();
+            Container.BindInterfacesTo<PoolService>().AsSingle();
         }
 
         private void BindHandlers()

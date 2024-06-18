@@ -1,7 +1,15 @@
 ﻿using PunNetwork;
 using PunNetwork.Services;
-using PunNetwork.Services.Impls;
+using PunNetwork.Services.ObjectsInRoom;
+using PunNetwork.Services.SpawnPoints;
+using ScriptsPhotonCommon;
+using ScriptsPhotonCommon.Factory;
+using ScriptsPhotonCommon.PhotonFactory;
+using ScriptsPhotonCommon.Pool;
 using Services;
+using Services.Data;
+using Services.GamePools;
+using Services.Input;
 using Signals;
 using States.Core;
 using UnityEngine;
@@ -16,7 +24,7 @@ namespace Installers.Game
         
         public override void InstallBindings()
         {
-            DependencyInjector.Container = Container;
+            Di.Container = Container;
             ConfigureGameStateMachine();
             BindSignals();
             BindServices();
@@ -31,11 +39,12 @@ namespace Installers.Game
         {
             Container.BindInterfacesTo<GameEntryPoint>().AsSingle();
             Container.Bind<ISpawnPointsService>().FromInstance(_spawnPointsService).AsSingle();
-            Container.BindInterfacesTo<PlayersInRoomService>().AsSingle();
-            
-
-
-            Container.BindInterfacesTo<BulletsPool>().AsSingle();
+            Container.BindInterfacesTo<ObjectsInRoomService>().AsSingle();
+            Container.BindInterfacesTo<GameFactory>().AsSingle();
+            Container.BindInterfacesTo<PoolService>().AsSingle();
+            Container.BindInterfacesTo<PhotonFactory>().AsSingle();
+            Container.BindInterfacesTo<GamePoolsService>().AsSingle();
+            Container.BindInterfacesTo<InputService>().AsSingle();
         }
         
         private void ConfigureGameStateMachine()

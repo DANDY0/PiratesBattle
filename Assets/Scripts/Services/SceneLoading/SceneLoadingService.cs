@@ -22,11 +22,11 @@ namespace Services.SceneLoading
             _coroutineRunner.StartCoroutine(LoadSceneCoroutine(name, onLoaded));
         }
 
-        private IEnumerator LoadSceneCoroutine(string sceneName, Action onLoaded = null)
+        private static IEnumerator LoadSceneCoroutine(string sceneName, Action onLoaded = null)
         {
             var loadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
 
-            while (!loadingOperation.isDone)
+            while (loadingOperation is { isDone: false })
                 yield return null;
 
             onLoaded?.Invoke();

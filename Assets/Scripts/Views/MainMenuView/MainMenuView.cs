@@ -1,10 +1,9 @@
 ﻿using Core.Abstracts;
 using Enums;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Views
+namespace Views.MainMenuView
 {
     public class MainMenuView : Window
     {

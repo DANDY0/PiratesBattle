@@ -21,3 +21,8 @@ MonoBehaviour:
     type: 3}
   _gameNetworkService: {fileID: -8012005430241376883, guid: 6dd235a838e739c47bb9a0866ac3925f,
     type: 3}
+  _gameObjectEntries:
+  - Key: 0
+    GameObject: {fileID: 152888, guid: 8ab4b24d072eeb54bace514b7382343e, type: 3}
+  - Key: 1
+    GameObject: {fileID: 178952, guid: 32a60a7b420a2ca4f903e93edec869db, type: 3}
