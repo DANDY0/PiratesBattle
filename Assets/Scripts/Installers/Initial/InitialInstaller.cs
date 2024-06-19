@@ -1,4 +1,4 @@
-﻿using ScriptsPhotonCommon;
+﻿using Photon.PhotonUnityNetworking.Code.Common;
 using States.Core;
 using Utils;
 using Zenject;

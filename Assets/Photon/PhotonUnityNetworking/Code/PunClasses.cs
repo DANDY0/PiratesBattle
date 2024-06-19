@@ -10,9 +10,9 @@
 
 
 using System.Linq;
-using ScriptsPhotonCommon;
-using ScriptsPhotonCommon.PhotonFactory;
-using ScriptsPhotonCommon.Pool;
+using Photon.PhotonUnityNetworking.Code.Common;
+using Photon.PhotonUnityNetworking.Code.Common.PhotonFactory;
+using Photon.PhotonUnityNetworking.Code.Common.Pool;
 
 #pragma warning disable 1587
 /// \defgroup publicApi Public API

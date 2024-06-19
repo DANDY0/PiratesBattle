@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ScriptsPhotonCommon.PrefabProvider
+namespace Photon.PhotonUnityNetworking.Code.Common.PrefabProvider
 {
     public interface IPrefabProvider
     {

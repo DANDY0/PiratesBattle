@@ -15,7 +15,8 @@
             IsSpawned,
             PlayerLives,
             PlayerSpawnedData,
-            IsPoolsPrepared
+            IsPoolsPrepared,
+            IsPoolsPreparedAndSynced
         }
 
         public enum GameObjectEntryKey

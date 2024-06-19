@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-using IPrefabProvider = ScriptsPhotonCommon.PrefabProvider.IPrefabProvider;
+using IPrefabProvider = Photon.PhotonUnityNetworking.Code.Common.PrefabProvider.IPrefabProvider;
 using Object = UnityEngine.Object;
 
-namespace ScriptsPhotonCommon.Factory
+namespace Photon.PhotonUnityNetworking.Code.Common.Factory
 {
     public class GameFactory : IGameFactory
     {

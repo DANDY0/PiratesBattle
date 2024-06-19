@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Core.Interfaces;
-using ScriptsPhotonCommon.Factory;
+using Photon.PhotonUnityNetworking.Code.Common.Factory;
 using UnityEngine;
 using Zenject;
 

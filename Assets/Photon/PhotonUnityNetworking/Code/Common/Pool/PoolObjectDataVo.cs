@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ScriptsPhotonCommon.Pool
+namespace Photon.PhotonUnityNetworking.Code.Common.Pool
 {
     [Serializable]
     public class PoolObjectDataVo

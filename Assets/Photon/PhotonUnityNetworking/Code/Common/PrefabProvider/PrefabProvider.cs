@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptsPhotonCommon.PrefabProvider
+namespace Photon.PhotonUnityNetworking.Code.Common.PrefabProvider
 {
     public class PrefabProvider : IPrefabProvider
     {

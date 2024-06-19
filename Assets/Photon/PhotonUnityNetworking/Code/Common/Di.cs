@@ -1,6 +1,6 @@
 ﻿using Zenject;
 
-namespace ScriptsPhotonCommon
+namespace Photon.PhotonUnityNetworking.Code.Common
 {
     public static class Di  
     {

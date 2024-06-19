@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ScriptsPhotonCommon.Pool
+namespace Photon.PhotonUnityNetworking.Code.Common.Pool
 {
     public interface IPoolService
     {

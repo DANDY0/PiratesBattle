@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ScriptsPhotonCommon.Factory
+namespace Photon.PhotonUnityNetworking.Code.Common.Factory
 {
     public interface IGameFactory
     {

@@ -1,5 +1,5 @@
+using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.Realtime;
-using ScriptsPhotonCommon;
 using Services.Data;
 using Services.Input;
 using Services.Localization;

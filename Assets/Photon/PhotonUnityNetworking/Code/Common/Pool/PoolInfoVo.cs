@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptsPhotonCommon.Pool
+namespace Photon.PhotonUnityNetworking.Code.Common.Pool
 {
     public class PoolInfoVo
     {
-        public Queue<Component> Objects;
-        public Transform Parent;
+        public readonly Queue<Component> Objects;
+        public readonly Transform Parent;
 
         public PoolInfoVo(Queue<Component> objectPool, Transform parent)
         {

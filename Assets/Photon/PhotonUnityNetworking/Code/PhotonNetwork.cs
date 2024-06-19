@@ -9,7 +9,7 @@
 // ----------------------------------------------------------------------------
 
 
-using ScriptsPhotonCommon.Pool;
+using Photon.PhotonUnityNetworking.Code.Common.Pool;
 
 namespace Photon.Pun
 {

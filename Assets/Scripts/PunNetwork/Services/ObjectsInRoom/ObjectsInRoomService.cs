@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using Photon.PhotonUnityNetworking.Code.Common.Pool;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.Services.CustomProperties;
 using PunNetwork.Services.ProjectNetwork;
 using PunNetwork.Views.Player;
 using Services.Data;
+using Services.GamePools;
 using States;
 using States.Core;
 using UnityEngine;
@@ -26,10 +28,12 @@ namespace PunNetwork.Services.ObjectsInRoom
         private readonly ICustomPropertiesService _customPropertiesService;
         private readonly IProjectNetworkService _projectNetworkService;
         private readonly IDataService _dataService;
+        private readonly IGamePoolsService _gamePoolsService;
+        private readonly IPoolService _poolService;
 
-        private bool _isAllPoolsPrepared;
         private bool _isAllPlayersSpawned;
-        
+        private bool _isAllPoolsPreparedAndSynced;
+
         public List<PlayerView> PlayerViews { get; } = new();
 
         public ObjectsInRoomService
@@ -37,19 +41,22 @@ namespace PunNetwork.Services.ObjectsInRoom
             ICustomPropertiesService customPropertiesService,
             IGameStateMachine gameStateMachine,
             IProjectNetworkService projectNetworkService,
-            IDataService dataService
+            IDataService dataService,
+            IGamePoolsService gamePoolsService
         )
         {
             _customPropertiesService = customPropertiesService;
             _gameStateMachine = gameStateMachine;
             _projectNetworkService = projectNetworkService;
             _dataService = dataService;
+            _gamePoolsService = gamePoolsService;
         }
 
         public void Initialize()
         {
             _customPropertiesService.PlayerSpawnedEvent += PlayerSpawnedHandler;
             _customPropertiesService.PoolsPreparedEvent += PoolsPreparedHandler;
+            _customPropertiesService.PoolsPreparedAndSyncedEvent += PoolsPreparedAndSyncedHandler;
             _customPropertiesService.GetPlayerSpawnedDataEvent += GetPlayerSpawnedDataHandler;
         }
 
@@ -58,6 +65,7 @@ namespace PunNetwork.Services.ObjectsInRoom
             _customPropertiesService.PlayerSpawnedEvent -= PlayerSpawnedHandler;
             _customPropertiesService.GetPlayerSpawnedDataEvent -= GetPlayerSpawnedDataHandler;
             _customPropertiesService.PoolsPreparedEvent -= PoolsPreparedHandler;
+            _customPropertiesService.PoolsPreparedAndSyncedEvent += PoolsPreparedAndSyncedHandler;
         }
 
         public bool IsAllEnemiesDestroyed()
@@ -92,6 +100,13 @@ namespace PunNetwork.Services.ObjectsInRoom
                 OnAllPoolsPrepared();
         }
 
+        private void PoolsPreparedAndSyncedHandler()
+        {
+            var isAllReady = IsAllPreparedAndSyncedPools();
+            if (isAllReady)
+                OnAllPoolsPreparedAndSynced();
+        }
+
         private static bool IsAllReady()
         {
             var isAllReady = true;
@@ -124,6 +139,22 @@ namespace PunNetwork.Services.ObjectsInRoom
             return isAllReady;
         }
 
+        private static bool IsAllPreparedAndSyncedPools()
+        {
+            var isAllReady = true;
+            foreach (var player in PhotonNetwork.PlayerList)
+                if (player.TryGetCustomProperty(PlayerProperty.IsPoolsPreparedAndSynced, out var isPrepared))
+                {
+                    if ((bool)isPrepared) continue;
+                    isAllReady = false;
+                    break;
+                }
+                else
+                    isAllReady = false;
+
+            return isAllReady;
+        }
+
         private void OnAllSpawned()
         {
             _isAllPlayersSpawned = true;
@@ -145,15 +176,26 @@ namespace PunNetwork.Services.ObjectsInRoom
 
         private void OnAllPoolsPrepared()
         {
-            _isAllPoolsPrepared = true;
+            if (!PhotonNetwork.IsMasterClient) return;
+            var customProperties = new ExitGames.Client.Photon.Hashtable();
+
+            foreach (var pool in _gamePoolsService.PhotonViewIdsDictionary)
+                customProperties[pool.Key] = pool.Value;
+
+            PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
+        }
+
+        private void OnAllPoolsPreparedAndSynced()
+        {
+            _isAllPoolsPreparedAndSynced = true;
             GoNextState();
         }
 
         private void GoNextState()
         {
-            if (!_isAllPlayersSpawned || !_isAllPoolsPrepared)
+            if (!_isAllPlayersSpawned || !_isAllPoolsPreparedAndSynced)
                 return;
-            
+
             if (_projectNetworkService.IsGameStarted)
                 _gameStateMachine.Enter<GameplayState>();
             else
@@ -171,14 +213,14 @@ namespace PunNetwork.Services.ObjectsInRoom
 
         private void SendPlayerSpawnedData()
         {
-            PlayerSpawnedData playerSpawnedData = new PlayerSpawnedData(PhotonNetwork.LocalPlayer.ActorNumber,
+            var playerSpawnedData = new PlayerSpawnedData(PhotonNetwork.LocalPlayer.ActorNumber,
                 _dataService.CachedUserLocalData.NickName, 0, 1);
-            string json = JsonConvert.SerializeObject(playerSpawnedData);
+            var json = JsonConvert.SerializeObject(playerSpawnedData);
 
             PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.PlayerSpawnedData, json);
         }
 
-        private void SetTeamRole(PlayerView playerView)
+        private static void SetTeamRole(PlayerView playerView)
         {
             var player = playerView.PhotonView.Owner;
 

@@ -3,8 +3,7 @@
     "rootNamespace": "",
     "references": [
         "PhotonRealtime",
-        "Zenject",
-        "DependencyInjection"
+        "Zenject"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

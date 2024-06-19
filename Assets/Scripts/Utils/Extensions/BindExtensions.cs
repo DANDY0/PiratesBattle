@@ -6,9 +6,9 @@ using Models;
 using Services.Window;
 using UnityEngine;
 using Zenject;
-using IPrefabProvider = ScriptsPhotonCommon.PrefabProvider.IPrefabProvider;
+using IPrefabProvider = Photon.PhotonUnityNetworking.Code.Common.PrefabProvider.IPrefabProvider;
 using Object = UnityEngine.Object;
-using PrefabProvider = ScriptsPhotonCommon.PrefabProvider.PrefabProvider;
+using PrefabProvider = Photon.PhotonUnityNetworking.Code.Common.PrefabProvider.PrefabProvider;
 using static Utils.Enumerators;
 
 namespace Utils.Extensions

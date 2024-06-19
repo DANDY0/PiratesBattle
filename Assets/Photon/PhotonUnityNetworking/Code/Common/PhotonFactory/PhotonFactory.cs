@@ -1,9 +1,8 @@
-﻿using ScriptsPhotonCommon.Factory;
-using ScriptsPhotonCommon.Pool;
+﻿using Photon.PhotonUnityNetworking.Code.Common.Factory;
+using Photon.PhotonUnityNetworking.Code.Common.Pool;
 using UnityEngine;
-using Component = System.ComponentModel.Component;
 
-namespace ScriptsPhotonCommon.PhotonFactory
+namespace Photon.PhotonUnityNetworking.Code.Common.PhotonFactory
 {
     public class PhotonFactory : IPhotonFactory
     {
