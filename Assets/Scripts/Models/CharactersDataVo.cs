@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils;
 
 namespace Models
@@ -15,7 +16,8 @@ namespace Models
     public class CharacterData
     {
         public Enumerators.Character Character;
-        public Sprite AvatarImage;
+        [FormerlySerializedAs("AvatarImage")] public Sprite AvatarSprite;
         public Sprite FullImage;
+
     }
 }

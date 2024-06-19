@@ -23,9 +23,17 @@ namespace Views
         protected override void Initialize()
         {
             Debug.Log("CharacterPageHandler initialized");
+            View.SelectButton.onClick.AddListener(SelectClickHandler);
             View.BackButton.onClick.AddListener(BackButtonClick);
         }
-        
+
+        private void SelectClickHandler()
+        {
+            // logic for saving current character
+            
+            _windowService.Open(EWindow.MainMenu);
+        }
+
         private void BackButtonClick()
         {
             _charactersListHandler.Show();

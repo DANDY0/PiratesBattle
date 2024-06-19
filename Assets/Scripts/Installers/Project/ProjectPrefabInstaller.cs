@@ -24,6 +24,7 @@ namespace Installers.Project
         [SerializeField] private SoundsDatabase _soundsDatabase;
         [SerializeField] private SettingsDatabase _settingsDatabase;
         [SerializeField] private DataManagementDatabase _dataManagementDatabase;
+        [SerializeField] private CharactersVisualDatabase _charactersVisualDatabase;
 
         [Header("Common")] 
         [SerializeField] private CoroutineRunner _coroutineRunner;
@@ -85,6 +86,7 @@ namespace Installers.Project
             Container.Bind<ISoundsDatabase>().FromInstance(_soundsDatabase).AsSingle();
             Container.Bind<ISettingsDatabase>().FromInstance(_settingsDatabase).AsSingle();
             Container.Bind<IDataManagementDatabase>().FromInstance(_dataManagementDatabase).AsSingle();
+            Container.Bind<ICharactersVisualDatabase>().FromInstance(_charactersVisualDatabase).AsSingle();
         }
     }
 }

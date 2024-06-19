@@ -6,9 +6,10 @@ namespace Core.Abstracts
     {
         protected T View;
 
-        public void Setup(T view)
+        public void Setup(T view, T controller)
         {
             View = view;
+            Controller = controller;
             Initialize();
         }
 
