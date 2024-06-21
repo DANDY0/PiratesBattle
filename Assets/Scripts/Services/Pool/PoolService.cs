@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Photon.PhotonUnityNetworking.Code.Common.Factory;
-using Photon.Pun;
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Code.Common.Pool
+namespace Services.Pool
 {
     public class PoolService : IPoolService
     {
@@ -23,7 +22,7 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Pool
         {
             if (!_poolDictionary.ContainsKey(key))
             {
-                var objectPool = new Queue<Component>();
+                var objectPool = new Queue<object>();
                 var parent = new GameObject($"[Pool] {key}").transform;
 
                 for (var i = 0; i < amount; i++)
@@ -35,7 +34,7 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Pool
                     objectPool.Enqueue(component);
                 }
 
-                _poolDictionary.Add(key, new PoolInfoVo(objectPool, parent));
+                _poolDictionary.Add(key, new PoolInfoVo(parent, objectPool));
             }
             else
             {
@@ -43,22 +42,22 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Pool
             }
         }
 
-        public void AddObjectToPool(string key, Component obj)
+        public void AddObjectToPool(string key, object obj)
         {
             if (!_poolDictionary.ContainsKey(key))
             {
                 var parent = new GameObject($"[Pool] {key}").transform;
 
-                _poolDictionary.Add(key, new PoolInfoVo(new Queue<Component>(), parent));
+                _poolDictionary.Add(key, new PoolInfoVo(parent));
             }
 
             var poolInfoVo = _poolDictionary[key];
 
             poolInfoVo.Objects.Enqueue(obj);
 
-            if (obj is null) return;
-            obj.transform.SetParent(poolInfoVo.Parent);
-            obj.gameObject.SetActive(false);
+            if (obj is not GameObject gameObject) return;
+            gameObject.transform.SetParent(poolInfoVo.Parent);
+            gameObject.SetActive(false);
         }
 
         public T ActivatePoolItem<T>(string key, Vector3 position, Quaternion rotation) where T : class
@@ -70,25 +69,19 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Pool
             }
 
             var objectToSpawn = poolInfoVo.Objects.Count == 0
-                ? CreateAndReturnNewInstance<Component>(key)
+                ? CreateAndReturnNewInstance<T>(key)
                 : poolInfoVo.Objects.Dequeue();
 
-            var go = objectToSpawn.gameObject;
-            go.SetActive(true);
-            go.transform.position = position;
-            go.transform.rotation = rotation;
-            go.transform.SetParent(poolInfoVo.Parent);
+            if (objectToSpawn is not T castedObject) return null;
+            if (castedObject is not Component comp) return castedObject;
+            comp.gameObject.SetActive(true);
+            comp.transform.position = position;
+            comp.transform.rotation = rotation;
 
-            if (typeof(T) == typeof(GameObject))
-                return go as T;
-
-            if (objectToSpawn is T castedObject)
-                return castedObject;
-
-            return null;
+            return castedObject;
         }
 
-        public void DisablePoolItem<T>(string key, T obj) where T : class
+        public void DisablePoolItem(string key, object obj)
         {
             if (!_poolDictionary.ContainsKey(key))
             {
@@ -96,39 +89,10 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Pool
                 return;
             }
 
-            if (obj == null)
-            {
-                Debug.LogWarning("The object to disable is null.");
-                return;
-            }
+            if (obj is Component comp) 
+                comp.gameObject.SetActive(false);
 
-            GameObject go = null;
-            Component component = null;
-
-            switch (obj)
-            {
-                case GameObject gameObject:
-                    go = gameObject;
-                    component = go.GetComponent<Component>();
-                    break;
-                case Component comp:
-                    go = comp.gameObject;
-                    component = comp;
-                    break;
-            }
-
-            if (go != null)
-                go.SetActive(false);
-            else
-            {
-                Debug.LogWarning("The object is neither a GameObject nor a Component.");
-                return;
-            }
-
-            if (component != null)
-                _poolDictionary[key].Objects.Enqueue(component);
-            else
-                Debug.LogWarning("No component found to add to the pool.");
+            _poolDictionary[key].Objects.Enqueue(obj);
         }
 
         public void RemovePool(string key)
@@ -137,15 +101,11 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Pool
             pool.Objects.Clear();
             _poolDictionary.Remove(key);
         }
-
-        public bool ContainsPool(string key) => _poolDictionary.ContainsKey(key);
-
+        
         private T CreateAndReturnNewInstance<T>(string key) where T : class
         {
             if (string.IsNullOrEmpty(key))
-            {
                 throw new ArgumentException("Path cannot be null or empty", nameof(key));
-            }
 
             Component newObj = _gameFactory.CreateWithKey(key, Vector3.zero, Quaternion.identity).transform;
             newObj.gameObject.SetActive(false);

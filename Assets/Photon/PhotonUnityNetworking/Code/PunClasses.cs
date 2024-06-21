@@ -9,10 +9,8 @@
 // ----------------------------------------------------------------------------
 
 
-using System.Linq;
 using Photon.PhotonUnityNetworking.Code.Common;
-using Photon.PhotonUnityNetworking.Code.Common.PhotonFactory;
-using Photon.PhotonUnityNetworking.Code.Common.Pool;
+using Photon.PhotonUnityNetworking.Code.Common.Factory;
 
 #pragma warning disable 1587
 /// \defgroup publicApi Public API
@@ -35,7 +33,6 @@ namespace Photon.Pun
     using UnityEngine;
     using UnityEngine.SceneManagement;
     using Photon.Realtime;
-    using SupportClassPun = ExitGames.Client.Photon.SupportClass;
 
 
     /// <summary>Replacement for RPC attribute with different name. Used to flag methods as remote-callable.</summary>
@@ -905,24 +902,18 @@ namespace Photon.Pun
     
     public class PhotonPool : IPunPrefabPool
     {
-        private IPhotonFactory _photonFactory;
+        private IGameFactory _gameFactory;
 
         public GameObject Instantiate(string prefabId, Vector3 position, Quaternion rotation)
         {
-            _photonFactory ??= Di.Container.Resolve<IPhotonFactory>();
-            var instance = _photonFactory.Instantiate<GameObject>(prefabId, position, rotation);
+            _gameFactory ??= Di.Container.Resolve<IGameFactory>();
+            var instance = _gameFactory.CreateWithKey(prefabId, position, rotation);
             return instance;
         }
         
         public void Destroy(GameObject gameObject)
         {
-            var photonView = gameObject.GetPhotonView();
-                
-            string key = null;
-            if (photonView.InstantiationData?.Last() is PoolObjectDataVo dataVo)
-                key = dataVo.Key;
-
-            _photonFactory.Destroy(gameObject, key);
+            UnityEngine.Object.Destroy(gameObject);
         }
     }
 

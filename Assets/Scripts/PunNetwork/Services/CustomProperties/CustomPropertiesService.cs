@@ -15,10 +15,7 @@ namespace PunNetwork.Services.CustomProperties
     {
         public event Action PlayerSpawnedEvent;
         public event Action PoolsPreparedEvent;
-        public event Action PoolsPreparedAndSyncedEvent;
         public event Action PlayerLivesChangedEvent;
-        public delegate void RoomPoolsViewIdsChangedEventHandler(Dictionary<string, int[]> updatedPoolsViewIds);
-        public event RoomPoolsViewIdsChangedEventHandler RoomPoolsViewIdsChangedEvent;
         public event Action<PlayerSpawnedData> GetPlayerSpawnedDataEvent;
         
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -31,22 +28,7 @@ namespace PunNetwork.Services.CustomProperties
                 HandlePropertyChange(propKey, propValue, targetPlayer);
             }
         }
-
-        public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
-        {
-            var updatedPoolsViewIds = new Dictionary<string, int[]>();
-
-            foreach (var key in propertiesThatChanged.Keys)
-            {
-                if (propertiesThatChanged[key] is int[] viewIDs)
-                {
-                    updatedPoolsViewIds[key.ToString()] = viewIDs;
-                }
-            }
-
-            RoomPoolsViewIdsChangedEvent?.Invoke(updatedPoolsViewIds);
-        }
-
+        
         private void HandlePropertyChange(PlayerProperty key, object value, Player player)
         {
             switch (key)
@@ -58,10 +40,6 @@ namespace PunNetwork.Services.CustomProperties
                 case PlayerProperty.IsPoolsPrepared:
                     Debug.Log($"Player spawned {player.ActorNumber} Key: {key}");
                     PoolsPreparedEvent?.Invoke();
-                    break;
-                case PlayerProperty.IsPoolsPreparedAndSynced:
-                    Debug.Log($"Player spawned {player.ActorNumber} Key: {key}");
-                    PoolsPreparedAndSyncedEvent?.Invoke();
                     break;
                 case PlayerProperty.PlayerSpawnedData:
                     PlayerSpawnedData resultData = JsonConvert.DeserializeObject<PlayerSpawnedData>(value.ToString());

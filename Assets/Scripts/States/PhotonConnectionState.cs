@@ -61,7 +61,6 @@ namespace States
 
         private void OnConnectedToMaster()
         {
-            CustomTypes.Register();
             _gameStateMachine.Enter<LoadDataState>();
         }
     }

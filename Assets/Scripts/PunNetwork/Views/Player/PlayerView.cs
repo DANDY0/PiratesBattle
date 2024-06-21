@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using Photon.Pun;
+using Services.GamePools;
 using Services.Input;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +24,9 @@ namespace PunNetwork.Views.Player
         [SerializeField] private Image[] _heartImages;
 		[SerializeField] private PlayerUI _playerUI;
 		[SerializeField] private EnemiesTriggerCollider _enemiesTriggerCollider;
+        
         private IInputService _inputService;
+        private IPhotonPoolService _photonPoolService;
 
         private Rigidbody _rigidbody;
         private Collider _collider;
@@ -42,10 +45,12 @@ namespace PunNetwork.Views.Player
         [Inject]
         private void Construct
         (
-            IInputService inputService
+            IInputService inputService,
+            IPhotonPoolService photonPoolService
         )
         {
             _inputService = inputService;
+            _photonPoolService = photonPoolService;
         }
 
         public void SubscribeOnInput()
@@ -153,9 +158,14 @@ namespace PunNetwork.Views.Player
             if (_shootingTimer <= 0)
             {
                 _shootingTimer = .2f;
-                var bullet = PhotonNetwork.InstantiatePoolObject(GameObjectEntryKey.Bullet.ToString(), transform.position,
-                    transform.rotation);
-                bullet.GetComponent<Bullet.Bullet>().Fire(transform.position, transform.rotation);
+                
+                var position = transform.position;
+                var rotation = transform.rotation;
+                
+                var bullet = _photonPoolService.ActivatePoolItem<Bullet.Bullet>(GameObjectEntryKey.Bullet.ToString(),
+                    position,
+                    rotation);
+                bullet.Fire(position, rotation);
             }
 
             if (_shootingTimer > 0)

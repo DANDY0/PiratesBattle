@@ -1,19 +1,13 @@
 ﻿using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.PhotonUnityNetworking.Code.Common.Factory;
-using Photon.PhotonUnityNetworking.Code.Common.PhotonFactory;
-using Photon.PhotonUnityNetworking.Code.Common.Pool;
-using PunNetwork;
-using PunNetwork.Services;
 using PunNetwork.Services.ObjectsInRoom;
 using PunNetwork.Services.SpawnPoints;
-using Services;
-using Services.Data;
 using Services.GamePools;
 using Services.Input;
+using Services.Pool;
 using Signals;
 using States.Core;
 using UnityEngine;
-using Utils;
 using Zenject;
 
 namespace Installers.Game
@@ -42,8 +36,7 @@ namespace Installers.Game
             Container.BindInterfacesTo<ObjectsInRoomService>().AsSingle();
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<PoolService>().AsSingle();
-            Container.BindInterfacesTo<PhotonFactory>().AsSingle();
-            Container.BindInterfacesTo<GamePoolsService>().AsSingle();
+            Container.BindInterfacesTo<PhotonPoolService>().AsSingle();
             Container.BindInterfacesTo<InputService>().AsSingle();
         }
         

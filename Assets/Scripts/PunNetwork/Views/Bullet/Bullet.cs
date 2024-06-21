@@ -14,44 +14,15 @@ namespace PunNetwork.Views.Bullet
     [RequireComponent(typeof(Collider))]
     [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(Renderer))]
-    public class Bullet : PhotonPoolObjPunCallbacks, IPunObservable
+    public class Bullet : PhotonPoolObject, IPunObservable
     {
         private Rigidbody _rb;
         private const float BulletSpeed = 10f;
-        private int _ownerID;
-        private bool _isDestroyed;
         private bool _isActive;
-        
+
         private void Awake()
         {
             _rb = GetComponent<Rigidbody>();
-        }
-
-        private void SetOwner(int ownerID)
-        {
-            _ownerID = ownerID;
-            photonView.TransferOwnership(_ownerID);
-
-            _isDestroyed = false;
-        }
-
-        private void Activate(Vector3 position, Quaternion rotation, float lag)
-        {
-            var correctedPosition = position + transform.forward * BulletSpeed * lag;
-
-            //_poolService.ActivatePoolItem<Bullet>(GameObjectEntryKey.Bullet.ToString(), correctedPosition, rotation);
-
-            Logger.Log($"lag: {lag}, bulletPos: {transform.position}, bullet rot: {transform.rotation}," +
-                       $" correctedPos: {correctedPosition}", nameof(Activate));
-        }
-
-        [PunRPC]
-        private void RPCFire(Vector3 position, Quaternion rotation, PhotonMessageInfo info)
-        {
-            var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
-            SetOwner(info.Sender.ActorNumber);
-            Activate(position, rotation, Mathf.Abs(lag));
-            _isActive = true;
         }
 
         public void Fire(Vector3 position, Quaternion rotation)
@@ -59,6 +30,15 @@ namespace PunNetwork.Views.Bullet
             photonView.RPC(nameof(RPCFire), RpcTarget.AllViaServer, position, rotation);
         }
 
+        [PunRPC]
+        private void RPCFire(Vector3 position, Quaternion rotation, PhotonMessageInfo info)
+        {
+            var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
+            transform.position = position + transform.forward * BulletSpeed * lag;
+
+            _isActive = true;
+        }
+        
         [PunRPC]
         private void RPCDeactivate()
         {
@@ -69,7 +49,7 @@ namespace PunNetwork.Views.Bullet
 
         private void Deactivate()
         {
-            PhotonNetwork.Destroy(gameObject);
+            PhotonPoolService.DisablePoolItem(GameObjectEntryKey.Bullet.ToString(), this);
             photonView.RPC(nameof(RPCDeactivate), RpcTarget.All);
         }
         
@@ -83,14 +63,14 @@ namespace PunNetwork.Views.Bullet
 
         private void OnTriggerEnter(Collider other)
         {
-            if (_isDestroyed || !photonView.IsMine)
+            if (!_isActive || !photonView.IsMine)
                 return;
 
             var playerView = other.GetComponent<PlayerView>();
 
-            if (playerView != null && playerView.TeamRole == Enumerators.TeamRole.EnemyPlayer)
+            if (playerView != null && playerView.TeamRole == TeamRole.EnemyPlayer)
             {
-                other.GetComponent<PhotonView>().RPC(nameof(PlayerView.RegisterHit), RpcTarget.AllViaServer);
+                playerView.PhotonView.RPC(nameof(PlayerView.RegisterHit), RpcTarget.AllViaServer);
                 photonView.Owner.AddScore(1);
                 Debug.Log(
                     $"Player{photonView.Owner.ActorNumber} damaged Player{playerView.PhotonView.Owner.ActorNumber}");
@@ -100,24 +80,6 @@ namespace PunNetwork.Views.Bullet
             {
                 Deactivate();
             }
-        }
-
-        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-        {
-            if (stream.IsWriting)
-            {
-                stream.SendNext(_ownerID);
-            }
-            else
-            {
-                _ownerID = (int)stream.ReceiveNext();
-            }
-        }
-
-        public override void OnPhotonInstantiate(PhotonMessageInfo info)
-        {
-            base.OnPhotonInstantiate(info);
-            SetOwner(info.Sender.ActorNumber);
         }
     }
 }

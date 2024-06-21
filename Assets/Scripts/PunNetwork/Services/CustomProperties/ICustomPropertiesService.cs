@@ -9,7 +9,5 @@ namespace PunNetwork.Services.CustomProperties
         event Action PlayerLivesChangedEvent;
         public event Action<NetworkDataModel.PlayerSpawnedData> GetPlayerSpawnedDataEvent;
         event Action PoolsPreparedEvent;
-        event CustomPropertiesService.RoomPoolsViewIdsChangedEventHandler RoomPoolsViewIdsChangedEvent;
-        event Action PoolsPreparedAndSyncedEvent;
     }
 }

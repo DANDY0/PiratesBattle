@@ -8,15 +8,14 @@
             AllyPlayer,
             EnemyPlayer,
         }
-        
+
         public enum PlayerProperty
         {
             PlayerNumber,
             IsSpawned,
             PlayerLives,
             PlayerSpawnedData,
-            IsPoolsPrepared,
-            IsPoolsPreparedAndSynced
+            IsPoolsPrepared
         }
 
         public enum GameObjectEntryKey

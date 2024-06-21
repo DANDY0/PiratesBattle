@@ -13,25 +13,25 @@ namespace States
         private readonly LoadingController _loadingController;
         private readonly IGameNetworkService _gameNetworkService;
         private readonly IProjectNetworkService _projectNetworkService;
-        private readonly IGamePoolsService _gamePoolsService;
+        private readonly IPhotonPoolService _photonPoolService;
 
         public PrepareGameState
         (
             LoadingController loadingController,
             IGameNetworkService gameNetworkService,
             IProjectNetworkService projectNetworkService,
-            IGamePoolsService gamePoolsService
+            IPhotonPoolService photonPoolService
         )
         {
             _loadingController = loadingController;
             _gameNetworkService = gameNetworkService;
             _projectNetworkService = projectNetworkService;
-            _gamePoolsService = gamePoolsService;
+            _photonPoolService = photonPoolService;
         }
 
         public void Enter()
         {
-            _gamePoolsService.PreparePools();
+            _photonPoolService.PreparePools();
             _gameNetworkService.Setup();
         }
 

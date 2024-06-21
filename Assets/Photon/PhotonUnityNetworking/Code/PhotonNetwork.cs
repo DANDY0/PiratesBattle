@@ -9,7 +9,7 @@
 // ----------------------------------------------------------------------------
 
 
-using Photon.PhotonUnityNetworking.Code.Common.Pool;
+using Photon.PhotonUnityNetworking.Code.Common;
 
 namespace Photon.Pun
 {
@@ -2483,22 +2483,6 @@ namespace Photon.Pun
             Pun.InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, data, currentLevelPrefix, null, LocalPlayer, ServerTimestamp);
             return NetworkInstantiate(netParams, false);
         }        
-        public static GameObject InstantiatePoolObject(string poolName, Vector3 position, Quaternion rotation,
-            bool isFirstSpawn = false, byte group = 0, object[] data = null)
-        {
-            if (CurrentRoom == null)
-            {
-                Debug.LogError("Can not Instantiate before the client joined/created a room. State: "+PhotonNetwork.NetworkClientState);
-                return null;
-            }
-
-            var poolObjectDataVo = new PoolObjectDataVo { Key = poolName, Ifs = isFirstSpawn};
-            var objects = new object[] { poolObjectDataVo };
-            data = data == null ? objects : data.Concat(objects).ToArray();
-            
-            Pun.InstantiateParameters netParams = new InstantiateParameters(poolName, position, rotation, group, data, currentLevelPrefix, null, LocalPlayer, ServerTimestamp);
-            return NetworkInstantiate(netParams, false);
-        }
 
         [Obsolete("Renamed. Use InstantiateRoomObject instead")]
         public static GameObject InstantiateSceneObject(string prefabName, Vector3 position, Quaternion rotation, byte group = 0, object[] data = null)
@@ -2523,28 +2507,6 @@ namespace Photon.Pun
             return null;
         }
         
-        public static GameObject InstantiatePoolRoomObject(string poolName, Vector3 position, Quaternion rotation,
-            bool isFirstSpawn = false, byte group = 0, object[] data = null)
-        {
-            if (CurrentRoom == null)
-            {
-                Debug.LogError("Can not Instantiate before the client joined/created a room.");
-                return null;
-            }
-            
-            if (LocalPlayer.IsMasterClient)
-            {
-                var poolObjectDataVo = new PoolObjectDataVo { Key = poolName, Ifs = isFirstSpawn};
-                var objects = new object[] { poolObjectDataVo };
-                data = data == null ? objects : data.Concat(objects).ToArray();
-                
-                Pun.InstantiateParameters netParams = new InstantiateParameters(poolName, position, rotation, group, data, currentLevelPrefix, null, LocalPlayer, ServerTimestamp);
-                return NetworkInstantiate(netParams, true);
-            }
-
-            return null;
-        }
-
         private static GameObject NetworkInstantiate(Hashtable networkEvent, Player creator)
         {
 
