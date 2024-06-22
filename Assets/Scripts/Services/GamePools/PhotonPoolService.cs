@@ -16,7 +16,7 @@ namespace Services.GamePools
 
         public void PreparePools()
         {
-            InitializePool(GameObjectEntryKey.Bullet, 3);
+            InitializePool(GameObjectEntryKey.Bullet, 20);
 
             if (PhotonNetwork.IsMasterClient)
                 SpawnPhotonPools();
