@@ -29,7 +29,7 @@ namespace Core.Abstracts
         {
             _view = _diContainer.Resolve<TView>();
         }
-
+    
         public TView AddItem()
         {
             var item = _factory.Create(_view, Vector3.zero, Quaternion.identity);

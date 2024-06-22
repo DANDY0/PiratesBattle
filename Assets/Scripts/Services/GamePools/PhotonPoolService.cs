@@ -16,7 +16,7 @@ namespace Services.GamePools
 
         public void PreparePools()
         {
-            InitializePool(GameObjectEntryKey.Bullet, 20);
+            InitializePool(GameObjectEntryKey.Bullet, 3);
 
             if (PhotonNetwork.IsMasterClient)
                 SpawnPhotonPools();
@@ -71,7 +71,7 @@ namespace Services.GamePools
 
             Component newObj = PhotonNetwork.Instantiate(key, Vector3.zero, Quaternion.identity).transform;
 
-            return newObj as T;
+            return newObj.GetComponent<T>();
         }
 
         private void InitializePool(GameObjectEntryKey gameObjectEntryKey, int size) =>

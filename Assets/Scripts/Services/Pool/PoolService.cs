@@ -7,7 +7,7 @@ namespace Services.Pool
 {
     public class PoolService : IPoolService
     {
-        private readonly Dictionary<string, PoolInfoVo> _poolDictionary = new();
+        private readonly Dictionary<string, PoolVo> _poolDictionary = new();
         private readonly IGameFactory _gameFactory;
         
         public PoolService
@@ -34,7 +34,7 @@ namespace Services.Pool
                     objectPool.Enqueue(component);
                 }
 
-                _poolDictionary.Add(key, new PoolInfoVo(parent, objectPool));
+                _poolDictionary.Add(key, new PoolVo(parent, objectPool));
             }
             else
             {
@@ -48,7 +48,7 @@ namespace Services.Pool
             {
                 var parent = new GameObject($"[Pool] {key}").transform;
 
-                _poolDictionary.Add(key, new PoolInfoVo(parent));
+                _poolDictionary.Add(key, new PoolVo(parent));
             }
 
             var poolInfoVo = _poolDictionary[key];
