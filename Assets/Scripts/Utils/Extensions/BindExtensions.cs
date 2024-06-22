@@ -9,7 +9,6 @@ using Zenject;
 using IPrefabProvider = Photon.PhotonUnityNetworking.Code.Common.PrefabProvider.IPrefabProvider;
 using Object = UnityEngine.Object;
 using PrefabProvider = Photon.PhotonUnityNetworking.Code.Common.PrefabProvider.PrefabProvider;
-using static Utils.Enumerators;
 
 namespace Utils.Extensions
 {
