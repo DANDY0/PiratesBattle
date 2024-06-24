@@ -1,43 +1,65 @@
 ﻿using Core.Abstracts;
+using Databases;
 using Enums;
+using Services.Data;
 using Services.Window;
 using UnityEngine;
+using Utils;
 
 namespace Views
 {
     public class CharacterPageHandler : Handler<CharacterPagePanel>
     {
-        private readonly CharactersListHandler _charactersListHandler;
         private readonly IWindowService _windowService;
+        private readonly IDataService _dataService;
+        private readonly ICharactersVisualDatabase _charactersVisualDatabase;
+        private readonly CharactersListHandler _charactersListHandler;
+        private readonly SelectCharacterView _selectCharacterView;
+        private readonly MainMenuView _mainMenuView;
 
         public CharacterPageHandler
         (
             IWindowService windowService,
-            CharactersListHandler charactersListHandler
+            IDataService dataService,
+            ICharactersVisualDatabase charactersVisualDatabase,
+            CharactersListHandler charactersListHandler,
+            SelectCharacterView selectCharacterView,
+            MainMenuView mainMenuView
         )
         {
             _windowService = windowService;
+            _dataService = dataService;
+            _charactersVisualDatabase = charactersVisualDatabase;
             _charactersListHandler = charactersListHandler;
+            _selectCharacterView = selectCharacterView;
+            _mainMenuView = mainMenuView;
         }
         
         protected override void Initialize()
         {
             Debug.Log("CharacterPageHandler initialized");
+            
             View.SelectButton.onClick.AddListener(SelectClickHandler);
             View.BackButton.onClick.AddListener(BackButtonClick);
         }
 
         private void SelectClickHandler()
         {
-            // logic for saving current character
+            Enumerators.Character selectedCharacter = _charactersListHandler.SelectedCharacter;
+            var characterVisualData = _charactersVisualDatabase.CharactersDataData.CharactersData.Find(
+                c=>c.Character == selectedCharacter);
+            
+            _dataService.CachedUserLocalData.SelectedCharacter = selectedCharacter;
+            _mainMenuView.SelectedCharacterPanel.SetCharacterImage(characterVisualData.FullImage);
             
             _windowService.Open(EWindow.MainMenu);
+            _selectCharacterView.EnableCharacterPagePanel(false);
         }
 
         private void BackButtonClick()
         {
             _charactersListHandler.Show();
-            Hide();
+            _selectCharacterView.EnableCharacterPagePanel(false);
         }
     }
 }

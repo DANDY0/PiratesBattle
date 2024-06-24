@@ -23,5 +23,25 @@ namespace Views
         public SelectedCharacterPanel SelectedCharacterPanel => _selectedCharacterPanel;
         public MenuProfilePanel MenuProfilePanel => _menuProfilePanel;
 
+        public override void Show()
+        {
+            base.Show();
+        }
+
+        public void EnableSelectedCharacterPanel(bool state)
+        {
+            if (state)
+                _selectedCharacterPanel.Show();
+            else
+                _selectedCharacterPanel.Hide();
+        }
+
+        /*
+        public void ShowSelectedCharacterPanel()
+        {
+            _selectedCharacterPanel.Show();
+        }
+        */
+
     }
 }

@@ -15,6 +15,7 @@
             IsSpawned,
             PlayerLives,
             PlayerSpawnedData,
+            CharacterName,
         }
 
         public enum Character

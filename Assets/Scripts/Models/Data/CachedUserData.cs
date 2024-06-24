@@ -1,4 +1,5 @@
 ﻿using Enums;
+using Utils;
 
 namespace Models.Data
 {
@@ -6,6 +7,7 @@ namespace Models.Data
     {
         public ELanguage AppLanguage;
         public string NickName;
+        public Enumerators.Character SelectedCharacter;
 
     }
 }

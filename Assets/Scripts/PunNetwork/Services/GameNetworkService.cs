@@ -122,9 +122,13 @@ namespace PunNetwork.Services.Impls
 
         private void SpawnPlayer()
         {
-            PhotonNetwork.Instantiate("TeamPlayers\\" + TeamRole.MyPlayer,
-                _spawnPointsService.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1, 
-                    PhotonNetwork.LocalPlayer.GetPhotonTeam()), Quaternion.identity);
+            if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(PlayerProperty.CharacterName, out var characterName))
+            {
+                PhotonNetwork.Instantiate("TeamPlayers\\" + characterName,
+                    _spawnPointsService.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1,
+                        PhotonNetwork.LocalPlayer.GetPhotonTeam()), Quaternion.identity);
+            }
+            
         }
 
         private void CheckEndOfGame()

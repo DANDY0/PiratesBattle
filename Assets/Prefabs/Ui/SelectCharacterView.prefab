@@ -1082,7 +1082,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 456cfd6c095fa664a85bd52887255aa7, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -1219,6 +1219,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _backButton: {fileID: 7377826220067733450}
+  _selectButton: {fileID: 7377826220646795577}
+  _characterImage: {fileID: 7377826220935214726}
 --- !u!1 &7377826221454006424
 GameObject:
   m_ObjectHideFlags: 0
