@@ -11,9 +11,8 @@
 
         public enum PlayerProperty
         {
-            PlayerNumber,
-            IsSpawned,
-            PlayerLives,
+            IsPlayersSpawned,
+            PlayerHP,
             PlayerSpawnedData,
             IsPoolsPrepared
         }
@@ -22,6 +21,13 @@
         {
             Bullet = 0,
             Player = 1
+        }
+
+        public enum GameResult
+        {
+            Win = 0,
+            Lose = 1,
+            Draw = 2
         }
     }
 }

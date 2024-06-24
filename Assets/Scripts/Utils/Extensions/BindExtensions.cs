@@ -16,6 +16,7 @@ namespace Utils.Extensions
     {
         private static readonly Queue<WindowBindingInfoVo> WindowQueue = new();
         public static int WindowsCount;
+        private static IWindowService _windowService;
 
         public static void BindView<T, TU>(this DiContainer container, Object viewPrefab)
             where TU : IView
@@ -84,8 +85,8 @@ namespace Utils.Extensions
                             $"[{nameof(BindExtensions)}] Cannot convert {windowBindingInfoVo.ViewPrefab} to window");
 
                     window.gameObject.SetActive(false);
-                    var windowService = container.Resolve<IWindowService>();
-                    windowService.RegisterWindow(window, windowBindingInfoVo.IsFocusable,
+                    _windowService ??= container.Resolve<IWindowService>();
+                    _windowService.RegisterWindow(window, windowBindingInfoVo.IsFocusable,
                         windowBindingInfoVo.OrderNumber, windowBindingInfoVo.IsDontDestroyOnLoad);
 
                     if (index == WindowsCount)
@@ -108,15 +109,16 @@ namespace Utils.Extensions
                     if (isDestroyOnLoad)
                         Object.DontDestroyOnLoad(o as MonoBehaviour);
                 });
-        
+
         public static void BindPrefabs(this DiContainer container, IEnumerable<GameObjectEntry> entries)
         {
             var entriesDictionary = new Dictionary<string, GameObject>();
 
             foreach (var entry in entries)
             {
-                if (entriesDictionary.TryGetValue(entry.Key.ToString(), out var gameObject)) 
-                    Debug.LogError($"{nameof(BindExtensions)} Duplicate key {entry.Key} on {gameObject} and {entry.GameObject}");
+                if (entriesDictionary.TryGetValue(entry.Key.ToString(), out var gameObject))
+                    Debug.LogError(
+                        $"{nameof(BindExtensions)} Duplicate key {entry.Key} on {gameObject} and {entry.GameObject}");
                 entriesDictionary[entry.Key.ToString()] = entry.GameObject;
             }
 

@@ -1,5 +1,4 @@
 ﻿using Core.Abstracts;
-using PunNetwork.Services;
 using PunNetwork.Services.GameNetwork;
 using UniRx;
 using UnityEngine.UI;
@@ -31,10 +30,6 @@ namespace Controllers
             View.Show();
         }
 
-        public void SetWinnerInfo(string winner, int score, float timer) => 
-            View.SetWinnerInfo(winner, score, timer);
-
-        private void OnLeaveButton() => 
-            _gameNetworkService.LeaveGameplay();
+        private void OnLeaveButton() => _gameNetworkService.LeaveGame();
     }
 }

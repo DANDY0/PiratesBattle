@@ -1,8 +1,12 @@
-﻿namespace PunNetwork.Services.GameNetwork
+﻿using Utils;
+using static Utils.Enumerators;
+
+namespace PunNetwork.Services.GameNetwork
 {
     public interface IGameNetworkService
     {
-        void LeaveGameplay();
         void Setup();
+        GameResult GameResult { get; }
+        void LeaveGame();
     }
 }

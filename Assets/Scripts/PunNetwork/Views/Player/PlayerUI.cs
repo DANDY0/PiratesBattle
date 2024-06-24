@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,19 +11,24 @@ namespace PunNetwork.Views.Player
         [SerializeField] private TextMeshProUGUI _nicknameText;
         [SerializeField] private Image _fillHealthImage;
 
-        private const float HealthChangeDuration = .5f;
+        private const float HealthChangeDuration = 1f;
+
+        private void Awake()
+        {
+            _fillHealthImage.fillAmount = 0;
+        }
 
         public void SetNickName(string value) => _nicknameText.text = value;
 
-        public void SetHealthPoints(float currentHp, float maxHp)
+        public void SetHealthPoints(float currentHealthPoints, float maxHealthPoints)
         {
-            if (maxHp <= 0)
+            if (maxHealthPoints <= 0)
             {
-                _fillHealthImage.fillAmount = 0;
+                Debug.LogError($"[{nameof(PlayerUI)}] Parameter {nameof(maxHealthPoints)} must be positive");
                 return;
             }
 
-            var targetFillAmount = currentHp / maxHp;
+            var targetFillAmount = currentHealthPoints / maxHealthPoints;
             _fillHealthImage.DOFillAmount(targetFillAmount, HealthChangeDuration);
         }
     }

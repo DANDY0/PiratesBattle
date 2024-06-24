@@ -39,7 +39,6 @@ namespace States
         
         public void Enter()
         {
-            _loadBalancingClient.AddCallbackTarget(_photonTeamsManager);
             _loadBalancingClient.AddCallbackTarget(_customPropertiesService);
             _projectNetworkService.ConnectedToMasterEvent += OnConnectedToMaster;
             

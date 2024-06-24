@@ -93,7 +93,7 @@ namespace Photon.Pun.Demo.Asteroids
             }
         }
 
-        private IEnumerator EndOfGame(string winner, int score)
+        private IEnumerator EndOfGame(string winner, float score)
         {
             float timer = 5.0f;
 
@@ -244,7 +244,7 @@ namespace Photon.Pun.Demo.Asteroids
                 }
 
                 string winner = "";
-                int score = -1;
+                float score = -1;
 
                 foreach (Player p in PhotonNetwork.PlayerList)
                 {

@@ -14,31 +14,34 @@ namespace PunNetwork.Views.Bullet
     [RequireComponent(typeof(Collider))]
     [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(Renderer))]
-    public class Bullet : PhotonPoolObject, IPunObservable
+    public class Bullet : PhotonPoolObject
     {
         private Rigidbody _rb;
-        private const float BulletSpeed = 10f;
         private bool _isActive;
+        
+        private const float BulletSpeed = 10f;
+        private const float Damage = 33.4f;
+
 
         private void Awake()
         {
             _rb = GetComponent<Rigidbody>();
         }
 
-        public void Fire(Vector3 position, Quaternion rotation)
+        public void Fire(Vector3 position)
         {
-            photonView.RPC(nameof(RPCFire), RpcTarget.AllViaServer, position, rotation);
+            photonView.RPC(nameof(RPCFire), RpcTarget.AllViaServer, position);
         }
 
         [PunRPC]
-        private void RPCFire(Vector3 position, Quaternion rotation, PhotonMessageInfo info)
+        private void RPCFire(Vector3 position, PhotonMessageInfo info)
         {
             var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
             transform.position = position + transform.forward * BulletSpeed * lag;
 
             _isActive = true;
         }
-        
+
         [PunRPC]
         private void RPCDeactivate()
         {
@@ -52,7 +55,7 @@ namespace PunNetwork.Views.Bullet
             PhotonPoolService.DisablePoolItem(GameObjectEntryKey.Bullet.ToString(), this);
             photonView.RPC(nameof(RPCDeactivate), RpcTarget.All);
         }
-        
+
         private void FixedUpdate()
         {
             if (!_isActive)
@@ -70,16 +73,14 @@ namespace PunNetwork.Views.Bullet
 
             if (playerView != null && playerView.TeamRole == TeamRole.EnemyPlayer)
             {
-                playerView.PhotonView.RPC(nameof(PlayerView.RegisterHit), RpcTarget.AllViaServer);
-                photonView.Owner.AddScore(1);
+                playerView.PhotonView.RPC(nameof(PlayerView.RegisterHit), RpcTarget.All, Damage);
+                photonView.Owner.AddScore(Damage);
                 Debug.Log(
-                    $"Player{photonView.Owner.ActorNumber} damaged Player{playerView.PhotonView.Owner.ActorNumber}");
+                    $"Player{photonView.Owner.ActorNumber} damaged Player {playerView.PhotonView.Owner.ActorNumber}");
                 Deactivate();
             }
-            else if (other.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
-            {
+            else if (other.gameObject.layer == LayerMask.NameToLayer("Obstacle")) 
                 Deactivate();
-            }
         }
     }
 }

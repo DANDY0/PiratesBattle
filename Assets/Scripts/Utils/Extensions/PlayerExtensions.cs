@@ -1,4 +1,5 @@
 ﻿using ExitGames.Client.Photon;
+using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.Realtime;
 
 namespace Utils.Extensions
@@ -21,5 +22,8 @@ namespace Utils.Extensions
             propertyValue = value;
             return isSuccess;
         }
+
+        public static void ResetCustomProperties(this Player player) => 
+            player.SetCustomProperties(new Hashtable());
     }
 }

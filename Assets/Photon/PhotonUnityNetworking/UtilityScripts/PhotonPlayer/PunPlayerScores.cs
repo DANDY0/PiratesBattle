@@ -29,32 +29,33 @@ namespace Photon.Pun.UtilityScripts
 
     public static class ScoreExtensions
     {
-        public static void SetScore(this Player player, int newScore)
+        public static void SetScore(this Player player, float newScore)
         {
-            Hashtable score = new Hashtable();  // using PUN's implementation of Hashtable
-            score[PunPlayerScores.PlayerScoreProp] = newScore;
-
-            player.SetCustomProperties(score);  // this locally sets the score and will sync it in-game asap.
-        }
-
-        public static void AddScore(this Player player, int scoreToAddToCurrent)
-        {
-            int current = player.GetScore();
-            current = current + scoreToAddToCurrent;
-
-            Hashtable score = new Hashtable();  // using PUN's implementation of Hashtable
-            score[PunPlayerScores.PlayerScoreProp] = current;
-
-            player.SetCustomProperties(score);  // this locally sets the score and will sync it in-game asap.
-        }
-
-        public static int GetScore(this Player player)
-        {
-            object score;
-            if (player.CustomProperties.TryGetValue(PunPlayerScores.PlayerScoreProp, out score))
+            var score = new Hashtable
             {
-                return (int)score;
-            }
+                [PunPlayerScores.PlayerScoreProp] = newScore
+            };  // using PUN's implementation of Hashtable
+
+            player.SetCustomProperties(score);  // this locally sets the score and will sync it in-game asap.
+        }
+
+        public static void AddScore(this Player player, float scoreToAddToCurrent)
+        {
+            var current = player.GetScore();
+            current += scoreToAddToCurrent;
+
+            var score = new Hashtable
+            {
+                [PunPlayerScores.PlayerScoreProp] = current
+            };  // using PUN's implementation of Hashtable
+
+            player.SetCustomProperties(score);  // this locally sets the score and will sync it in-game asap.
+        }
+
+        public static float GetScore(this Player player)
+        {
+            if (player.CustomProperties.TryGetValue(PunPlayerScores.PlayerScoreProp, out var score))
+                return (float)score;
 
             return 0;
         }

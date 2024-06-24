@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using Photon.PhotonUnityNetworking.Code.Common;
+using Photon.Pun;
 using Services.GamePools;
 using UnityEngine;
 using Utils;
@@ -6,7 +7,7 @@ using Zenject;
 
 namespace PunNetwork.ObjectPooling
 {
-    public class PhotonPoolObject : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback, IPunObservable
+    public class PhotonPoolObject : MonoBehaviourPun, IPunInstantiateMagicCallback, IPunObservable
     {
         [SerializeField] private Enumerators.GameObjectEntryKey _key;
         protected IPhotonPoolService PhotonPoolService;

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
+using Controllers;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
@@ -7,51 +9,54 @@ using Photon.Realtime;
 using PunNetwork.Services.CustomProperties;
 using PunNetwork.Services.ObjectsInRoom;
 using PunNetwork.Services.SpawnPoints;
-using Services.SceneLoading;
 using States;
 using States.Core;
 using UnityEngine;
 using Utils;
+using Utils.Extensions;
 using Zenject;
 using static Utils.Enumerators;
 
 namespace PunNetwork.Services.GameNetwork
 {
-    public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService, IInitializable, IDisposable
+    public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService, IDisposable, IInitializable
     {
-        private ISceneLoadingService _sceneLoadingService;
         private ICustomPropertiesService _customPropertiesService;
         private IObjectsInRoomService _objectsInRoomService;
         private ISpawnPointsService _spawnPointsService;
         private IGameStateMachine _gameStateMachine;
+        private LoadingController _loadingController;
 
+        private const float MaxHealthPoints = 100;
+        
+        public GameResult GameResult { get; private set; }
 
         [Inject]
         private void Construct
         (
-            ISceneLoadingService sceneLoadingService,
             ICustomPropertiesService customPropertiesService,
             IObjectsInRoomService objectsInRoomService,
             ISpawnPointsService spawnPointsService,
-            IGameStateMachine stateMachine
+            IGameStateMachine stateMachine,
+            LoadingController loadingController
         )
         {
-            _sceneLoadingService = sceneLoadingService;
             _customPropertiesService = customPropertiesService;
             _objectsInRoomService = objectsInRoomService;
             _spawnPointsService = spawnPointsService;
             _gameStateMachine = stateMachine;
+            _loadingController = loadingController;
         }
 
         public void Initialize()
         {
-            _customPropertiesService.PlayerLivesChangedEvent += OnPlayerLivesChanged;
+            _customPropertiesService.PlayerHealthPointsChangedEvent += OnPlayerHealthPointsChanged;
             PhotonNetwork.NetworkingClient.EventReceived += OnEventReceived;
         }
-        
+
         public void Dispose()
         {
-            _customPropertiesService.PlayerLivesChangedEvent -= OnPlayerLivesChanged;
+            _customPropertiesService.PlayerHealthPointsChangedEvent -= OnPlayerHealthPointsChanged;
             PhotonNetwork.NetworkingClient.EventReceived -= OnEventReceived;
         }
 
@@ -59,7 +64,7 @@ namespace PunNetwork.Services.GameNetwork
         {
             if (!PhotonNetwork.IsConnected)
             {
-                _sceneLoadingService.LoadScene(SceneNames.Menu);
+                PhotonNetwork.LoadLevel(SceneNames.Menu);
                 return;
             }
 
@@ -73,6 +78,8 @@ namespace PunNetwork.Services.GameNetwork
                 Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
             }
         }
+
+        public void LeaveGame() => StartCoroutine(HandleGameEnd());
 
         public override void OnPlayerEnteredRoom(Player other)
         {
@@ -93,7 +100,8 @@ namespace PunNetwork.Services.GameNetwork
         {
             Debug.Log("OnPlayerLeftRoom() " + other.NickName); // seen when other disconnects
 
-            CheckEndOfGame();
+            _objectsInRoomService.PlayerLeftRoom(other);
+            CheckIfGameEnded();
 
             if (PhotonNetwork.IsMasterClient)
             {
@@ -105,67 +113,86 @@ namespace PunNetwork.Services.GameNetwork
         /// <summary>
         /// Called when the local player left the room. We need to load the launcher scene.
         /// </summary>
-
-        public void LeaveGameplay()
-        {
-            _gameStateMachine.Enter<GameResultsState>();
-        }
-        
         private void OnEventReceived(EventData photonEvent)
         {
-            if (photonEvent.Code == GameEventCodes.StartMatchEventCode) 
-                _gameStateMachine.Enter<GameplayState>();
+            switch (photonEvent.Code)
+            {
+                case GameEventCodes.StartMatchEventCode:
+                    _gameStateMachine.Enter<GameplayState>();
+                    break;
+                case GameEventCodes.EndMatchEventCode:
+                {
+                    var winningTeam = (byte)photonEvent.CustomData;
+                    GameResult = winningTeam == PhotonNetwork.LocalPlayer.GetPhotonTeam().Code ? GameResult.Win : GameResult.Lose;
+                    _gameStateMachine.Enter<GameResultsState>();
+                    break;
+                }
+            }
         }
-        
-        private void OnPlayerLivesChanged()
+
+        private void OnPlayerHealthPointsChanged(Player player, float newHealthPoints)
         {
-            _objectsInRoomService.UpdateHearts();
-            CheckEndOfGame();
+            _objectsInRoomService.UpdateHealthPoints(player, newHealthPoints);
+            if (newHealthPoints != MaxHealthPoints)
+                CheckIfGameEnded();
         }
 
         private void SpawnPlayer()
         {
-            PhotonNetwork.Instantiate(GameObjectEntryKey.Player.ToString(),
-                _spawnPointsService.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1, 
-                    PhotonNetwork.LocalPlayer.GetPhotonTeam()), Quaternion.identity);
+            var photonTeam = PhotonNetwork.LocalPlayer.GetPhotonTeam();
+            var playerPosition = _spawnPointsService.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1,
+                photonTeam);
+            PhotonNetwork.Instantiate(GameObjectEntryKey.Player.ToString(), playerPosition, Quaternion.identity);
         }
 
-        private void CheckEndOfGame()
+        private void CheckIfGameEnded()
         {
-            if (!_objectsInRoomService.IsAllEnemiesDestroyed()) 
+            if (!PhotonNetwork.IsMasterClient)
                 return;
 
-            if (PhotonNetwork.IsMasterClient)
-                StopAllCoroutines();
+            var alivePlayers = _objectsInRoomService.PlayerViews
+                .Where(p => p.CurrentHealthPoints > 0)
+                .Select(playerView => playerView.Player)
+                .ToList();
 
-            var winner = "";
-            var score = -1;
-
-            foreach (var p in PhotonNetwork.PlayerList)
+            if (alivePlayers.Count == 0)
             {
-                if (p.GetScore() <= score) continue;
-                winner = p.NickName;
-                score = p.GetScore();
+                Debug.Log("No players are alive.");
+                return;
             }
 
-            StartCoroutine(EndOfGame(winner, score));
+            var firstPlayerTeam = alivePlayers.First().GetPhotonTeam().Code;
+
+            var allSameTeam = alivePlayers.All(player => player.GetPhotonTeam().Code == firstPlayerTeam);
+
+            if (!allSameTeam) return;
+
+            var raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+            var sendOptions = new SendOptions { Reliability = true };
+            PhotonNetwork.RaiseEvent(GameEventCodes.EndMatchEventCode, firstPlayerTeam, raiseEventOptions, sendOptions);
         }
-
-        private IEnumerator EndOfGame(string winner, int score)
+        
+        private IEnumerator HandleGameEnd()
         {
-            var timer = 5.0f;
-
-            while (timer > 0.0f)
+            if (PhotonNetwork.InRoom)
             {
-                //_gameMenuController.SetWinnerInfo(winner, score, timer);
+                if (PhotonNetwork.LocalPlayer.GetPhotonTeam() != null) 
+                    PhotonNetwork.LocalPlayer.LeaveCurrentTeam();
 
-                Debug.Log($"Player {winner} won with {score} points.\n\n\nReturning to login screen in {timer:n2} seconds.");
-                yield return new WaitForEndOfFrame();
+                PhotonNetwork.LocalPlayer.ResetCustomProperties();
+                PhotonNetwork.LeaveRoom();
 
-                timer -= Time.deltaTime;
+                while (PhotonNetwork.InRoom)
+                {
+                    yield return null;
+                }
             }
 
-            PhotonNetwork.LeaveRoom();
+            yield return new WaitForSeconds(0.5f);
+
+            PhotonNetwork.LoadLevel(SceneNames.Menu);
+
+            _loadingController.Show();
         }
     }
 }

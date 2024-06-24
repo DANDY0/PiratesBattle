@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
 using PunNetwork.Services.CustomProperties;
 using PunNetwork.Services.ProjectNetwork;
 using PunNetwork.Views.Player;
 using Services.Data;
-using Services.GamePools;
 using Services.Pool;
 using States;
 using States.Core;
@@ -17,39 +16,35 @@ using Utils.Extensions;
 using Zenject;
 using static PunNetwork.NetworkData.NetworkDataModel;
 using static Utils.Enumerators;
-using Object = UnityEngine.Object;
 
 namespace PunNetwork.Services.ObjectsInRoom
 {
     public class ObjectsInRoomService : IObjectsInRoomService, IInitializable, IDisposable
     {
         private readonly IGameStateMachine _gameStateMachine;
-
         private readonly ICustomPropertiesService _customPropertiesService;
         private readonly IProjectNetworkService _projectNetworkService;
         private readonly IDataService _dataService;
-        private readonly IPhotonPoolService _photonPoolService;
         private readonly IPoolService _poolService;
 
         private bool _isAllPlayersSpawned;
         private bool _isAllPoolsPrepared;
 
+        private readonly Dictionary<Player, PlayerView> _playersDictionary = new();
         public List<PlayerView> PlayerViews { get; } = new();
-
+        
         public ObjectsInRoomService
         (
             ICustomPropertiesService customPropertiesService,
             IGameStateMachine gameStateMachine,
             IProjectNetworkService projectNetworkService,
-            IDataService dataService,
-            IPhotonPoolService photonPoolService
+            IDataService dataService
         )
         {
             _customPropertiesService = customPropertiesService;
             _gameStateMachine = gameStateMachine;
             _projectNetworkService = projectNetworkService;
             _dataService = dataService;
-            _photonPoolService = photonPoolService;
         }
 
         public void Initialize()
@@ -66,33 +61,37 @@ namespace PunNetwork.Services.ObjectsInRoom
             _customPropertiesService.PoolsPreparedEvent -= PoolsPreparedHandler;
         }
 
-        public bool IsAllEnemiesDestroyed()
+        public void OnPlayerSpawned(Player player, PlayerView playerView)
         {
-            var allDestroyed = true;
+            _playersDictionary.Add(player, playerView);
+            PlayerViews.Add(playerView);
+            
+            SetTeamRole(playerView);
 
-            var enemies = PlayerViews.Where(p => p.TeamRole == TeamRole.EnemyPlayer);
-            foreach (var p in enemies)
-            {
-                if (p.PhotonView.Owner.TryGetCustomProperty(PlayerProperty.PlayerLives, out var lives) &&
-                    (int)lives <= 0)
-                    continue;
-                allDestroyed = false;
-                break;
-            }
-
-            return allDestroyed;
+            if (_playersDictionary.Keys.Count == PhotonNetwork.CurrentRoom.PlayerCount) 
+                PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.IsPlayersSpawned, true);
+        }
+        
+        public void PlayerLeftRoom(Player player)
+        {
+            _playersDictionary.Remove(player, out var playerView);
+            PlayerViews.Remove(playerView);
         }
 
-        private void PlayerSpawnedHandler()
+        private void PlayerSpawnedHandler(Player player, bool isSpawned)
         {
+            if (!isSpawned)
+                return;
             var isAllReady = IsAllReady();
             Debug.Log($"Player spawned, IsAllReady:{isAllReady}");
             if (isAllReady)
                 OnAllSpawned();
         }
 
-        private void PoolsPreparedHandler()
+        private void PoolsPreparedHandler(Player player, bool isPrepared)
         {
+            if (!isPrepared)
+                return;
             var isAllReady = IsAllPreparedPools();
             if (isAllReady)
                 OnAllPoolsPrepared();
@@ -102,7 +101,7 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             var isAllReady = true;
             foreach (var player in PhotonNetwork.PlayerList)
-                if (player.TryGetCustomProperty(PlayerProperty.IsSpawned, out var isSpawned))
+                if (player.TryGetCustomProperty(PlayerProperty.IsPlayersSpawned, out var isSpawned))
                 {
                     if ((bool)isSpawned) continue;
                     isAllReady = false;
@@ -129,21 +128,11 @@ namespace PunNetwork.Services.ObjectsInRoom
 
             return isAllReady;
         }
-        
+
         private void OnAllSpawned()
         {
             _isAllPlayersSpawned = true;
-            var playerViews = Object.FindObjectsOfType<PlayerView>();
-            Debug.Log($"OnAllSpawned: {playerViews}");
-            foreach (var playerView in playerViews)
-            {
-                PlayerViews.Add(playerView);
-
-
-                SetTeamRole(playerView);
-                playerView.IsSpawnedOnServer = true;
-            }
-
+            
             SendPlayerSpawnedData();
 
             GoNextState();
@@ -154,7 +143,7 @@ namespace PunNetwork.Services.ObjectsInRoom
             _isAllPoolsPrepared = true;
             GoNextState();
         }
-        
+
         private void GoNextState()
         {
             if (!_isAllPlayersSpawned || !_isAllPoolsPrepared)
@@ -165,14 +154,10 @@ namespace PunNetwork.Services.ObjectsInRoom
             else
                 _gameStateMachine.Enter<MatchPreviewState>();
         }
-
-        public void UpdateHearts()
+        
+        public void UpdateHealthPoints(Player player, float newHealthPoints)
         {
-            foreach (var playerView in PlayerViews)
-            {
-                playerView.PhotonView.Owner.TryGetCustomProperty(PlayerProperty.PlayerLives, out var lives);
-                playerView.UpdateHearts((int)lives);
-            }
+            _playersDictionary[player].UpdateHealthPoints(newHealthPoints);
         }
 
         private void SendPlayerSpawnedData()
@@ -199,10 +184,9 @@ namespace PunNetwork.Services.ObjectsInRoom
             playerView.SetTeamRole(teamRole);
         }
 
-        private void GetPlayerSpawnedDataHandler(PlayerSpawnedData playerSpawnedData)
+        private void GetPlayerSpawnedDataHandler(Player player, PlayerSpawnedData playerSpawnedData)
         {
-            var player = PlayerViews.Find(p => p.PhotonView.Owner.ActorNumber == playerSpawnedData.ActorNumber);
-            player.SetNickname(playerSpawnedData.Nickname);
+            _playersDictionary[player].SetNickname(playerSpawnedData.Nickname);
         }
     }
 }

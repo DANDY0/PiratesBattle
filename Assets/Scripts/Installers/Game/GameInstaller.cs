@@ -31,13 +31,13 @@ namespace Installers.Game
         
         private void BindServices()
         {
-            Container.BindInterfacesTo<GameEntryPoint>().AsSingle();
             Container.Bind<ISpawnPointsService>().FromInstance(_spawnPointsService).AsSingle();
             Container.BindInterfacesTo<ObjectsInRoomService>().AsSingle();
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<PoolService>().AsSingle();
             Container.BindInterfacesTo<PhotonPoolService>().AsSingle();
             Container.BindInterfacesTo<InputService>().AsSingle();
+            Container.BindInterfacesTo<GameEntryPoint>().AsSingle();
         }
         
         private void ConfigureGameStateMachine()

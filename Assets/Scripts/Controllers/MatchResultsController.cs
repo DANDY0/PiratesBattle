@@ -1,39 +1,41 @@
-﻿using Core.Abstracts;
+﻿using System.Collections;
+using Behaviours;
+using Core.Abstracts;
 using DG.Tweening;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
-using Services.SceneLoading;
+using PunNetwork.Services.GameNetwork;
 using Utils;
 using Views;
+using static Utils.Enumerators;
+
 
 namespace Controllers
 {
     public class MatchResultsController : Controller<MatchResultsView>
     {
         private readonly LoadingController _loadingController;
-        private readonly ISceneLoadingService _sceneLoadingService;
+        private readonly ICoroutineRunner _coroutineRunner;
+        private readonly IGameNetworkService _gameNetworkService;
 
         public MatchResultsController
         (
             LoadingController loadingController,
-            ISceneLoadingService sceneLoadingService
+            ICoroutineRunner coroutineRunner,
+            IGameNetworkService gameNetworkService
         )
         {
             _loadingController = loadingController;
-            _sceneLoadingService = sceneLoadingService;
+            _coroutineRunner = coroutineRunner;
+            _gameNetworkService = gameNetworkService;
         }
         
-        public void Show()
+        public void Show(GameResult gameResult)
         {
             View.Reset();
             View.Show();
-            View.PlayAnimation().OnComplete(() =>
-            {
-                PhotonNetwork.LocalPlayer.LeaveCurrentTeam();
-                PhotonNetwork.LeaveRoom();
-                _sceneLoadingService.LoadScene(SceneNames.Menu);
-                _loadingController.Show();
-            });
+            View.PlayAnimation(gameResult).OnComplete(() => _gameNetworkService.LeaveGame());
         }
+        
     }
 }

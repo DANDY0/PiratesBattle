@@ -23,7 +23,7 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Factory
             _prefabProvider = prefabProvider;
         }
 
-        public GameObject CreateWithPath(string path, Vector3 posToSpawn, Quaternion rotation)
+        public GameObject CreateFromResources(string path, Vector3 posToSpawn, Quaternion rotation)
         {
             var cached = _resourceCache.TryGetValue(path, out var prefab);
             if (!cached)
@@ -35,16 +35,17 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Factory
                     _resourceCache.Add(path, prefab);
             }
 
-            var instance = Object.Instantiate(prefab, posToSpawn, rotation);
-            _di.InjectGameObject(instance);
+            var instance = _di.InstantiatePrefab(prefab, posToSpawn, rotation, null);
+
             return instance;
         }
         
         public GameObject CreateWithKey(string key, Vector3 posToSpawn, Quaternion rotation)
         {
-            var prefab = _prefabProvider.GetPrefab(key);
-            var instance = Object.Instantiate(prefab, posToSpawn, rotation);
-            _di.InjectGameObject(instance);
+            var prefab = _prefabProvider.GetPrefabWithKey(key);
+            var instance = _di.InstantiatePrefab(prefab, posToSpawn, rotation, null);
+            //var instance = Object.Instantiate(prefab, posToSpawn, rotation);
+            //_di.InjectGameObject(instance);
             return instance;
         }
 

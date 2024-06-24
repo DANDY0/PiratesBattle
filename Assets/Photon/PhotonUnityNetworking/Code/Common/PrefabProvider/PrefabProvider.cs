@@ -15,7 +15,7 @@ namespace Photon.PhotonUnityNetworking.Code.Common.PrefabProvider
             _prefabDictionary = prefabDictionary;
         }
 
-        public GameObject GetPrefab(string name)
+        public GameObject GetPrefabWithKey(string name)
         {
             if (_prefabDictionary.TryGetValue(name, out var prefab))
                 return prefab;

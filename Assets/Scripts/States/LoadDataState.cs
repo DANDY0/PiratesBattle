@@ -1,9 +1,7 @@
 ﻿using System;
 using Photon.Pun;
-using PunNetwork.Services;
 using PunNetwork.Services.ProjectNetwork;
 using Services.Data;
-using Services.SceneLoading;
 using States.Core;
 using Utils;
 
@@ -12,18 +10,15 @@ namespace States
     public class LoadDataState : IState, IDisposable
     {
         private readonly IDataService _dataService;
-        private readonly ISceneLoadingService _sceneLoadingService;
         private readonly IProjectNetworkService _projectNetworkService;
 
         public LoadDataState
         (
             IDataService dataService,
-            ISceneLoadingService sceneLoadingService,
             IProjectNetworkService projectNetworkService
         )
         {
             _dataService = dataService;
-            _sceneLoadingService = sceneLoadingService;
             _projectNetworkService = projectNetworkService;
         }
         
@@ -49,10 +44,10 @@ namespace States
             if (_projectNetworkService.IsGameStarted)
             {
                 PhotonNetwork.RejoinRoom(PhotonNetwork.CurrentRoom.Name);
-                _sceneLoadingService.LoadScene(SceneNames.Game);
+                PhotonNetwork.LoadLevel(SceneNames.Game);
             }
             else
-                _sceneLoadingService.LoadScene(SceneNames.Menu);
+                PhotonNetwork.LoadLevel(SceneNames.Menu);
         }
     }
 }

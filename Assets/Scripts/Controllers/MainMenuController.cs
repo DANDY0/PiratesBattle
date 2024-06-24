@@ -43,8 +43,6 @@ namespace Controllers
             Application.Quit();
 #endif
             }).AddTo(View);
-
-            _dataService.DataLoadedEvent += DataLoadedHandler;
             
             _chooseCharacterHandler.Setup(View.ChooseCharacterPanel);
             _menuProfileHandler.Setup(View.MenuProfilePanel);
@@ -66,11 +64,6 @@ namespace Controllers
         {
             _menuNetworkService.SetMaxPlayers(2);
             _menuNetworkService.Connect();
-        }
-
-        private void DataLoadedHandler()
-        {
-            
         }
     }
 }

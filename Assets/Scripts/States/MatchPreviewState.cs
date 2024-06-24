@@ -1,38 +1,35 @@
 ﻿using Controllers;
-using PunNetwork.Services.ObjectsInRoom;
-using Services.Input;
+using Photon.Pun;
 using States.Core;
+using Utils.Extensions;
+using static Utils.Enumerators;
+
 
 namespace States
 {
     public class MatchPreviewState : IState
     {
         private readonly PreviewMatchAnimationController _previewMatchAnimationController;
-        private readonly IInputService _inputService;
-        private readonly IObjectsInRoomService _objectsInRoomService;
+
+        private const float MaxHealthPoints = 100;
+
 
         public MatchPreviewState
         (
-            PreviewMatchAnimationController previewMatchAnimationController,
-            IInputService inputService,
-            IObjectsInRoomService objectsInRoomService
+            PreviewMatchAnimationController previewMatchAnimationController
         )
         {
             _previewMatchAnimationController = previewMatchAnimationController;
-            _inputService = inputService;
-            _objectsInRoomService = objectsInRoomService;
         }
 
         public void Enter()
         {
+            PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.PlayerHP, MaxHealthPoints);
             _previewMatchAnimationController.Start();
         }
 
         public void Exit()
         {
-            _inputService.Enable();
-            foreach (var playerView in _objectsInRoomService.PlayerViews) 
-                playerView.SubscribeOnInput();
             _previewMatchAnimationController.Hide();
         }
     }

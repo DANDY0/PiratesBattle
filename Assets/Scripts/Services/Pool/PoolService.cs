@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.PhotonUnityNetworking.Code.Common.Factory;
 using UnityEngine;
 

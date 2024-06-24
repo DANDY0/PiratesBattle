@@ -11,6 +11,7 @@
 
 using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.PhotonUnityNetworking.Code.Common.Factory;
+using Zenject;
 
 #pragma warning disable 1587
 /// \defgroup publicApi Public API
@@ -902,15 +903,12 @@ namespace Photon.Pun
     
     public class PhotonPool : IPunPrefabPool
     {
-        private IGameFactory _gameFactory;
-
         public GameObject Instantiate(string prefabId, Vector3 position, Quaternion rotation)
         {
-            _gameFactory ??= Di.Container.Resolve<IGameFactory>();
-            var instance = _gameFactory.CreateWithKey(prefabId, position, rotation);
+            var instance = Di.Container.Resolve<IGameFactory>().CreateWithKey(prefabId, position, rotation);
             return instance;
         }
-        
+
         public void Destroy(GameObject gameObject)
         {
             UnityEngine.Object.Destroy(gameObject);

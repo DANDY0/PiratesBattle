@@ -1,9 +1,9 @@
 ﻿using DG.Tweening;
 using Photon.Pun;
+using PunNetwork.Services.ObjectsInRoom;
 using Services.GamePools;
 using Services.Input;
 using UnityEngine;
-using UnityEngine.UI;
 using Utils.Extensions;
 using Zenject;
 using static Utils.Enumerators;
@@ -15,18 +15,18 @@ namespace PunNetwork.Views.Player
     [RequireComponent(typeof(Collider))]
     public class PlayerView : MonoBehaviour, IPunInstantiateMagicCallback
     {
+        private const float MaxHealthPoints = 100;
         public TeamRole TeamRole { get; private set; }
         public PhotonView PhotonView { get; private set; }
-        public bool IsSpawnedOnServer { get; set; }
 
         [SerializeField] private MeshRenderer _teamMarker;
         [SerializeField] private ParticleSystem _destruction;
-        [SerializeField] private Image[] _heartImages;
-		[SerializeField] private PlayerUI _playerUI;
-		[SerializeField] private EnemiesTriggerCollider _enemiesTriggerCollider;
-        
+        [SerializeField] private PlayerUI _playerUI;
+        [SerializeField] private EnemiesTriggerCollider _enemiesTriggerCollider;
+
         private IInputService _inputService;
         private IPhotonPoolService _photonPoolService;
+        private IObjectsInRoomService _objectsInRoomService;
 
         private Rigidbody _rigidbody;
         private Collider _collider;
@@ -42,15 +42,20 @@ namespace PunNetwork.Views.Player
         private Tween _animationTween;
         private bool _isFiring;
 
+        public float CurrentHealthPoints { get; private set; }
+        public Photon.Realtime.Player Player;
+
         [Inject]
         private void Construct
         (
             IInputService inputService,
-            IPhotonPoolService photonPoolService
+            IPhotonPoolService photonPoolService,
+            IObjectsInRoomService objectsInRoomService
         )
         {
             _inputService = inputService;
             _photonPoolService = photonPoolService;
+            _objectsInRoomService = objectsInRoomService;
         }
 
         public void SubscribeOnInput()
@@ -58,7 +63,7 @@ namespace PunNetwork.Views.Player
             if (PhotonView.IsMine)
                 _inputService.FireTriggeredEvent += FireJoystickTriggered;
         }
-        
+
         #region UNITY
 
         public void Awake()
@@ -68,7 +73,7 @@ namespace PunNetwork.Views.Player
             _collider = GetComponent<Collider>();
             _renderers = GetComponentsInChildren<MeshRenderer>();
             _characterController = GetComponent<CharacterController>();
-            
+
             Debug.Log("InputService" + nameof(_inputService));
         }
 
@@ -131,7 +136,7 @@ namespace PunNetwork.Views.Player
             {
                 if (_inputService.LookAxis.sqrMagnitude < lookAxisThreshold * lookAxisThreshold)
                 {
-                    if (_enemiesTriggerCollider.TryGetNearestEnemy(out var enemy)) 
+                    if (_enemiesTriggerCollider.TryGetNearestEnemy(out var enemy))
                         RotateTowards(enemy.position - transform.position);
                 }
                 else
@@ -158,14 +163,14 @@ namespace PunNetwork.Views.Player
             if (_shootingTimer <= 0)
             {
                 _shootingTimer = .2f;
-                
+
                 var position = transform.position;
                 var rotation = transform.rotation;
-                
+
                 var bullet = _photonPoolService.ActivatePoolItem<Bullet.Bullet>(GameObjectEntryKey.Bullet.ToString(),
                     position,
                     rotation);
-                bullet.Fire(position, rotation);
+                bullet.Fire(position);
             }
 
             if (_shootingTimer > 0)
@@ -178,27 +183,29 @@ namespace PunNetwork.Views.Player
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
-            if (info.Sender.IsLocal)
-            {
-                info.Sender.SetCustomProperty(PlayerProperty.IsSpawned, true);
-            }
+            Player = info.Sender;
+            _objectsInRoomService.OnPlayerSpawned(info.Sender, this);
         }
+        
 
         [PunRPC]
-        public void RegisterHit()
+        public void RegisterHit(float damage)
         {
-            if (!PhotonView.IsMine ||
-                !PhotonNetwork.LocalPlayer.TryGetCustomProperty(PlayerProperty.PlayerLives, out var lives)) return;
-            var currentLives = (int)lives <= 1 ? 0 : (int)lives - 1;
-            PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.PlayerLives, currentLives);
+            if (!PhotonView.IsMine)
+                return;
+            var newHealthPoints = CurrentHealthPoints - damage;
+            var resultHealthPoints = newHealthPoints <= 0 ? 0 : newHealthPoints;
+            
+            PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.PlayerHP, resultHealthPoints);
 
-            if (currentLives == 0)
+            if (resultHealthPoints == 0)
                 PhotonView.RPC(nameof(DestroyPlayer), RpcTarget.All);
         }
 
         [PunRPC]
         public void DestroyPlayer()
         {
+            _playerUI.gameObject.SetActive(false);
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.angularVelocity = Vector3.zero;
 
@@ -221,13 +228,13 @@ namespace PunNetwork.Views.Player
             _teamMarker.material.color = markerColor;
         }
 
-        public void SetNickname(string nickname) 
+        public void SetNickname(string nickname)
             => _playerUI.SetNickName(nickname);
 
-        public void UpdateHearts(int currentLives)
+        public void UpdateHealthPoints(float healthPoints)
         {
-            for (var i = 0; i < _heartImages.Length; i++)
-                _heartImages[i].enabled = i < currentLives;
+            CurrentHealthPoints = healthPoints;
+            _playerUI.SetHealthPoints(healthPoints, MaxHealthPoints);
         }
     }
 
