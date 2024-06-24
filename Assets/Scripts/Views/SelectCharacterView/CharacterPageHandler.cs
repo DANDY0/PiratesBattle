@@ -50,7 +50,7 @@ namespace Views
                 c=>c.Character == selectedCharacter);
             
             _dataService.CachedUserLocalData.SelectedCharacter = selectedCharacter;
-            _mainMenuView.SelectedCharacterPanel.SetCharacterImage(characterVisualData.FullImage);
+            _mainMenuView.SelectedCharacterPanel.SetCharacterImage(characterVisualData.FullImage, selectedCharacter.ToString());
             
             _windowService.Open(EWindow.MainMenu);
             _selectCharacterView.EnableCharacterPagePanel(false);

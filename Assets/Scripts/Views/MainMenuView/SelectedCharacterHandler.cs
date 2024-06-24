@@ -29,10 +29,11 @@ namespace Views
         {
             Debug.Log("SelectedCharacterHandler initialized");
 
-            Sprite characterSprite = _charactersVisualDatabase.CharactersDataData.CharactersData.Find(
-                c=> c.Character == _dataService.CachedUserLocalData.SelectedCharacter).FullImage;
+            var characterData = _charactersVisualDatabase.CharactersDataData.CharactersData.Find(
+                c=> c.Character == _dataService.CachedUserLocalData.SelectedCharacter);
+            Sprite characterSprite = characterData.FullImage;
             
-            View.SetCharacterImage(characterSprite);
+            View.SetCharacterImage(characterSprite, _dataService.CachedUserLocalData.SelectedCharacter.ToString());
             View.CharacterButton.onClick.AddListener(CharacterButtonClick);
         }
 

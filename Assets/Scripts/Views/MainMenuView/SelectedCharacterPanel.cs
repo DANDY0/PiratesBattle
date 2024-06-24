@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Abstracts;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ namespace Views
     {
         [SerializeField] private Button _characterButton;
         [SerializeField] private Image _selectedCharacterImage;
+        [SerializeField] private TextMeshProUGUI _characterName;
 
         public Button CharacterButton => _characterButton;
         
@@ -17,9 +19,10 @@ namespace Views
             Debug.Log("start");
         }
 
-        public void SetCharacterImage(Sprite sprite)
+        public void SetCharacterImage(Sprite sprite, string characterName)
         {
             _selectedCharacterImage.sprite = sprite;
+            _characterName.text = characterName;
         }
     }
     

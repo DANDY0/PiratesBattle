@@ -587,6 +587,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterButton: {fileID: 2231155587826529002}
   _selectedCharacterImage: {fileID: 7774100828837900192}
+  _characterName: {fileID: 8829043356194937662}
 --- !u!1 &1624936929921913959
 GameObject:
   m_ObjectHideFlags: 0
