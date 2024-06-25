@@ -51,13 +51,14 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             _customPropertiesService.PlayerSpawnedEvent += PlayerSpawnedHandler;
             _customPropertiesService.PoolsPreparedEvent += PoolsPreparedHandler;
-            _customPropertiesService.GetPlayerSpawnedDataEvent += GetPlayerSpawnedDataHandler;
+            _customPropertiesService.GetReadyPlayerInfoEvent += GetPlayerSpawnedDataHandler;
+            
         }
 
         public void Dispose()
         {
             _customPropertiesService.PlayerSpawnedEvent -= PlayerSpawnedHandler;
-            _customPropertiesService.GetPlayerSpawnedDataEvent -= GetPlayerSpawnedDataHandler;
+            _customPropertiesService.GetReadyPlayerInfoEvent -= GetPlayerSpawnedDataHandler;
             _customPropertiesService.PoolsPreparedEvent -= PoolsPreparedHandler;
         }
 
@@ -82,9 +83,11 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             if (!isSpawned)
                 return;
-            var isAllReady = IsAllReady();
-            Debug.Log($"Player spawned, IsAllReady:{isAllReady}");
-            if (isAllReady)
+            
+            _playersDictionary[player].SetUpInfo();
+
+            Debug.Log($"Player spawned, IsAllReady:{IsAllReady()}");
+            if (IsAllReady())
                 OnAllSpawned();
         }
 
@@ -101,9 +104,9 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             var isAllReady = true;
             foreach (var player in PhotonNetwork.PlayerList)
-                if (player.TryGetCustomProperty(PlayerProperty.IsPlayersSpawned, out var isSpawned))
+                if (player.TryGetCustomProperty<bool>(PlayerProperty.IsPlayersSpawned, out var isSpawned))
                 {
-                    if ((bool)isSpawned) continue;
+                    if (isSpawned) continue;
                     isAllReady = false;
                     break;
                 }
@@ -117,9 +120,9 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             var isAllReady = true;
             foreach (var player in PhotonNetwork.PlayerList)
-                if (player.TryGetCustomProperty(PlayerProperty.IsPoolsPrepared, out var isPrepared))
+                if (player.TryGetCustomProperty<bool>(PlayerProperty.IsPoolsPrepared, out var isPrepared))
                 {
-                    if ((bool)isPrepared) continue;
+                    if (isPrepared) continue;
                     isAllReady = false;
                     break;
                 }
@@ -133,7 +136,7 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             _isAllPlayersSpawned = true;
             
-            SendPlayerSpawnedData();
+            // SendPlayerSpawnedData();
 
             GoNextState();
         }
@@ -160,15 +163,6 @@ namespace PunNetwork.Services.ObjectsInRoom
             _playersDictionary[player].UpdateHealthPoints(newHealthPoints);
         }
 
-        private void SendPlayerSpawnedData()
-        {
-            var playerSpawnedData = new PlayerSpawnedData(PhotonNetwork.LocalPlayer.ActorNumber,
-                _dataService.CachedUserLocalData.NickName, _dataService.CachedUserLocalData.SelectedCharacter.ToString(),1);
-            var json = JsonConvert.SerializeObject(playerSpawnedData);
-
-            PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.PlayerSpawnedData, json);
-        }
-
         private static void SetTeamRole(PlayerView playerView)
         {
             var player = playerView.PhotonView.Owner;
@@ -184,9 +178,8 @@ namespace PunNetwork.Services.ObjectsInRoom
             playerView.SetTeamRole(teamRole);
         }
 
-        private void GetPlayerSpawnedDataHandler(Player player, PlayerSpawnedData playerSpawnedData)
+        private void GetPlayerSpawnedDataHandler(Player player, ReadyPlayerInfo readyPlayerInfo)
         {
-            _playersDictionary[player].SetNickname(playerSpawnedData.Nickname);
         }
     }
 }

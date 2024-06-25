@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using Photon.Pun;
+using PunNetwork.NetworkData;
 using PunNetwork.Services.ObjectsInRoom;
 using Services.GamePools;
 using Services.Input;
@@ -23,13 +24,13 @@ namespace PunNetwork.Views.Player
         [SerializeField] private ParticleSystem _destruction;
         [SerializeField] private PlayerUI _playerUI;
         [SerializeField] private EnemiesTriggerCollider _enemiesTriggerCollider;
+        [SerializeField] private Collider _collider;
 
         private IInputService _inputService;
         private IPhotonPoolService _photonPoolService;
         private IObjectsInRoomService _objectsInRoomService;
 
         private Rigidbody _rigidbody;
-        private Collider _collider;
         private CharacterController _characterController;
         private MeshRenderer[] _renderers;
 
@@ -70,7 +71,6 @@ namespace PunNetwork.Views.Player
         {
             PhotonView = GetComponent<PhotonView>();
             _rigidbody = GetComponent<Rigidbody>();
-            _collider = GetComponent<Collider>();
             _renderers = GetComponentsInChildren<MeshRenderer>();
             _characterController = GetComponent<CharacterController>();
 
@@ -206,10 +206,10 @@ namespace PunNetwork.Views.Player
         public void DestroyPlayer()
         {
             _playerUI.gameObject.SetActive(false);
+            _collider.enabled = false;
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.angularVelocity = Vector3.zero;
 
-            _collider.enabled = false;
             foreach (var meshRenderer in _renderers)
                 meshRenderer.enabled = false;
 
@@ -228,8 +228,12 @@ namespace PunNetwork.Views.Player
             _teamMarker.material.color = markerColor;
         }
 
-        public void SetNickname(string nickname)
-            => _playerUI.SetNickName(nickname);
+        public void SetUpInfo()
+        {
+            if (Player.TryGetCustomProperty<NetworkDataModel.ReadyPlayerInfo>(PlayerProperty.ReadyPlayerInfo, out var info))
+                _playerUI.SetNickName(info.Nickname);
+            
+        }
 
         public void UpdateHealthPoints(float healthPoints)
         {
@@ -245,7 +249,7 @@ namespace PunNetwork.Views.Player
             {
                 TeamRole.MyPlayer => Color.green,
                 TeamRole.AllyPlayer => Color.blue,
-                TeamRole.EnemyPlayer => Color.red,
+                TeamRole.EnemyPlayer => Color.red
             };
     }
 }

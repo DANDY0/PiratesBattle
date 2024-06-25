@@ -9,6 +9,6 @@ namespace PunNetwork.Services.CustomProperties
         event Action<Player, bool> PlayerSpawnedEvent;
         event Action<Player, bool> PoolsPreparedEvent;
         event Action<Player, float> PlayerHealthPointsChangedEvent;
-        event Action<Player, NetworkDataModel.PlayerSpawnedData> GetPlayerSpawnedDataEvent;
+        event Action<Player, NetworkDataModel.ReadyPlayerInfo> GetReadyPlayerInfoEvent;
     }
 }

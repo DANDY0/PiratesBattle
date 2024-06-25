@@ -13,7 +13,7 @@
         {
             IsPlayersSpawned,
             PlayerHP,
-            PlayerSpawnedData,
+            ReadyPlayerInfo,
 			CharacterName,
 			IsPoolsPrepared
         }
@@ -26,7 +26,10 @@
         public enum GameObjectEntryKey
         {
             Bullet = 0,
-            Player = 1
+            Primo = 1,
+            Voron = 2,
+            Rocket = 3,
+            
         }
 
         public enum GameResult

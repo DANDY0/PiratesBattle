@@ -16,7 +16,7 @@ public class CustomPropertiesService : MonoBehaviourPunCallbacks, ICustomPropert
     public event Action<Player, bool> PlayerSpawnedEvent;
     public event Action<Player, bool> PoolsPreparedEvent;
     public event Action<Player, float> PlayerHealthPointsChangedEvent;
-    public event Action<Player, PlayerSpawnedData> GetPlayerSpawnedDataEvent;
+    public event Action<Player, ReadyPlayerInfo> GetReadyPlayerInfoEvent;
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
@@ -43,9 +43,9 @@ public class CustomPropertiesService : MonoBehaviourPunCallbacks, ICustomPropert
                 Debug.Log($"Player pools prepared {player.ActorNumber} Key: {key}, Value: {isPoolsPrepared}");
                 PoolsPreparedEvent?.Invoke(player, isPoolsPrepared);
                 break;
-            case PlayerProperty.PlayerSpawnedData:
-                var resultData = JsonConvert.DeserializeObject<PlayerSpawnedData>(value.ToString());
-                GetPlayerSpawnedDataEvent?.Invoke(player, resultData);
+            case PlayerProperty.ReadyPlayerInfo:
+                var resultData = JsonConvert.DeserializeObject<ReadyPlayerInfo>(value.ToString());
+                GetReadyPlayerInfoEvent?.Invoke(player, resultData);
                 break;
             case PlayerProperty.PlayerHP:
                 var playerHealthPoints = Convert.ToSingle(value);

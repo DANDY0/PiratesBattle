@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Controllers;
 using ExitGames.Client.Photon;
+using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using PunNetwork.Services.CustomProperties;
 using PunNetwork.Services.ObjectsInRoom;
 using PunNetwork.Services.SpawnPoints;
+using Services.Data;
 using States;
 using States.Core;
 using UnityEngine;
@@ -16,6 +19,7 @@ using Utils;
 using Utils.Extensions;
 using Zenject;
 using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
+using static PunNetwork.NetworkData.NetworkDataModel;
 
 namespace PunNetwork.Services.GameNetwork
 {
@@ -26,10 +30,14 @@ namespace PunNetwork.Services.GameNetwork
         private ISpawnPointsService _spawnPointsService;
         private IGameStateMachine _gameStateMachine;
         private LoadingController _loadingController;
+        private IDataService _dataService;
 
         private const float MaxHealthPoints = 100;
         
         public GameResult GameResult { get; private set; }
+
+        private List<ReadyPlayerInfo> _readyPlayersData = new List<ReadyPlayerInfo>();
+        private bool _isMatchEnded;
 
         [Inject]
         private void Construct
@@ -37,6 +45,7 @@ namespace PunNetwork.Services.GameNetwork
             ICustomPropertiesService customPropertiesService,
             IObjectsInRoomService objectsInRoomService,
             ISpawnPointsService spawnPointsService,
+            IDataService dataService,
             IGameStateMachine stateMachine,
             LoadingController loadingController
         )
@@ -44,6 +53,7 @@ namespace PunNetwork.Services.GameNetwork
             _customPropertiesService = customPropertiesService;
             _objectsInRoomService = objectsInRoomService;
             _spawnPointsService = spawnPointsService;
+            _dataService = dataService;
             _gameStateMachine = stateMachine;
             _loadingController = loadingController;
         }
@@ -51,12 +61,14 @@ namespace PunNetwork.Services.GameNetwork
         public void Initialize()
         {
             _customPropertiesService.PlayerHealthPointsChangedEvent += OnPlayerHealthPointsChanged;
+            _customPropertiesService.GetReadyPlayerInfoEvent +=  GetReadyPlayerInfoHandler;
             PhotonNetwork.NetworkingClient.EventReceived += OnEventReceived;
         }
 
         public void Dispose()
         {
             _customPropertiesService.PlayerHealthPointsChangedEvent -= OnPlayerHealthPointsChanged;
+            _customPropertiesService.GetReadyPlayerInfoEvent -=  GetReadyPlayerInfoHandler;
             PhotonNetwork.NetworkingClient.EventReceived -= OnEventReceived;
         }
 
@@ -71,12 +83,37 @@ namespace PunNetwork.Services.GameNetwork
             if (PhotonNetwork.InRoom)
             {
                 Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
-                SpawnPlayer();
+                SendReadyPlayerInfo();
             }
             else
             {
                 Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
             }
+        }
+
+        private void GetReadyPlayerInfoHandler(Player player, ReadyPlayerInfo data)
+        {
+            CheckIsAllPlayersReady(data);
+        }
+
+        private void CheckIsAllPlayersReady(ReadyPlayerInfo data)
+        {
+            _readyPlayersData.Add(data);
+            
+            if(!PhotonNetwork.IsMasterClient)
+                return;
+            
+            if (_readyPlayersData.Count == PhotonNetwork.CurrentRoom.PlayerCount) 
+                GameEventsRaiser.RaiseEvent(GameEventCodes.AllPlayersReady, null);
+        }
+
+        private void SendReadyPlayerInfo()
+        {
+            var playerSpawnedData = new ReadyPlayerInfo(PhotonNetwork.LocalPlayer.ActorNumber,
+                _dataService.CachedUserLocalData.NickName, _dataService.CachedUserLocalData.SelectedCharacter.ToString(),1);
+            var json = JsonConvert.SerializeObject(playerSpawnedData);
+
+            PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.ReadyPlayerInfo, json);
         }
 
         public void LeaveGame() => StartCoroutine(HandleGameEnd());
@@ -127,11 +164,17 @@ namespace PunNetwork.Services.GameNetwork
                     _gameStateMachine.Enter<GameResultsState>();
                     break;
                 }
+                case GameEventCodes.AllPlayersReady:
+                {
+                    SpawnPlayer();
+                    break;
+                }
             }
         }
 
         private void OnPlayerHealthPointsChanged(Player player, float newHealthPoints)
         {
+            
             _objectsInRoomService.UpdateHealthPoints(player, newHealthPoints);
             if (newHealthPoints != MaxHealthPoints)
                 CheckIfGameEnded();
@@ -140,13 +183,17 @@ namespace PunNetwork.Services.GameNetwork
         private void SpawnPlayer()
         {
             var photonTeam = PhotonNetwork.LocalPlayer.GetPhotonTeam();
-            var playerPosition = _spawnPointsService.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1,
-                photonTeam);
-            PhotonNetwork.Instantiate(GameObjectEntryKey.Player.ToString(), playerPosition, Quaternion.identity);
+            var playerPosition = _spawnPointsService.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1, photonTeam);
+            
+            PhotonNetwork.LocalPlayer.TryGetCustomProperty<ReadyPlayerInfo>(PlayerProperty.ReadyPlayerInfo, out var info);
+            PhotonNetwork.Instantiate(info.CharacterName, playerPosition, Quaternion.identity);
         }
 
         private void CheckIfGameEnded()
         {
+            if(_isMatchEnded)
+                return;
+            
             if (!PhotonNetwork.IsMasterClient)
                 return;
 
@@ -162,14 +209,13 @@ namespace PunNetwork.Services.GameNetwork
             }
 
             var firstPlayerTeam = alivePlayers.First().GetPhotonTeam().Code;
-
             var allSameTeam = alivePlayers.All(player => player.GetPhotonTeam().Code == firstPlayerTeam);
 
-            if (!allSameTeam) return;
-
-            var raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-            var sendOptions = new SendOptions { Reliability = true };
-            PhotonNetwork.RaiseEvent(GameEventCodes.EndMatchEventCode, firstPlayerTeam, raiseEventOptions, sendOptions);
+            if (!allSameTeam) 
+                return;
+        
+            _isMatchEnded = true;
+            GameEventsRaiser.RaiseEvent(GameEventCodes.EndMatchEventCode, null);
         }
         
         private IEnumerator HandleGameEnd()
