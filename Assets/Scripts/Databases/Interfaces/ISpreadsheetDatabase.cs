@@ -1,7 +1,7 @@
 using Enums;
 using Models;
 
-namespace Databases
+namespace Databases.Interfaces
 {
     public interface ISpreadsheetDatabase
     {

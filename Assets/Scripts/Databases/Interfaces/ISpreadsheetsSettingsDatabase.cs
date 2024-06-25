@@ -1,6 +1,6 @@
 ﻿using Models;
 
-namespace Databases
+namespace Databases.Interfaces
 {
     public interface ISpreadsheetsSettingsDatabase
     {

@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Views
+namespace Views.SelectCharacterView
 {
     public class CharacterElementView: View
     {

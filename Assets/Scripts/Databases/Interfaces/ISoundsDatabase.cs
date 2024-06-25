@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using Enums;
 using UnityEngine;
-using UnityEngine.Audio;
 
-namespace Databases
+namespace Databases.Interfaces
 {
     public interface ISoundsDatabase
     {

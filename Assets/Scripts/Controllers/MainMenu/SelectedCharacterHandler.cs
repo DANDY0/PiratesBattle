@@ -1,11 +1,12 @@
 ﻿using Core.Abstracts;
-using Databases;
+using Databases.Interfaces;
 using Enums;
 using Services.Data;
 using Services.Window;
 using UnityEngine;
+using Views.MainMenuView;
 
-namespace Views
+namespace Controllers.MainMenu
 {
     public class SelectedCharacterHandler : Handler<SelectedCharacterPanel>
     {
@@ -31,7 +32,7 @@ namespace Views
 
             var characterData = _charactersVisualDatabase.CharactersDataData.CharactersData.Find(
                 c=> c.Character == _dataService.CachedUserLocalData.SelectedCharacter);
-            Sprite characterSprite = characterData.FullImage;
+            var characterSprite = characterData.FullImage;
             
             View.SetCharacterImage(characterSprite, _dataService.CachedUserLocalData.SelectedCharacter.ToString());
             View.CharacterButton.onClick.AddListener(CharacterButtonClick);

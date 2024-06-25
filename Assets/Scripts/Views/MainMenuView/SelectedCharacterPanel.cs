@@ -1,10 +1,9 @@
-﻿using System;
-using Core.Abstracts;
+﻿using Core.Abstracts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Views
+namespace Views.MainMenuView
 {
     public class SelectedCharacterPanel: View
     {

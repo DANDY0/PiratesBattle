@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Databases.Interfaces;
 using Enums;
 using UnityEngine;
 
-namespace Databases.Impls
+namespace Databases
 {
     [CreateAssetMenu(menuName = "Databases/SoundsDatabase", fileName = "SoundsDatabase")]
     public class SoundsDatabase : ScriptableObject, ISoundsDatabase

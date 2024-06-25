@@ -16,7 +16,7 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Factory
         public GameFactory
         (
             DiContainer di,
-            IPrefabProvider prefabProvider
+            IPrefabProvider prefabProvider = null
         )
         {
             _di = di;

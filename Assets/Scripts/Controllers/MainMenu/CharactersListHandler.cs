@@ -1,33 +1,31 @@
 ﻿using Core.Abstracts;
-using Databases;
+using Databases.Interfaces;
 using Enums;
-using Services.Data;
 using Services.Window;
+using UniRx;
 using UnityEngine;
-using Utils;
+using Views.SelectCharacterView;
+using static Utils.Enumerators;
 
-namespace Views
+namespace Controllers.MainMenu
 {
     public class CharactersListHandler: Handler<CharactersListPanel>
     {
         private readonly IWindowService _windowService;
-        private readonly IDataService _dataService;
         private readonly ICharactersVisualDatabase _charactersVisualDatabase;
 
         private readonly SelectCharacterView _selectCharacterView;
 
-        public Enumerators.Character SelectedCharacter { get; private set; }
+        public Character SelectedCharacter { get; private set; }
 
         public CharactersListHandler
         (
             IWindowService windowService,
-            IDataService dataService,
             ICharactersVisualDatabase charactersVisualDatabase,
             SelectCharacterView selectCharacterView
         )
         {
             _windowService = windowService;
-            _dataService = dataService;
             _charactersVisualDatabase = charactersVisualDatabase;
             _selectCharacterView = selectCharacterView;
         }
@@ -36,7 +34,7 @@ namespace Views
         protected override void Initialize()
         {
             Debug.Log("CharactersListHandler initialized");
-            View.BackButton.onClick.AddListener(BackButtonClick);
+            View.BackButton.OnClickAsObservable().Subscribe(_ => BackButtonClick()).AddTo(View);
             
             FillCharactersList();
         }
@@ -45,13 +43,13 @@ namespace Views
         {
             foreach (var characterData in _charactersVisualDatabase.CharactersDataData.CharactersData)
             {
-                CharacterElementView characterElementView = View.CharactersCollection.AddItem();
+                var characterElementView = View.CharactersCollection.AddItem();
                 characterElementView.SetUp(characterData);
                 characterElementView.Button.onClick.AddListener(()=>SelectCharacter(characterData.Character));
             }
         }
 
-        private void SelectCharacter(Enumerators.Character character)
+        private void SelectCharacter(Character character)
         {
             SelectedCharacter = character;
             

@@ -1,8 +1,9 @@
 ﻿using Core.Abstracts;
 using Services.Data;
 using UnityEngine;
+using Views.MainMenuView;
 
-namespace Views.MainMenuView
+namespace Controllers.MainMenu
 {
     public class MenuProfileHandler: Handler<MenuProfilePanel>
     {

@@ -1,7 +1,8 @@
-﻿using Models;
+﻿using Databases.Interfaces;
+using Models;
 using UnityEngine;
 
-namespace Databases.Impls
+namespace Databases
 {
     [CreateAssetMenu(menuName = "Databases/SpreadsheetsSettingsDatabase", fileName = "SpreadsheetsSettingsDatabase")]
     public class SpreadsheetsSettingsDatabase : ScriptableObject, ISpreadsheetsSettingsDatabase

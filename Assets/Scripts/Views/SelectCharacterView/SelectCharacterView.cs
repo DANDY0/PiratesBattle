@@ -2,7 +2,7 @@
 using Enums;
 using UnityEngine;
 
-namespace Views
+namespace Views.SelectCharacterView
 {
     public class SelectCharacterView: Window
     {

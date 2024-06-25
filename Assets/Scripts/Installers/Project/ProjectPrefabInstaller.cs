@@ -1,7 +1,7 @@
 ﻿using Behaviours;
 using Controllers;
 using Databases;
-using Databases.Impls;
+using Databases.Interfaces;
 using Helpers;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;

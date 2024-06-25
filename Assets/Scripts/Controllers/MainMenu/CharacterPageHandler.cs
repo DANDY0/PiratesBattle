@@ -1,12 +1,14 @@
 ﻿using Core.Abstracts;
-using Databases;
+using Databases.Interfaces;
 using Enums;
 using Services.Data;
 using Services.Window;
 using UnityEngine;
 using Utils;
+using Views.MainMenuView;
+using Views.SelectCharacterView;
 
-namespace Views
+namespace Controllers.MainMenu
 {
     public class CharacterPageHandler : Handler<CharacterPagePanel>
     {

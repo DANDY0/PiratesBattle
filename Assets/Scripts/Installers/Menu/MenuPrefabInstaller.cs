@@ -1,4 +1,5 @@
 ﻿using Controllers;
+using Controllers.MainMenu;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.Services.MenuNetwork;
 using Services.Window;
@@ -8,6 +9,7 @@ using Utils;
 using Utils.Extensions;
 using Views;
 using Views.MainMenuView;
+using Views.SelectCharacterView;
 using Zenject;
 
 namespace Installers.Menu

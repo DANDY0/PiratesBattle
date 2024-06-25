@@ -1,8 +1,9 @@
-﻿using Enums;
+﻿using Databases.Interfaces;
+using Enums;
 using Models;
 using UnityEngine;
 
-namespace Databases.Impls
+namespace Databases
 {
     [CreateAssetMenu(menuName = "Databases/ExampleDatabase", fileName = "ExampleDatabase")]
     public class ExampleDatabase : SpreadsheetDatabase, IExampleDatabase

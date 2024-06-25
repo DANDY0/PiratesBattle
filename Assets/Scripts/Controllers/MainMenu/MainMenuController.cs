@@ -1,13 +1,10 @@
 ﻿using Core.Abstracts;
-using PunNetwork.Services;
 using PunNetwork.Services.MenuNetwork;
 using Services.Data;
 using UniRx;
-using Views;
-using UnityEngine;
 using Views.MainMenuView;
 
-namespace Controllers
+namespace Controllers.MainMenu
 {
     public class MainMenuController : Controller<MainMenuView>
     {

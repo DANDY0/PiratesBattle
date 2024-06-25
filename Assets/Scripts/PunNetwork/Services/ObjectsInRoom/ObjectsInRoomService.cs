@@ -163,7 +163,7 @@ namespace PunNetwork.Services.ObjectsInRoom
         private void SendPlayerSpawnedData()
         {
             var playerSpawnedData = new PlayerSpawnedData(PhotonNetwork.LocalPlayer.ActorNumber,
-                _dataService.CachedUserLocalData.NickName, 0, 1);
+                _dataService.CachedUserLocalData.NickName, _dataService.CachedUserLocalData.SelectedCharacter.ToString(),1);
             var json = JsonConvert.SerializeObject(playerSpawnedData);
 
             PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.PlayerSpawnedData, json);

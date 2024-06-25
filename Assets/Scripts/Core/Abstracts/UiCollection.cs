@@ -6,30 +6,25 @@ using Zenject;
 
 namespace Core.Abstracts
 {
-    public abstract class UiCollection<TView> : MonoBehaviour, IUiCollection, IInitializable where TView : View
+    public abstract class UiCollection<TView> : MonoBehaviour, IUiCollection where TView : View
     {
         [SerializeField] private Transform _collectionRoot;
         
-        private readonly DiContainer _diContainer;
         private readonly List<TView> _items = new();
-        private readonly IGameFactory _factory;
+        private IGameFactory _factory;
         private TView _view;
 
-        protected UiCollection
+        [Inject]
+        private void Construct
         (
             IGameFactory factory,
-            DiContainer diContainer
+            TView view
         )
         {
             _factory = factory;
-            _diContainer = diContainer;
+            _view = view;
         }
-
-        public void Initialize()
-        {
-            _view = _diContainer.Resolve<TView>();
-        }
-    
+        
         public TView AddItem()
         {
             var item = _factory.Create(_view, Vector3.zero, Quaternion.identity);
