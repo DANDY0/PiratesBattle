@@ -5,7 +5,7 @@ using Photon.Pun;
 using PunNetwork.ObjectPooling;
 using UnityEngine;
 using Utils.Extensions;
-using static Utils.Enumerators;
+using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 namespace Services.GamePools
 {

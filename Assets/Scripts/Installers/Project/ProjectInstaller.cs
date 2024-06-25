@@ -1,15 +1,14 @@
-using Photon.PhotonUnityNetworking.Code.Common;
+using Photon.PhotonUnityNetworking.Code.Common.Factory;
 using Photon.Realtime;
 using Services.Data;
-using Services.Input;
 using Services.Localization;
 using Services.Network;
+using Services.Pool;
 using Services.SceneLoading;
 using Services.Sound.Impls;
 using Services.Spreadsheets;
 using Services.Window;
 using States.Core;
-using Utils;
 using Zenject;
 
 namespace Installers.Project
@@ -18,7 +17,6 @@ namespace Installers.Project
     {
         public override void InstallBindings()
         {
-            Di.Container = Container;
             SignalBusInstaller.Install(Container);
             BindServices();
         }
@@ -34,6 +32,8 @@ namespace Installers.Project
             Container.BindInterfacesTo<WindowService>().AsSingle();
             Container.BindInterfacesTo<SceneLoadingService>().AsSingle();
 			Container.BindInterfacesTo<GameStateMachine>().AsSingle();
+            Container.BindInterfacesTo<GameFactory>().AsSingle();
+            Container.BindInterfacesTo<PoolService>().AsSingle();
 
             Container.BindInterfacesTo<AudioSourcePool>().AsSingle();
             Container.BindInterfacesTo<SoundService>().AsSingle();

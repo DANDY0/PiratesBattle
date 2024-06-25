@@ -1,8 +1,8 @@
 ﻿using System;
 using UnityEngine;
-using static Utils.Enumerators;
+using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
-namespace Models
+namespace Photon.PhotonUnityNetworking.Code.Common.PrefabRegistry
 {
     [Serializable]
     public class GameObjectEntry

@@ -1,5 +1,5 @@
 ﻿using Utils;
-using static Utils.Enumerators;
+using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 namespace PunNetwork.Services.GameNetwork
 {

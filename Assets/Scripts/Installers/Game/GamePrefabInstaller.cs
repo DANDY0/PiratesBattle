@@ -23,9 +23,6 @@ namespace Installers.Game
 
         [Header("Network")] 
         [SerializeField] private GameNetworkService _gameNetworkService;
-
-        [Header("Prefabs")] 
-        [SerializeField] private GameObjectEntry[] _gameObjectEntries;
         
         public override void InstallBindings()
         {
@@ -35,10 +32,7 @@ namespace Installers.Game
 
         private void BindPrefabs()
         {
-            Container.BindPrefabs(_gameObjectEntries);
-            
             Container.BindPrefab(_gameNetworkService);
-
         }
         
         private void BindWindows()

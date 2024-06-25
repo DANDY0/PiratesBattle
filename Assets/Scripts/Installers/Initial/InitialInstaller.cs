@@ -1,6 +1,5 @@
-﻿using Photon.PhotonUnityNetworking.Code.Common;
-using States.Core;
-using Utils;
+﻿using States.Core;
+using Utils.Extensions;
 using Zenject;
 
 namespace Installers.Initial
@@ -9,20 +8,13 @@ namespace Installers.Initial
     {
         public override void InstallBindings()
         {
-            Di.Container = Container;
-            ConfigureGameStateMachine();
             BindServices();
+            Container.InjectSceneContainer();
         }
 
         private void BindServices()
         {
             Container.BindInterfacesTo<InitialEntryPoint>().AsSingle();
-        }
-
-        private void ConfigureGameStateMachine()
-        {
-            var gameStateMachine = ProjectContext.Instance.Container.Resolve<IGameStateMachine>();
-            gameStateMachine.SetSceneContainer(Container);
         }
     }
 }

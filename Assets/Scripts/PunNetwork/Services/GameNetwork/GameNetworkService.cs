@@ -15,7 +15,7 @@ using UnityEngine;
 using Utils;
 using Utils.Extensions;
 using Zenject;
-using static Utils.Enumerators;
+using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 namespace PunNetwork.Services.GameNetwork
 {

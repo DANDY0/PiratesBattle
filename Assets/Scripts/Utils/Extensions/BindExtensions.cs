@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using Core.Abstracts;
 using Core.Interfaces;
 using Models;
+using Photon.PhotonUnityNetworking.Code.Common;
 using Services.Window;
 using UnityEngine;
 using Zenject;
-using IPrefabProvider = Photon.PhotonUnityNetworking.Code.Common.PrefabProvider.IPrefabProvider;
 using Object = UnityEngine.Object;
-using PrefabProvider = Photon.PhotonUnityNetworking.Code.Common.PrefabProvider.PrefabProvider;
 
 namespace Utils.Extensions
 {
@@ -110,19 +109,12 @@ namespace Utils.Extensions
                         Object.DontDestroyOnLoad(o as MonoBehaviour);
                 });
 
-        public static void BindPrefabs(this DiContainer container, IEnumerable<GameObjectEntry> entries)
+        public static void InjectSceneContainer(this DiContainer container)
         {
-            var entriesDictionary = new Dictionary<string, GameObject>();
-
-            foreach (var entry in entries)
-            {
-                if (entriesDictionary.TryGetValue(entry.Key.ToString(), out var gameObject))
-                    Debug.LogError(
-                        $"{nameof(BindExtensions)} Duplicate key {entry.Key} on {gameObject} and {entry.GameObject}");
-                entriesDictionary[entry.Key.ToString()] = entry.GameObject;
-            }
-
-            container.Bind<IPrefabProvider>().To<PrefabProvider>().AsSingle().WithArguments(entriesDictionary);
+            var sceneContainerInjectables = ProjectContext.Instance.Container.ResolveAll<ISceneContainerInjectable>();
+            foreach (var containerInjectable in sceneContainerInjectables) 
+                containerInjectable.SetSceneContainer(container);
         }
+
     }
 }

@@ -1,8 +1,9 @@
-﻿using Zenject;
+﻿using Photon.PhotonUnityNetworking.Code.Common;
+using Zenject;
 
 namespace States.Core
 {
-    public class GameStateMachine : IGameStateMachine
+    public class GameStateMachine : IGameStateMachine, ISceneContainerInjectable
     {
         private DiContainer _container;  
         private IExitableState _activeState;

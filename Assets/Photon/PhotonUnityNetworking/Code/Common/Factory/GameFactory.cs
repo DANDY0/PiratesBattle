@@ -1,26 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using Photon.PhotonUnityNetworking.Code.Common.PrefabRegistry;
 using UnityEngine;
 using Zenject;
-using IPrefabProvider = Photon.PhotonUnityNetworking.Code.Common.PrefabProvider.IPrefabProvider;
 using Object = UnityEngine.Object;
 
 namespace Photon.PhotonUnityNetworking.Code.Common.Factory
 {
-    public class GameFactory : IGameFactory
+    public class GameFactory : IGameFactory, ISceneContainerInjectable
     {
-        private readonly DiContainer _di;
-        private readonly IPrefabProvider _prefabProvider;
+        private DiContainer _di;
+        private readonly IPrefabRegistryDatabase _prefabRegistryDatabase;
         private readonly Dictionary<string, GameObject> _resourceCache = new();
 
         public GameFactory
         (
-            DiContainer di,
-            IPrefabProvider prefabProvider = null
+            IPrefabRegistryDatabase prefabRegistryDatabase
         )
         {
-            _di = di;
-            _prefabProvider = prefabProvider;
+            _prefabRegistryDatabase = prefabRegistryDatabase;
+        }
+
+        public void SetSceneContainer(DiContainer container)
+        {
+            _di = container;
         }
 
         public GameObject CreateFromResources(string path, Vector3 posToSpawn, Quaternion rotation)
@@ -39,17 +42,15 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Factory
 
             return instance;
         }
-        
+
         public GameObject CreateWithKey(string key, Vector3 posToSpawn, Quaternion rotation)
         {
-            var prefab = _prefabProvider.GetPrefabWithKey(key);
+            var prefab = _prefabRegistryDatabase.GetObjectByKey(key);
             var instance = _di.InstantiatePrefab(prefab, posToSpawn, rotation, null);
-            //var instance = Object.Instantiate(prefab, posToSpawn, rotation);
-            //_di.InjectGameObject(instance);
             return instance;
         }
 
-        
+
         public T Create<T>(T prefab, Vector3 posToSpawn, Quaternion rotation) where T : Component
         {
             if (prefab == null)
@@ -62,7 +63,7 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Factory
             return instance.GetComponent<T>();
         }
 
-        
+
         public GameObject Create(GameObject prefab, Vector3 posToSpawn, Quaternion rotation)
         {
             if (prefab == null)
@@ -73,7 +74,7 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Factory
             var instance = Object.Instantiate(prefab, posToSpawn, rotation);
             return instance;
         }
-        
+
         public GameObject Create(GameObject prefab, Vector3 posToSpawn, Quaternion rotation, Transform parent)
         {
             if (prefab == null)
@@ -84,6 +85,5 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Factory
             var instance = Object.Instantiate(prefab, posToSpawn, rotation, parent);
             return instance;
         }
-
     }
 }

@@ -5,7 +5,7 @@ using Services.Window;
 using UniRx;
 using UnityEngine;
 using Views.SelectCharacterView;
-using static Utils.Enumerators;
+using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 namespace Controllers.MainMenu
 {

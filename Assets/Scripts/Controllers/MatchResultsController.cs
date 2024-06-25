@@ -7,7 +7,7 @@ using Photon.Pun.UtilityScripts;
 using PunNetwork.Services.GameNetwork;
 using Utils;
 using Views;
-using static Utils.Enumerators;
+using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 
 namespace Controllers

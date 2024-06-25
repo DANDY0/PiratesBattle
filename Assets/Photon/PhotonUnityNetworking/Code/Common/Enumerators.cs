@@ -1,4 +1,4 @@
-﻿namespace Utils
+﻿namespace Photon.PhotonUnityNetworking.Code.Common
 {
     public class Enumerators
     {

@@ -3,6 +3,7 @@ using Controllers;
 using Databases;
 using Databases.Interfaces;
 using Helpers;
+using Photon.PhotonUnityNetworking.Code.Common.PrefabRegistry;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.Services.CustomProperties;
@@ -26,6 +27,7 @@ namespace Installers.Project
         [SerializeField] private SettingsDatabase _settingsDatabase;
         [SerializeField] private DataManagementDatabase _dataManagementDatabase;
         [SerializeField] private CharactersVisualDatabase _charactersVisualDatabase;
+        [SerializeField] private PrefabRegistryDatabase _prefabRegistryDatabase;
 
         [Header("Common")] 
         [SerializeField] private CoroutineRunner _coroutineRunner;
@@ -88,6 +90,7 @@ namespace Installers.Project
             Container.Bind<ISettingsDatabase>().FromInstance(_settingsDatabase).AsSingle();
             Container.Bind<IDataManagementDatabase>().FromInstance(_dataManagementDatabase).AsSingle();
             Container.Bind<ICharactersVisualDatabase>().FromInstance(_charactersVisualDatabase).AsSingle();
+            Container.Bind<IPrefabRegistryDatabase>().FromInstance(_prefabRegistryDatabase).AsSingle();
         }
     }
 }

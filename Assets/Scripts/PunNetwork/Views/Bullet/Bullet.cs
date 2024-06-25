@@ -7,7 +7,7 @@ using UnityEngine;
 using Utils;
 using Zenject;
 using Logger = Utils.Logger;
-using static Utils.Enumerators;
+using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 namespace PunNetwork.Views.Bullet
 {

@@ -6,7 +6,7 @@ using Services.Input;
 using UnityEngine;
 using Utils.Extensions;
 using Zenject;
-using static Utils.Enumerators;
+using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 namespace PunNetwork.Views.Player
 {

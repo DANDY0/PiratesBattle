@@ -2,7 +2,7 @@
 using Photon.Pun;
 using States.Core;
 using Utils.Extensions;
-using static Utils.Enumerators;
+using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 
 namespace States

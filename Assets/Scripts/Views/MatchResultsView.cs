@@ -5,7 +5,7 @@ using Enums;
 using TMPro;
 using UnityEngine;
 using Utils;
-using static Utils.Enumerators;
+using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 
 namespace Views

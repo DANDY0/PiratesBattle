@@ -15,7 +15,7 @@ using UnityEngine;
 using Utils.Extensions;
 using Zenject;
 using static PunNetwork.NetworkData.NetworkDataModel;
-using static Utils.Enumerators;
+using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 namespace PunNetwork.Services.ObjectsInRoom
 {

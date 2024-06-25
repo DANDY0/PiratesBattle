@@ -903,9 +903,12 @@ namespace Photon.Pun
     
     public class PhotonPool : IPunPrefabPool
     {
+        private IGameFactory _gameFactory;
+
         public GameObject Instantiate(string prefabId, Vector3 position, Quaternion rotation)
         {
-            var instance = Di.Container.Resolve<IGameFactory>().CreateWithKey(prefabId, position, rotation);
+            _gameFactory ??= ProjectContext.Instance.Container.Resolve<IGameFactory>();
+            var instance = _gameFactory.CreateWithKey(prefabId, position, rotation);
             return instance;
         }
 
