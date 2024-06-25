@@ -15,5 +15,9 @@ MonoBehaviour:
   _canvas: {fileID: 7639541237202281361, guid: fff7a856e9f9b8d428286d79be151039, type: 3}
   _mainMenuView: {fileID: 4629313566806275842, guid: 6f822e92959ece34596c68f7b01a76b5,
     type: 3}
+  _selectCharacterView: {fileID: 3074026270546687304, guid: a70fb1042fa189f41b5b05a6e9fcbca0,
+    type: 3}
   _menuNetworkService: {fileID: 2074970322684232785, guid: f89eb08488a269b48b1d17abda123244,
+    type: 3}
+  _characterElementView: {fileID: -7938343798144459151, guid: ee01e7f6b09f72942a7ad8dc6b629458,
     type: 3}

@@ -14,9 +14,15 @@
             IsPlayersSpawned,
             PlayerHP,
             PlayerSpawnedData,
-            IsPoolsPrepared
+			CharacterName,
+			IsPoolsPrepared
         }
-
+        public enum Character
+        {
+            Primo,
+            Voron,
+            Rocket
+        }
         public enum GameObjectEntryKey
         {
             Bullet = 0,
@@ -28,6 +34,5 @@
             Win = 0,
             Lose = 1,
             Draw = 2
-        }
-    }
+        }    }
 }

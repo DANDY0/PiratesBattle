@@ -57,8 +57,9 @@ namespace Photon.PhotonUnityNetworking.Code.Common.Factory
                 throw new ArgumentException($"Prefab not found.");
             }
 
-            var instance = Object.Instantiate(prefab, posToSpawn, rotation);
-            return instance;
+            var instance = _di.InstantiatePrefab(prefab, posToSpawn, rotation, null);
+
+            return instance.GetComponent<T>();
         }
 
         

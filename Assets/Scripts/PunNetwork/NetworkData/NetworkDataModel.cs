@@ -10,14 +10,14 @@ namespace PunNetwork.NetworkData
         {
             public int ActorNumber;
             public string Nickname;
-            public int CharacterID;
+            public string CharacterName;
             public int AvatarID;
             
-            public PlayerSpawnedData(int actorNumber, string nickname, int characterID, int avatarID)
+            public PlayerSpawnedData(int actorNumber, string nickname, string characterName, int avatarID)
             {
                 ActorNumber = actorNumber;
                 Nickname = nickname;
-                CharacterID = characterID;
+                CharacterName = characterName;
                 AvatarID = avatarID;
             }
         }

@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Serialization;
+using Utils;
+
+namespace Models
+{
+    [Serializable]
+    public class CharactersDataVo
+    {
+        public List<CharacterData> CharactersData;
+    }
+
+    [Serializable]
+    public class CharacterData
+    {
+        public Enumerators.Character Character;
+        [FormerlySerializedAs("AvatarImage")] public Sprite AvatarSprite;
+        public Sprite FullImage;
+
+    }
+}

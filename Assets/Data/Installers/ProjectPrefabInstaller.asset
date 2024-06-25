@@ -20,6 +20,8 @@ MonoBehaviour:
   _settingsDatabase: {fileID: 11400000, guid: add01a33d1faa4d44bd140152c80a5e3, type: 2}
   _dataManagementDatabase: {fileID: 11400000, guid: bc15345275e9e4245a2d4ac71fb1c83d,
     type: 2}
+  _charactersVisualDatabase: {fileID: 11400000, guid: d3cff96126745b440b9efe3192742dd2,
+    type: 2}
   _coroutineRunner: {fileID: 8174928821669084288, guid: cc722be62d36e8a4dbac8226fddf9561,
     type: 3}
   _audioMixerProvider: {fileID: 2236593753699079988, guid: 137266e2bdf7bbc489d52758a2a1a7e4,
@@ -31,7 +33,7 @@ MonoBehaviour:
   _customPropertiesService: {fileID: -3956072073805407548, guid: 45f46346b59331f439acb34487948839,
     type: 3}
   _canvas: {fileID: 7639541237202281361, guid: fff7a856e9f9b8d428286d79be151039, type: 3}
-  _loadingView: {fileID: 9041528081280758947, guid: 5b866e6f12dd387439ac0aa54971688f,
+  _loadingView: {fileID: 9041528081280758947, guid: bb182180a62978f47a6a8045feb0d4aa,
     type: 3}
   _projectNetworkService: {fileID: 174660147552874731, guid: 1d6cfa63aeccb3b43be12fc966dd738c,
     type: 3}

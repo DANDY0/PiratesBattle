@@ -1,10 +1,11 @@
-﻿using TMPro;
+﻿using Core.Abstracts;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Views.MainMenuView
 {
-    public class MenuProfilePanel: MonoBehaviour
+    public class MenuProfilePanel: View
     {
         [SerializeField] private TMP_InputField _inputField;
         [SerializeField] private Image _profileImage;

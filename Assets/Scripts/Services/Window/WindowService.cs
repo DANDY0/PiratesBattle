@@ -2,6 +2,7 @@
 using System.Linq;
 using Enums;
 using Models;
+using Unity.VisualScripting;
 using Utils.Extensions;
 
 namespace Services.Window
@@ -10,8 +11,8 @@ namespace Services.Window
     {
         private readonly Dictionary<EWindow, WindowVo> _windows = new();
 
-        private EWindow? _focusedWindow;
-
+        private EWindow _activeWindow;
+        
         public void ClearWindows()
         {
             var windowsToKeep = _windows.Where(kvp => kvp.Value.IsDontDestroyOnLoad).ToList();
@@ -21,8 +22,6 @@ namespace Services.Window
             foreach (var window in windowsToKeep) 
                 _windows.Add(window.Key, window.Value);
             BindExtensions.WindowsCount = 0;
-            
-            _focusedWindow = null;
         }
 
         public void RegisterWindow(Core.Abstracts.Window window, bool isFocusable, int orderNumber,
@@ -41,11 +40,9 @@ namespace Services.Window
 
             var windowVo = _windows[windowName];
             windowVo.Window.Open();
-            if (!windowVo.IsFocusable) return;
-
-            if (_focusedWindow != null && _focusedWindow != windowName)
-                _windows[_focusedWindow.Value].Window.Close();
-            _focusedWindow = windowName;
+            Close(_activeWindow);
+            
+            _activeWindow = windowName;
         }
 
         public void Close(EWindow windowName)

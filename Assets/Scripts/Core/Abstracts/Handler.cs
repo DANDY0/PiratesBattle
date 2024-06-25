@@ -2,7 +2,7 @@
 
 namespace Core.Abstracts
 {
-    public abstract class Handler<T> where T : MonoBehaviour
+    public abstract class Handler<T> where T : View
     {
         protected T View;
 
@@ -11,6 +11,9 @@ namespace Core.Abstracts
             View = view;
             Initialize();
         }
+
+        public void Show() => View.Show();
+        public void Hide() => View.Hide();
 
         protected abstract void Initialize();
     }
