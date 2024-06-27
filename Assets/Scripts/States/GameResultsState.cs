@@ -1,8 +1,8 @@
 ﻿using Controllers;
-using Enums;
 using PunNetwork.Services.GameNetwork;
 using Services.Window;
 using States.Core;
+using static Utils.Enumerators;
 
 namespace States
 {

@@ -1,9 +1,9 @@
 ﻿using Core.Abstracts;
 using Databases.Interfaces;
-using Enums;
 using Services.Data;
 using Services.Window;
 using UnityEngine;
+using Utils;
 using Views.MainMenuView;
 
 namespace Controllers.MainMenu
@@ -41,7 +41,7 @@ namespace Controllers.MainMenu
 
         private void CharacterButtonClick()
         {
-            _windowService.Open(EWindow.SelectCharacter);
+            _windowService.Open(Enumerators.EWindow.SelectCharacter);
         }
     }
 }

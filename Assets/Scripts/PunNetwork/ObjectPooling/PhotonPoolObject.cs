@@ -2,8 +2,8 @@
 using Photon.Pun;
 using Services.GamePools;
 using UnityEngine;
-using Utils;
 using Zenject;
+using static Utils.Enumerators;
 
 namespace PunNetwork.ObjectPooling
 {

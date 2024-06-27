@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Enums;
 using UnityEngine;
+using static Utils.Enumerators;
 
 namespace Services.Localization
 {

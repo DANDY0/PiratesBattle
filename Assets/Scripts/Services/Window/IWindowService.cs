@@ -1,4 +1,4 @@
-﻿using Enums;
+﻿using Utils;
 
 namespace Services.Window
 {
@@ -6,8 +6,8 @@ namespace Services.Window
     {
         void ClearWindows();
         void RegisterWindow(Core.Abstracts.Window window, bool isFocusable, int orderNumber, bool isDontDestroyOnLoad);
-        void Open(EWindow windowName);
-        void Close(EWindow windowName);
+        void Open(Enumerators.EWindow windowName);
+        void Close(Enumerators.EWindow windowName);
         void SortBySiblingIndex();
     }
 }

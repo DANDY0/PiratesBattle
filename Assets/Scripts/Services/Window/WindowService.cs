@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Enums;
 using Models;
 using Unity.VisualScripting;
 using Utils.Extensions;
+using static Utils.Enumerators;
 
 namespace Services.Window
 {

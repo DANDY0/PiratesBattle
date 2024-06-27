@@ -1,4 +1,4 @@
-﻿using Enums;
+﻿using static Utils.Enumerators;
 
 namespace Core.Interfaces
 {

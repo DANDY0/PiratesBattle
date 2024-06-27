@@ -1,13 +1,13 @@
 ﻿using System;
-using Enums;
 using UnityEngine.Audio;
+using Utils;
 
 namespace Models
 {
     [Serializable]
     public class AudioMixerGroupVo
     {
-        public EVolumeType Type;
+        public Enumerators.EVolumeType Type;
         public AudioMixerGroup Group;
     }
 }

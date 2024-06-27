@@ -1,11 +1,11 @@
 ﻿using Core.Abstracts;
 using Databases.Interfaces;
-using Enums;
 using Services.Window;
 using UniRx;
 using UnityEngine;
 using Views.SelectCharacterView;
 using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
+using static Utils.Enumerators;
 
 namespace Controllers.MainMenu
 {

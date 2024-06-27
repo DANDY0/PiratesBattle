@@ -12,6 +12,7 @@ using Services.Pool;
 using States;
 using States.Core;
 using UnityEngine;
+using Utils;
 using Utils.Extensions;
 using Zenject;
 using static PunNetwork.NetworkData.NetworkDataModel;
@@ -51,13 +52,14 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             _customPropertiesService.PlayerSpawnedEvent += PlayerSpawnedHandler;
             _customPropertiesService.PoolsPreparedEvent += PoolsPreparedHandler;
-            _customPropertiesService.GetPlayerSpawnedDataEvent += GetPlayerSpawnedDataHandler;
+            _customPropertiesService.GetReadyPlayerInfoEvent += GetPlayerSpawnedDataHandler;
+            
         }
 
         public void Dispose()
         {
             _customPropertiesService.PlayerSpawnedEvent -= PlayerSpawnedHandler;
-            _customPropertiesService.GetPlayerSpawnedDataEvent -= GetPlayerSpawnedDataHandler;
+            _customPropertiesService.GetReadyPlayerInfoEvent -= GetPlayerSpawnedDataHandler;
             _customPropertiesService.PoolsPreparedEvent -= PoolsPreparedHandler;
         }
 
@@ -69,7 +71,7 @@ namespace PunNetwork.Services.ObjectsInRoom
             SetTeamRole(playerView);
 
             if (_playersDictionary.Keys.Count == PhotonNetwork.CurrentRoom.PlayerCount) 
-                PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.IsPlayersSpawned, true);
+                PhotonNetwork.LocalPlayer.SetCustomProperty(Enumerators.PlayerProperty.IsPlayersSpawned, true);
         }
         
         public void PlayerLeftRoom(Player player)
@@ -82,9 +84,11 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             if (!isSpawned)
                 return;
-            var isAllReady = IsAllReady();
-            Debug.Log($"Player spawned, IsAllReady:{isAllReady}");
-            if (isAllReady)
+            
+            _playersDictionary[player].SetUpInfo();
+
+            Debug.Log($"Player spawned, IsAllReady:{IsAllReady()}");
+            if (IsAllReady())
                 OnAllSpawned();
         }
 
@@ -101,9 +105,9 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             var isAllReady = true;
             foreach (var player in PhotonNetwork.PlayerList)
-                if (player.TryGetCustomProperty(PlayerProperty.IsPlayersSpawned, out var isSpawned))
+                if (player.TryGetCustomProperty<bool>(Enumerators.PlayerProperty.IsPlayersSpawned, out var isSpawned))
                 {
-                    if ((bool)isSpawned) continue;
+                    if (isSpawned) continue;
                     isAllReady = false;
                     break;
                 }
@@ -117,9 +121,9 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             var isAllReady = true;
             foreach (var player in PhotonNetwork.PlayerList)
-                if (player.TryGetCustomProperty(PlayerProperty.IsPoolsPrepared, out var isPrepared))
+                if (player.TryGetCustomProperty<bool>(Enumerators.PlayerProperty.IsPoolsPrepared, out var isPrepared))
                 {
-                    if ((bool)isPrepared) continue;
+                    if (isPrepared) continue;
                     isAllReady = false;
                     break;
                 }
@@ -133,7 +137,7 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             _isAllPlayersSpawned = true;
             
-            SendPlayerSpawnedData();
+            // SendPlayerSpawnedData();
 
             GoNextState();
         }
@@ -160,33 +164,23 @@ namespace PunNetwork.Services.ObjectsInRoom
             _playersDictionary[player].UpdateHealthPoints(newHealthPoints);
         }
 
-        private void SendPlayerSpawnedData()
-        {
-            var playerSpawnedData = new PlayerSpawnedData(PhotonNetwork.LocalPlayer.ActorNumber,
-                _dataService.CachedUserLocalData.NickName, _dataService.CachedUserLocalData.SelectedCharacter.ToString(),1);
-            var json = JsonConvert.SerializeObject(playerSpawnedData);
-
-            PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.PlayerSpawnedData, json);
-        }
-
         private static void SetTeamRole(PlayerView playerView)
         {
             var player = playerView.PhotonView.Owner;
 
-            TeamRole teamRole;
+            Enumerators.TeamRole teamRole;
             if (player.IsLocal)
-                teamRole = TeamRole.MyPlayer;
+                teamRole = Enumerators.TeamRole.MyPlayer;
             else
                 teamRole = player.GetPhotonTeam().Code == PhotonNetwork.LocalPlayer.GetPhotonTeam().Code
-                    ? TeamRole.AllyPlayer
-                    : TeamRole.EnemyPlayer;
+                    ? Enumerators.TeamRole.AllyPlayer
+                    : Enumerators.TeamRole.EnemyPlayer;
 
             playerView.SetTeamRole(teamRole);
         }
 
-        private void GetPlayerSpawnedDataHandler(Player player, PlayerSpawnedData playerSpawnedData)
+        private void GetPlayerSpawnedDataHandler(Player player, ReadyPlayerInfo readyPlayerInfo)
         {
-            _playersDictionary[player].SetNickname(playerSpawnedData.Nickname);
         }
     }
 }

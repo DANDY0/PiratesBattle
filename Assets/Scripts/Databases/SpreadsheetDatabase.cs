@@ -1,7 +1,7 @@
 using Databases.Interfaces;
-using Enums;
 using Models;
 using UnityEngine;
+using Utils;
 
 namespace Databases
 {
@@ -9,7 +9,7 @@ namespace Databases
     {
         [SerializeField] private bool _refreshAtStart = true;
         public bool RefreshAtStart => _refreshAtStart;
-        public abstract ESpreadsheetDataType Name { get; }
+        public abstract Enumerators.ESpreadsheetDataType Name { get; }
         public abstract SpreadsheetDataVo Data { get; }
     }
 }

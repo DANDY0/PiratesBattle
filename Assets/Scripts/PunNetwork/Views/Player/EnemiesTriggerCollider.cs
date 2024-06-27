@@ -3,6 +3,8 @@ using DG.Tweening;
 using Photon.PhotonUnityNetworking.Code.Common;
 using UnityEngine;
 using Utils;
+using static Utils.Enumerators;
+using Enumerators = Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 namespace PunNetwork.Views.Player
 {
@@ -22,7 +24,7 @@ namespace PunNetwork.Views.Player
         private void OnTriggerEnter(Collider other)
         {
             if (!other.TryGetComponent<PlayerView>(out var playerView) ||
-                playerView.TeamRole != Enumerators.TeamRole.EnemyPlayer || playerView.PhotonView.IsMine) return;
+                playerView.TeamRole != TeamRole.EnemyPlayer || playerView.PhotonView.IsMine) return;
             if (_enemiesInRange.Contains(other.transform)) return;
             _enemiesInRange.Add(other.transform);
         }
@@ -30,7 +32,7 @@ namespace PunNetwork.Views.Player
         private void OnTriggerExit(Collider other)
         {
             if (!other.TryGetComponent<PlayerView>(out var playerView) ||
-                playerView.TeamRole != Enumerators.TeamRole.EnemyPlayer) return;
+                playerView.TeamRole != TeamRole.EnemyPlayer) return;
             if (!_enemiesInRange.Contains(other.transform)) return;
             _enemiesInRange.Remove(other.transform);
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Enums;
+using Utils;
 
 namespace Models
 {
@@ -8,7 +8,7 @@ namespace Models
     public class LocalizationSettingsVo
     {
         public List<LocalizationLanguageVo> Languages;
-        public ELanguage DefaultLanguage;
+        public Enumerators.ELanguage DefaultLanguage;
         public bool RefreshLocalizationAtStart = true;
     }
 }

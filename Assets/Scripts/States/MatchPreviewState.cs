@@ -1,8 +1,8 @@
 ﻿using Controllers;
 using Photon.Pun;
 using States.Core;
+using Utils;
 using Utils.Extensions;
-using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 
 
 namespace States
@@ -24,7 +24,7 @@ namespace States
 
         public void Enter()
         {
-            PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.PlayerHP, MaxHealthPoints);
+            PhotonNetwork.LocalPlayer.SetCustomProperty(Enumerators.PlayerProperty.PlayerHP, MaxHealthPoints);
             _previewMatchAnimationController.Start();
         }
 

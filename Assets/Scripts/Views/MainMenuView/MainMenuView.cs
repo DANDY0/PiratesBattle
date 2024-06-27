@@ -1,8 +1,8 @@
 ﻿using Core.Abstracts;
-using Enums;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Utils;
 
 namespace Views.MainMenuView
 {
@@ -14,7 +14,7 @@ namespace Views.MainMenuView
         [SerializeField] private SelectedCharacterPanel _selectedCharacterPanel;
         [SerializeField] private MenuProfilePanel _menuProfilePanel;
 
-        public override EWindow Name => EWindow.MainMenu;
+        public override Enumerators.EWindow Name => Enumerators.EWindow.MainMenu;
 
         public Button PlayButton1 => _playButton1;
         public Button PlayButton2 => _playButton2;

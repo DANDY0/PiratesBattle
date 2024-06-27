@@ -5,9 +5,9 @@ using DG.Tweening;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.Services.GameNetwork;
-using Utils;
 using Views;
 using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
+using static Utils.Enumerators;
 
 
 namespace Controllers

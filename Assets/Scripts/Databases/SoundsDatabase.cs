@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Databases.Interfaces;
-using Enums;
 using UnityEngine;
+using static Utils.Enumerators;
 
 namespace Databases
 {

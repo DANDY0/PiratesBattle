@@ -1,7 +1,7 @@
 ﻿using Databases.Interfaces;
-using Enums;
 using Models;
 using UnityEngine;
+using static Utils.Enumerators;
 
 namespace Databases
 {

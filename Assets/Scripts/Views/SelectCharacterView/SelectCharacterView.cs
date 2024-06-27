@@ -1,6 +1,6 @@
 ﻿using Core.Abstracts;
-using Enums;
 using UnityEngine;
+using static Utils.Enumerators;
 
 namespace Views.SelectCharacterView
 {

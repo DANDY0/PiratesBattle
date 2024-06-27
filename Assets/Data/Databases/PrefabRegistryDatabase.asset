@@ -16,4 +16,8 @@ MonoBehaviour:
   - Key: 0
     GameObject: {fileID: 152888, guid: 8ab4b24d072eeb54bace514b7382343e, type: 3}
   - Key: 1
-    GameObject: {fileID: 178952, guid: 32a60a7b420a2ca4f903e93edec869db, type: 3}
+    GameObject: {fileID: 178952, guid: 5397ccaa506cfbc4eaf8256612604648, type: 3}
+  - Key: 2
+    GameObject: {fileID: 178952, guid: 03dee803fdd7f424891000eece0340aa, type: 3}
+  - Key: 3
+    GameObject: {fileID: 178952, guid: 8719206586021bc47a48949f86f9360e, type: 3}

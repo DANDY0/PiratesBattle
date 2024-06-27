@@ -1,12 +1,15 @@
-﻿using ExitGames.Client.Photon;
-using Photon.PhotonUnityNetworking.Code.Common;
+﻿using System;
+using ExitGames.Client.Photon;
+using Newtonsoft.Json;
 using Photon.Realtime;
+using UnityEngine;
+using static Utils.Enumerators;
 
 namespace Utils.Extensions
 {
     public static class PlayerExtensions
     {
-        public static bool SetCustomProperty(this Player player, Enumerators.PlayerProperty property, object value)
+        public static bool SetCustomProperty(this Player player, PlayerProperty property, object value)
         {
             var props = new Hashtable
             {
@@ -14,15 +17,36 @@ namespace Utils.Extensions
             };
             return player.SetCustomProperties(props);
         }
-
-        public static bool TryGetCustomProperty(this Player player, Enumerators.PlayerProperty propertyKey, out object propertyValue)
+        
+        public static bool TryGetCustomProperty<T>(this Player player, PlayerProperty propertyKey, out T propertyValue)
         {
-            var isSuccess = player.CustomProperties.TryGetValue(
-                propertyKey.ToString(), out var value);
-            propertyValue = value;
-            return isSuccess;
-        }
+            var isSuccess = player.CustomProperties.TryGetValue(propertyKey.ToString(), out var value);
 
+            if (isSuccess)
+            {
+                if (value is T typedValue)
+                {
+                    propertyValue = typedValue;
+                    return true;
+                }
+                else if (value is string stringValue && typeof(T).IsClass)
+                {
+                    try
+                    {
+                        propertyValue = JsonConvert.DeserializeObject<T>(stringValue);
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"Failed to deserialize property: {ex.Message}");
+                    }
+                }
+            }
+
+            propertyValue = default;
+            return false;
+        }
+        
         public static void ResetCustomProperties(this Player player) => 
             player.SetCustomProperties(new Hashtable());
     }

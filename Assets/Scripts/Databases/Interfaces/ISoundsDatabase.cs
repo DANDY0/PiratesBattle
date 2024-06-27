@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using Enums;
 using UnityEngine;
+using Utils;
 
 namespace Databases.Interfaces
 {
     public interface ISoundsDatabase
     {
-        IEnumerable<ESoundtrackName> SoundtrackTypes { get; }
+        IEnumerable<Enumerators.ESoundtrackName> SoundtrackTypes { get; }
         
-        AudioClip GetSfxClip(ESoundFxName soundName);
-        AudioClip GetSoundtracksClip(ESoundtrackName type);
+        AudioClip GetSfxClip(Enumerators.ESoundFxName soundName);
+        AudioClip GetSoundtracksClip(Enumerators.ESoundtrackName type);
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Enums;
 using Models;
 using UnityEngine;
 using UnityEngine.Audio;
+using static Utils.Enumerators;
 
 namespace Behaviours
 {

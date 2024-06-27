@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.Pun;
 using PunNetwork.ObjectPooling;
 using UnityEngine;
 using Utils.Extensions;
-using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
+using static Utils.Enumerators;
 
 namespace Services.GamePools
 {
@@ -16,7 +17,7 @@ namespace Services.GamePools
 
         public void PreparePools()
         {
-            InitializePool(GameObjectEntryKey.Bullet, 20);
+            InitializePool(Enumerators.GameObjectEntryKey.Bullet, 20);
 
             if (PhotonNetwork.IsMasterClient)
                 SpawnPhotonPools();
@@ -74,7 +75,7 @@ namespace Services.GamePools
             return newObj.GetComponent<T>();
         }
 
-        private void InitializePool(GameObjectEntryKey gameObjectEntryKey, int size) =>
+        private void InitializePool(Enumerators.GameObjectEntryKey gameObjectEntryKey, int size) =>
             _poolDictionary.Add(gameObjectEntryKey.ToString(), new PhotonPoolVo(gameObjectEntryKey.ToString(), size));
 
         private void SpawnPhotonPools()

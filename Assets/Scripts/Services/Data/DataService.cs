@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using Databases;
 using Databases.Interfaces;
-using Enums;
 using Models.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -11,6 +10,7 @@ using Services.Spreadsheets;
 using UnityEngine;
 using Utils;
 using Zenject;
+using static Utils.Enumerators;
 using Random = UnityEngine.Random;
 
 namespace Services.Data
