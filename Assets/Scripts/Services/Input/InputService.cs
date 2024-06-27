@@ -26,8 +26,7 @@ namespace Services.Input
         }
 
         private void OnFireTriggeredEvent(bool state) => FireTriggeredEvent?.Invoke(state);
-
-
+        
         private static Vector2 GetInputAxis(string horizontal, string vertical) =>
             new(SimpleInput.GetAxis(horizontal), SimpleInput.GetAxis(vertical));
     }

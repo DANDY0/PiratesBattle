@@ -12,6 +12,7 @@ using Services.Pool;
 using States;
 using States.Core;
 using UnityEngine;
+using Utils;
 using Utils.Extensions;
 using Zenject;
 using static PunNetwork.NetworkData.NetworkDataModel;
@@ -70,7 +71,7 @@ namespace PunNetwork.Services.ObjectsInRoom
             SetTeamRole(playerView);
 
             if (_playersDictionary.Keys.Count == PhotonNetwork.CurrentRoom.PlayerCount) 
-                PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.IsPlayersSpawned, true);
+                PhotonNetwork.LocalPlayer.SetCustomProperty(Enumerators.PlayerProperty.IsPlayersSpawned, true);
         }
         
         public void PlayerLeftRoom(Player player)
@@ -104,7 +105,7 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             var isAllReady = true;
             foreach (var player in PhotonNetwork.PlayerList)
-                if (player.TryGetCustomProperty<bool>(PlayerProperty.IsPlayersSpawned, out var isSpawned))
+                if (player.TryGetCustomProperty<bool>(Enumerators.PlayerProperty.IsPlayersSpawned, out var isSpawned))
                 {
                     if (isSpawned) continue;
                     isAllReady = false;
@@ -120,7 +121,7 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             var isAllReady = true;
             foreach (var player in PhotonNetwork.PlayerList)
-                if (player.TryGetCustomProperty<bool>(PlayerProperty.IsPoolsPrepared, out var isPrepared))
+                if (player.TryGetCustomProperty<bool>(Enumerators.PlayerProperty.IsPoolsPrepared, out var isPrepared))
                 {
                     if (isPrepared) continue;
                     isAllReady = false;
@@ -167,13 +168,13 @@ namespace PunNetwork.Services.ObjectsInRoom
         {
             var player = playerView.PhotonView.Owner;
 
-            TeamRole teamRole;
+            Enumerators.TeamRole teamRole;
             if (player.IsLocal)
-                teamRole = TeamRole.MyPlayer;
+                teamRole = Enumerators.TeamRole.MyPlayer;
             else
                 teamRole = player.GetPhotonTeam().Code == PhotonNetwork.LocalPlayer.GetPhotonTeam().Code
-                    ? TeamRole.AllyPlayer
-                    : TeamRole.EnemyPlayer;
+                    ? Enumerators.TeamRole.AllyPlayer
+                    : Enumerators.TeamRole.EnemyPlayer;
 
             playerView.SetTeamRole(teamRole);
         }

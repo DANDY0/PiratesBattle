@@ -1,11 +1,9 @@
 ﻿using System;
 using Core.Abstracts;
 using DG.Tweening;
-using Enums;
 using TMPro;
 using UnityEngine;
-using Utils;
-using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
+using static Utils.Enumerators;
 
 
 namespace Views

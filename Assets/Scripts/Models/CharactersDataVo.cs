@@ -4,6 +4,7 @@ using Photon.PhotonUnityNetworking.Code.Common;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
+using Enumerators = Utils.Enumerators;
 
 namespace Models
 {

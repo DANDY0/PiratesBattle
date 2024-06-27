@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Behaviours;
-using Databases;
 using Databases.Interfaces;
 using DG.Tweening;
-using Enums;
 using UnityEngine;
+using Utils;
 using Random = UnityEngine.Random;
 
 namespace Services.Sound.Impls
@@ -17,7 +16,7 @@ namespace Services.Sound.Impls
         private readonly ISoundsDatabase _soundsDatabase;
         private readonly List<DisposeAfterPlaying> _playing = new();
 
-        private readonly Queue<ESoundtrackName> _musicQueue = new();
+        private readonly Queue<Enumerators.ESoundtrackName> _musicQueue = new();
         private bool _isLoopingQueue = true;
 
         public SoundService
@@ -32,13 +31,13 @@ namespace Services.Sound.Impls
             _audioMixerProvider = audioMixerProvider;
         }
 
-        public void PlayMusicSingle(ESoundtrackName soundtrack)
+        public void PlayMusicSingle(Enumerators.ESoundtrackName soundtrack)
         {
             StopAll();
             PlayMusic(soundtrack);
         }
 
-        public void PlaySound(ESoundFxName clipName)
+        public void PlaySound(Enumerators.ESoundFxName clipName)
         {
             var source = _pool.Get();
             var clip = _soundsDatabase.GetSfxClip(clipName);
@@ -49,13 +48,13 @@ namespace Services.Sound.Impls
             ResetAndPlay(source, clip, false);
         }
 
-        public void PlayRandomSound(params ESoundFxName[] clipNames)
+        public void PlayRandomSound(params Enumerators.ESoundFxName[] clipNames)
         {
             var clipName = clipNames[Random.Range(0, clipNames.Length)];
             PlaySound(clipName);
         }
 
-        public void PlayMusic(ESoundtrackName musicType, bool isQueue = false, bool loop = true)
+        public void PlayMusic(Enumerators.ESoundtrackName musicType, bool isQueue = false, bool loop = true)
         {
             var source = _pool.Get();
             var music = _soundsDatabase.GetSoundtracksClip(musicType);

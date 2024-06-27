@@ -21,8 +21,7 @@ namespace PunNetwork.Views.Bullet
         
         private const float BulletSpeed = 10f;
         private const float Damage = 33.4f;
-
-
+        
         private void Awake()
         {
             _rb = GetComponent<Rigidbody>();
@@ -47,7 +46,6 @@ namespace PunNetwork.Views.Bullet
         {
             Logger.Log($"bulletPos: {transform.position}, bullet rot: {transform.rotation}", nameof(RPCDeactivate));
             _isActive = false;
-            //_poolService.DisablePoolItem(GameObjectEntryKey.Bullet.ToString(), this);
         }
 
         private void Deactivate()
@@ -71,12 +69,12 @@ namespace PunNetwork.Views.Bullet
 
             var playerView = other.GetComponent<PlayerView>();
 
-            if (playerView != null && playerView.TeamRole == TeamRole.EnemyPlayer)
+            if (playerView != null && playerView.TeamRole == Enumerators.TeamRole.EnemyPlayer)
             {
                 playerView.PhotonView.RPC(nameof(PlayerView.RegisterHit), RpcTarget.All, Damage);
                 photonView.Owner.AddScore(Damage);
-                Debug.Log(
-                    $"Player{photonView.Owner.ActorNumber} damaged Player {playerView.PhotonView.Owner.ActorNumber}");
+                Logger.Log(this,$"Player{photonView.Owner.ActorNumber} damaged Player {playerView.PhotonView.Owner.ActorNumber}");
+                
                 Deactivate();
             }
             else if (other.gameObject.layer == LayerMask.NameToLayer("Obstacle")) 

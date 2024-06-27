@@ -1,12 +1,12 @@
-﻿using Enums;
-using Photon.PhotonUnityNetworking.Code.Common;
+﻿using Photon.PhotonUnityNetworking.Code.Common;
 using Utils;
+using Enumerators = Utils.Enumerators;
 
 namespace Models.Data
 {
     public class CachedUserData
     {
-        public ELanguage AppLanguage;
+        public Enumerators.ELanguage AppLanguage;
         public string NickName;
         public Enumerators.Character SelectedCharacter;
 

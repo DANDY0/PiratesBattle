@@ -1,15 +1,15 @@
 ﻿using System;
 using ExitGames.Client.Photon;
 using Newtonsoft.Json;
-using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.Realtime;
 using UnityEngine;
+using static Utils.Enumerators;
 
 namespace Utils.Extensions
 {
     public static class PlayerExtensions
     {
-        public static bool SetCustomProperty(this Player player, Enumerators.PlayerProperty property, object value)
+        public static bool SetCustomProperty(this Player player, PlayerProperty property, object value)
         {
             var props = new Hashtable
             {
@@ -18,7 +18,7 @@ namespace Utils.Extensions
             return player.SetCustomProperties(props);
         }
         
-        public static bool TryGetCustomProperty<T>(this Player player, Enumerators.PlayerProperty propertyKey, out T propertyValue)
+        public static bool TryGetCustomProperty<T>(this Player player, PlayerProperty propertyKey, out T propertyValue)
         {
             var isSuccess = player.CustomProperties.TryGetValue(propertyKey.ToString(), out var value);
 
@@ -46,9 +46,7 @@ namespace Utils.Extensions
             propertyValue = default;
             return false;
         }
-
-
-
+        
         public static void ResetCustomProperties(this Player player) => 
             player.SetCustomProperties(new Hashtable());
     }

@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.Pun;
 using PunNetwork.NetworkData;
 using PunNetwork.Services.ObjectsInRoom;
@@ -7,7 +8,7 @@ using Services.Input;
 using UnityEngine;
 using Utils.Extensions;
 using Zenject;
-using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
+using static Utils.Enumerators;
 
 namespace PunNetwork.Views.Player
 {
@@ -36,6 +37,7 @@ namespace PunNetwork.Views.Player
 
         private float _rotationSpeed = 150f;
         private float _speed = 3f;
+        private float _initialShootingDelay;
         private float _rotation;
         private float _acceleration;
         private float _shootingTimer;
@@ -90,16 +92,18 @@ namespace PunNetwork.Views.Player
             else
             {
                 _isFiring = false;
-                if (_animationTween == null) return;
-                _animationTween.Kill();
-                _animationTween = null;
+                if (_animationTween != null)
+                {
+                    _animationTween.Kill();
+                    _animationTween = null;
+                }
             }
         }
 
         private void StartFiring()
         {
             _isFiring = true;
-            _animationTween = DOVirtual.DelayedCall(.25f, () => _shootingTimer = 0);
+            _initialShootingDelay = 0.25f;
         }
 
         private void Update()
@@ -155,11 +159,19 @@ namespace PunNetwork.Views.Player
             transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * _rotationSpeed);
         }
 
-
         private void HandleShooting()
         {
             if (!_isFiring)
                 return;
+
+            if (_initialShootingDelay > 0)
+            {
+                _initialShootingDelay -= Time.deltaTime;
+                if (_initialShootingDelay <= 0)
+                    _shootingTimer = 0; 
+                return;
+            }
+
             if (_shootingTimer <= 0)
             {
                 _shootingTimer = .2f;
@@ -167,7 +179,7 @@ namespace PunNetwork.Views.Player
                 var position = transform.position;
                 var rotation = transform.rotation;
 
-                var bullet = _photonPoolService.ActivatePoolItem<Bullet.Bullet>(GameObjectEntryKey.Bullet.ToString(),
+                var bullet = _photonPoolService.ActivatePoolItem<Bullet.Bullet>(Enumerators.GameObjectEntryKey.Bullet.ToString(),
                     position,
                     rotation);
                 bullet.Fire(position);
@@ -186,7 +198,7 @@ namespace PunNetwork.Views.Player
             Player = info.Sender;
             _objectsInRoomService.OnPlayerSpawned(info.Sender, this);
         }
-        
+
 
         [PunRPC]
         public void RegisterHit(float damage)
@@ -195,7 +207,7 @@ namespace PunNetwork.Views.Player
                 return;
             var newHealthPoints = CurrentHealthPoints - damage;
             var resultHealthPoints = newHealthPoints <= 0 ? 0 : newHealthPoints;
-            
+
             PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.PlayerHP, resultHealthPoints);
 
             if (resultHealthPoints == 0)
@@ -207,13 +219,13 @@ namespace PunNetwork.Views.Player
         {
             _playerUI.gameObject.SetActive(false);
             _collider.enabled = false;
+            _characterController.enabled = false;
+            _controllable = false;
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.angularVelocity = Vector3.zero;
 
             foreach (var meshRenderer in _renderers)
                 meshRenderer.enabled = false;
-
-            _controllable = false;
 
             _destruction.Play();
         }
@@ -230,9 +242,9 @@ namespace PunNetwork.Views.Player
 
         public void SetUpInfo()
         {
-            if (Player.TryGetCustomProperty<NetworkDataModel.ReadyPlayerInfo>(PlayerProperty.ReadyPlayerInfo, out var info))
+            if (Player.TryGetCustomProperty<NetworkDataModel.ReadyPlayerInfo>(PlayerProperty.ReadyPlayerInfo,
+                    out var info))
                 _playerUI.SetNickName(info.Nickname);
-            
         }
 
         public void UpdateHealthPoints(float healthPoints)

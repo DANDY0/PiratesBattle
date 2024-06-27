@@ -20,6 +20,7 @@ using Utils.Extensions;
 using Zenject;
 using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 using static PunNetwork.NetworkData.NetworkDataModel;
+using static Utils.Enumerators;
 
 namespace PunNetwork.Services.GameNetwork
 {
@@ -174,7 +175,6 @@ namespace PunNetwork.Services.GameNetwork
 
         private void OnPlayerHealthPointsChanged(Player player, float newHealthPoints)
         {
-            
             _objectsInRoomService.UpdateHealthPoints(player, newHealthPoints);
             if (newHealthPoints != MaxHealthPoints)
                 CheckIfGameEnded();
@@ -215,7 +215,10 @@ namespace PunNetwork.Services.GameNetwork
                 return;
         
             _isMatchEnded = true;
-            GameEventsRaiser.RaiseEvent(GameEventCodes.EndMatchEventCode, null);
+            
+            Debug.LogError($"Raise EndMatchEvent {PhotonNetwork.LocalPlayer.ActorNumber}");
+            
+            GameEventsRaiser.RaiseEvent(GameEventCodes.EndMatchEventCode, firstPlayerTeam);
         }
         
         private IEnumerator HandleGameEnd()

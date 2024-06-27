@@ -1,8 +1,8 @@
 ﻿using Core.Abstracts;
 using DG.Tweening;
-using Enums;
 using UnityEngine;
 using UnityEngine.UI;
+using static Utils.Enumerators;
 
 namespace Views
 {

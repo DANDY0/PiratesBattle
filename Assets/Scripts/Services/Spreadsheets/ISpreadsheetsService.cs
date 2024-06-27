@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using Enums;
 using Models.Data;
+using static Utils.Enumerators;
 
 namespace Services.Spreadsheets
 {

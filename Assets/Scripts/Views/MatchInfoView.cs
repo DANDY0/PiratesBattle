@@ -1,9 +1,9 @@
 ﻿using Core.Abstracts;
-using Enums;
 using SimpleInputNamespace;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Utils.Enumerators;
 
 namespace Views
 {

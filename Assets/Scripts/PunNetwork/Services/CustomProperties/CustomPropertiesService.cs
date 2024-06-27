@@ -7,6 +7,7 @@ using Services.Data;
 using UnityEngine;
 using static PunNetwork.NetworkData.NetworkDataModel;
 using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
+using static Utils.Enumerators;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace PunNetwork.Services.CustomProperties

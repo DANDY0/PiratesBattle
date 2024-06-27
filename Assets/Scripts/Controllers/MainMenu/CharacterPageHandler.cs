@@ -1,6 +1,5 @@
 ﻿using Core.Abstracts;
 using Databases.Interfaces;
-using Enums;
 using Photon.PhotonUnityNetworking.Code.Common;
 using Services.Data;
 using Services.Window;
@@ -8,6 +7,7 @@ using UnityEngine;
 using Utils;
 using Views.MainMenuView;
 using Views.SelectCharacterView;
+using Enumerators = Utils.Enumerators;
 
 namespace Controllers.MainMenu
 {
@@ -55,7 +55,7 @@ namespace Controllers.MainMenu
             _dataService.CachedUserLocalData.SelectedCharacter = selectedCharacter;
             _mainMenuView.SelectedCharacterPanel.SetCharacterImage(characterVisualData.FullImage, selectedCharacter.ToString());
             
-            _windowService.Open(EWindow.MainMenu);
+            _windowService.Open(Enumerators.EWindow.MainMenu);
             _selectCharacterView.EnableCharacterPagePanel(false);
         }
 
