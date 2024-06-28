@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Core.Abstracts;
 using Core.Interfaces;
+using Installers;
 using Models;
 using Photon.PhotonUnityNetworking.Code.Common;
 using Services.Window;
@@ -13,8 +14,7 @@ namespace Utils.Extensions
 {
     public static class BindExtensions
     {
-        private static readonly Queue<WindowBindingInfoVo> WindowQueue = new();
-        public static int WindowsCount;
+        private static readonly List<WindowBindingInfoVo> WindowsList = new();
         private static IWindowService _windowService;
 
         public static void BindView<T, TU>(this DiContainer container, Object viewPrefab)
@@ -39,18 +39,17 @@ namespace Utils.Extensions
         }
 
         public static void AddWindowToQueue<T, TU>(this DiContainer container, Object viewPrefab, Transform parent,
-            int orderNumber, bool isFocusable = false, bool isDontDestroyOnLoad = false)
+            int orderNumber, bool isFocusable = true, bool isDontDestroyOnLoad = false)
             where TU : IWindow where T : IController
         {
             container.BindInterfacesAndSelfTo<T>().AsSingle();
-            container.AddWindowToQueue<TU>(viewPrefab, parent, orderNumber, isFocusable: isFocusable,
+            AddWindowToQueue<TU>(viewPrefab, parent, orderNumber, isFocusable: isFocusable,
                 isDontDestroyOnLoad: isDontDestroyOnLoad);
         }
 
-        public static void AddWindowToQueue<T>(this DiContainer container, Object viewPrefab, Transform parent,
-            int orderNumber, bool isFocusable = false, bool isDontDestroyOnLoad = false) where T : IWindow
+        public static void AddWindowToQueue<T>(Object viewPrefab, Transform parent,
+            int orderNumber, bool isFocusable = true, bool isDontDestroyOnLoad = false) where T : IWindow
         {
-            WindowsCount++;
             var windowInfo = new WindowBindingInfoVo
             {
                 Type = typeof(T),
@@ -60,21 +59,21 @@ namespace Utils.Extensions
                 IsFocusable = isFocusable,
                 IsDontDestroyOnLoad = isDontDestroyOnLoad
             };
-            WindowQueue.Enqueue(windowInfo);
+            WindowsList.Add(windowInfo);
         }
 
         public static void BindWindows(this DiContainer container)
         {
-            while (WindowQueue.Count != 0)
-            {
-                var windowBindingInfoVo = WindowQueue.Dequeue();
+            var windowBindings = new List<WindowBindingInfoVo>(WindowsList);
 
+            var index = 0;
+            foreach (var windowBindingInfoVo in windowBindings)
+            {
                 var binding = container.BindInterfacesAndSelfTo(windowBindingInfoVo.Type)
                     .FromComponentInNewPrefab(windowBindingInfoVo.ViewPrefab)
                     .UnderTransform(windowBindingInfoVo.Parent)
                     .AsSingle();
 
-                var index = 0;
                 binding.OnInstantiated((_, instance) =>
                 {
                     index++;
@@ -88,7 +87,7 @@ namespace Utils.Extensions
                     _windowService.RegisterWindow(window, windowBindingInfoVo.IsFocusable,
                         windowBindingInfoVo.OrderNumber, windowBindingInfoVo.IsDontDestroyOnLoad);
 
-                    if (index == WindowsCount)
+                    if (index == windowBindings.Count)
                         container.Resolve<IWindowService>().SortBySiblingIndex();
                 });
             }
@@ -112,9 +111,13 @@ namespace Utils.Extensions
         public static void InjectSceneContainer(this DiContainer container)
         {
             var sceneContainerInjectables = ProjectContext.Instance.Container.ResolveAll<ISceneContainerInjectable>();
-            foreach (var containerInjectable in sceneContainerInjectables) 
+            foreach (var containerInjectable in sceneContainerInjectables)
                 containerInjectable.SetSceneContainer(container);
         }
 
+        public static void ClearWindows()
+        {
+            WindowsList.Clear();
+        }
     }
 }
