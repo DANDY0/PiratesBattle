@@ -6,17 +6,17 @@ namespace Utils
 {
     public static class Logger
     {
-        public static bool EnableLogs = true;
-        public static LogLevel MinimumLogLevel = LogLevel.Info;
+        private const bool EnableLogs = true;
+        private const LogLevel MinimumLogLevel = LogLevel.Debug;
 
-        public static void Log(object caller, string message, LogLevel logLevel = LogLevel.Info,
+        public static void Log(this object caller, string message, LogLevel logLevel = LogLevel.Info,
             [CallerMemberName] string method = "")
         {
             if (!EnableLogs || logLevel < MinimumLogLevel)
                 return;
 
-            string type = caller.GetType().Name;
-            string logMessage = $"[{logLevel}] {type}.{method}: {message}";
+            var type = caller.GetType().Name;
+            var logMessage = $"[{logLevel}] {type}.{method}: {message}";
 
             switch (logLevel)
             {
@@ -37,14 +37,14 @@ namespace Utils
                     break;
             }
         }
-        
+
         public static void Log(string message, LogLevel logLevel = LogLevel.Info,
             [CallerMemberName] string method = "")
         {
             if (!EnableLogs || logLevel < MinimumLogLevel)
                 return;
 
-            string logMessage = $"[{logLevel}] method:{method}: {message}";
+            var logMessage = $"[{logLevel}] method:{method}: {message}";
 
             switch (logLevel)
             {
@@ -66,21 +66,19 @@ namespace Utils
             }
         }
 
-        public static void LogDebug(object caller, string message, [CallerMemberName] string method = "")
-            => Log(caller, message, LogLevel.Debug, method);
+        public static void LogDebug(this object caller, string message, [CallerMemberName] string method = "")
+            => caller.Log(message, LogLevel.Debug, method);
 
-        public static void LogInfo(object caller, string message, [CallerMemberName] string method = "")
-            => Log(caller, message, LogLevel.Info, method);
+        public static void LogInfo(this object caller, string message, [CallerMemberName] string method = "")
+            => caller.Log(message, LogLevel.Info, method);
 
-        public static void LogWarning(object caller, string message, [CallerMemberName] string method = "")
-            => Log(caller, message, LogLevel.Warning, method);
+        public static void LogWarning(this object caller, string message, [CallerMemberName] string method = "")
+            => caller.Log(message, LogLevel.Warning, method);
 
-        public static void LogError(object caller, string message, [CallerMemberName] string method = "")
-            => Log(caller, message, LogLevel.Error, method);
+        public static void LogError(this object caller, string message, [CallerMemberName] string method = "")
+            => caller.Log(message, LogLevel.Error, method);
 
-        public static void LogCritical(object caller, string message, [CallerMemberName] string method = "")
-            => Log(caller, message, LogLevel.Critical, method);
-
-  
+        public static void LogCritical(this object caller, string message, [CallerMemberName] string method = "")
+            => caller.Log(message, LogLevel.Critical, method);
     }
 }
