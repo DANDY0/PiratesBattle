@@ -10,6 +10,8 @@ namespace PunNetwork.Services.MenuNetwork
 {
     public class MenuNetworkService : MonoBehaviourPunCallbacks, IMenuNetworkService, IInitializable, IDisposable
     {
+        public event Action RoomFilledEvent;
+        
         private byte _maxPlayersPerRoom;
         private string _gameVersion = "1";
         private bool _isConnecting;
@@ -107,8 +109,9 @@ namespace PunNetwork.Services.MenuNetwork
             if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == _maxPlayersPerRoom)
             {
                 Debug.Log("We load the Game scene");
-                PhotonNetwork.LoadLevel(SceneNames.Game);
+                // PhotonNetwork.LoadLevel(SceneNames.Game);
                 PhotonNetwork.CurrentRoom.IsOpen = false;
+                RoomFilledEvent?.Invoke();
             }
         }
 

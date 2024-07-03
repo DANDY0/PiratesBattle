@@ -1,9 +1,11 @@
 using Photon.PhotonUnityNetworking.Code.Common.Factory;
 using Photon.Realtime;
+using PunNetwork.Services.ProjectNetwork;
 using Services.Data;
 using Services.Localization;
 using Services.Network;
 using Services.Pool;
+using Services.RoomPlayers;
 using Services.SceneLoading;
 using Services.Sound.Impls;
 using Services.Spreadsheets;
@@ -34,6 +36,7 @@ namespace Installers.Project
 			Container.BindInterfacesTo<GameStateMachine>().AsSingle();
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<PoolService>().AsSingle();
+            Container.BindInterfacesTo<RoomPlayersServices>().AsSingle();
 
             Container.BindInterfacesTo<AudioSourcePool>().AsSingle();
             Container.BindInterfacesTo<SoundService>().AsSingle();
