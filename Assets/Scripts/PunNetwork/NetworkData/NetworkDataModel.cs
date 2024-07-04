@@ -13,11 +13,14 @@ namespace PunNetwork.NetworkData
             public int AvatarID;
             public StatsValuesVo InitialStats;
         }
+        
+        [Serializable]
+        public class StatsValuesVo
+        {
+            public float HealthPoints;
+            public bool IsDead;
+        }
     }
 
-    [Serializable]
-    public class StatsValuesVo
-    {
-        public float HealthPoints;
-    }
+ 
 }

@@ -8,16 +8,16 @@ namespace PunNetwork.Services.SpawnPlayer
 {
     public class SpawnPlayerService : ISpawnPlayerService
     {
-        private readonly IRoomPlayerService _roomPlayerService;
+        private readonly IRoomPlayersService _roomPlayersService;
         private readonly ISpawnPointsService _spawnPointsService;
 
         public SpawnPlayerService
         (
-            IRoomPlayerService roomPlayerService,
+            IRoomPlayersService roomPlayersService,
             ISpawnPointsService spawnPointsService
         )
         {
-            _roomPlayerService = roomPlayerService;
+            _roomPlayersService = roomPlayersService;
             _spawnPointsService = spawnPointsService;
         }
 
@@ -28,7 +28,7 @@ namespace PunNetwork.Services.SpawnPlayer
                 _spawnPointsService.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1, photonTeam);
 
             PhotonNetwork.Instantiate(
-                _roomPlayerService.GetPlayerInfo(PhotonNetwork.LocalPlayer).ImmutableDataVo.CharacterName, playerPosition,
+                _roomPlayersService.GetPlayerInfo(PhotonNetwork.LocalPlayer).ImmutableDataVo.CharacterName, playerPosition,
                 Quaternion.identity);
         }
     }

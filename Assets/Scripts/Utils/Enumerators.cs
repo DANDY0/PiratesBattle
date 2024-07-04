@@ -14,6 +14,7 @@
         {
             LocalPlayersSpawned,
             PlayerHP,
+            IsDead,
             PlayerImmutableData,
             LocalPoolsPrepared
         }

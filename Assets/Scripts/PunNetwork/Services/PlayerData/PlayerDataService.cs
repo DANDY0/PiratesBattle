@@ -1,27 +1,27 @@
-﻿using PunNetwork.NetworkData;
-using PunNetwork.Services.RoomPlayer;
+﻿using PunNetwork.Services.RoomPlayer;
 using Services.Data;
+using static PunNetwork.NetworkData.NetworkDataModel;
 
 namespace PunNetwork.Services.PlayerData
 {
     public class PlayerDataService : IPlayerDataService
     {
         private readonly IDataService _dataService;
-        private readonly IRoomPlayerService _roomPlayerService;
+        private readonly IRoomPlayersService _roomPlayersService;
 
         public PlayerDataService
         (
             IDataService dataService,
-            IRoomPlayerService roomPlayerService
+            IRoomPlayersService roomPlayersService
         )
         {
             _dataService = dataService;
-            _roomPlayerService = roomPlayerService;
+            _roomPlayersService = roomPlayersService;
         }
 
         public void SendImmutableData()
         {
-            var playerImmutableDataVo = new NetworkDataModel.PlayerImmutableDataVo
+            var playerImmutableDataVo = new PlayerImmutableDataVo
             {
                 Nickname = _dataService.CachedUserLocalData.NickName,
                 CharacterName = _dataService.CachedUserLocalData.SelectedCharacter.ToString(),
@@ -29,11 +29,10 @@ namespace PunNetwork.Services.PlayerData
                 InitialStats = new StatsValuesVo
                 {
                     HealthPoints = 100,
-                    
                 }
             };
 
-            _roomPlayerService.SendPlayerImmutableData(playerImmutableDataVo);
+            _roomPlayersService.SendPlayerImmutableData(playerImmutableDataVo);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace PunNetwork.Views.Player
 
         private IInputService _inputService;
         private IPhotonPoolService _photonPoolService;
-        private IRoomPlayerService _roomPlayerService;
+        private IRoomPlayersService _roomPlayersService;
 
         private Rigidbody _rigidbody;
         private CharacterController _characterController;
@@ -56,13 +56,13 @@ namespace PunNetwork.Views.Player
         (
             IInputService inputService,
             IPhotonPoolService photonPoolService,
-            IRoomPlayerService roomPlayerService,
+            IRoomPlayersService roomPlayersService,
             IPlayersStatsService playersStatsService
         )
         {
             _inputService = inputService;
             _photonPoolService = photonPoolService;
-            _roomPlayerService = roomPlayerService;
+            _roomPlayersService = roomPlayersService;
             _playersStatsService = playersStatsService;
         }
 
@@ -201,7 +201,7 @@ namespace PunNetwork.Views.Player
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             Player = info.Sender;
-            _roomPlayerService.SendLocalPlayersSpawned(info.Sender, this);
+            _roomPlayersService.SendLocalPlayersSpawned(info.Sender, this);
         }
         
 

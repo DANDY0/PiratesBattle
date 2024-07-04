@@ -7,11 +7,7 @@ namespace PunNetwork.Services.CustomProperties
 {
     public interface ICustomPropertiesService 
     {
-        /*event Action<Player, bool> PlayerSpawnedEvent;
-        event Action<Player, bool> PoolsPreparedEvent;
-        event Action<Player, float> PlayerHealthPointsChangedEvent;
-        event Action<Player, NetworkDataModel.ReadyPlayerInfo> GetReadyPlayerInfoEvent;*/
-        void Subscribe(Enumerators.PlayerProperty property, Action<Player, object> handler);
-        void Unsubscribe(Enumerators.PlayerProperty property, Action<Player, object> handler);
+        void Subscribe<T>(Enumerators.PlayerProperty property, Action<Player, T> handler);
+        void Unsubscribe<T>(Enumerators.PlayerProperty property, Action<Player, T> handler);
     }
 }

@@ -6,7 +6,7 @@ using PunNetwork.Views.Player;
 
 namespace PunNetwork.Services.RoomPlayer
 {
-    public interface IRoomPlayerService
+    public interface IRoomPlayersService
     {
         void SendLocalPlayersSpawned(Player player, PlayerView playerView);
         void SendLocalPoolsPrepared();
@@ -14,5 +14,6 @@ namespace PunNetwork.Services.RoomPlayer
         void EnterRoom(IEnumerable<Player> players);
         PlayerInfoVo GetPlayerInfo(Player player);
         IEnumerable<Player> Players { get; }
+        public IEnumerable<PlayerView> PlayerViews { get; }
     }
 }

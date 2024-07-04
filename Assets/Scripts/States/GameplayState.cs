@@ -1,4 +1,5 @@
-﻿using Controllers;
+﻿using System.Linq;
+using Controllers;
 using PunNetwork.Services.RoomPlayer;
 using Services.Input;
 using States.Core;
@@ -9,25 +10,29 @@ namespace States
     {
         private readonly MatchInfoController _matchInfoController;
         private readonly IInputService _inputService;
-        private readonly IRoomPlayerService _roomPlayerService;
+        private readonly IRoomPlayersService _roomPlayersService;
 
         public GameplayState
         (
             MatchInfoController matchInfoController,
             IInputService inputService,
-            IRoomPlayerService roomPlayerService
+            IRoomPlayersService roomPlayersService
         )
         {
             _matchInfoController = matchInfoController;
             _inputService = inputService;
-            _roomPlayerService = roomPlayerService;
+            _roomPlayersService = roomPlayersService;
         }
 
         public void Enter()
         {
             _inputService.Enable();
-            foreach (var playerView in _roomPlayerService.PlayerViews)
+            var playerViews = _roomPlayersService.Players.Select(p
+                => _roomPlayersService.GetPlayerInfo(p).View);
+            
+            foreach (var playerView in playerViews)
                 playerView.SubscribeOnInput();
+            
             _matchInfoController.Show();
         }
 

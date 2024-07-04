@@ -37,7 +37,7 @@ namespace Installers.Project
 			Container.BindInterfacesTo<GameStateMachine>().AsSingle();
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<PoolService>().AsSingle();
-            Container.BindInterfacesTo<RoomPlayerService>().AsSingle();
+            Container.BindInterfacesTo<RoomPlayersService>().AsSingle();
             Container.BindInterfacesTo<MasterEventService>().AsSingle();
 
             Container.BindInterfacesTo<AudioSourcePool>().AsSingle();

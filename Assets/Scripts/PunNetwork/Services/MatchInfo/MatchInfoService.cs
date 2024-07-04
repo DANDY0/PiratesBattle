@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.MasterEvent;
 using States;
 using States.Core;
+using UnityEngine;
 using Utils;
 using Zenject;
 using static Utils.Enumerators;
@@ -30,18 +32,37 @@ namespace PunNetwork.Services.MatchInfo
             _gameStateMachine = gameStateMachine;
             _photonTeamsManager = photonTeamsManager;
         }
-
-
+        
         public void Initialize()
         {
             _masterEventService.Subscribe(GameEventCodes.StartMatchEventCode, OnStartMatch);
             _masterEventService.Subscribe(GameEventCodes.EndMatchEventCode, OnEndMatch);
+            _photonTeamsManager.TeamDeadEvent += TeamDeadHandler;
         }
 
         public void Dispose()
         {
             _masterEventService.Unsubscribe(GameEventCodes.StartMatchEventCode, OnStartMatch);
             _masterEventService.Unsubscribe(GameEventCodes.EndMatchEventCode, OnEndMatch);
+            _photonTeamsManager.TeamDeadEvent -= TeamDeadHandler;
+        }
+
+        private void TeamDeadHandler()
+        {
+            var survivingTeam = CheckIsGameEnded();
+            if (survivingTeam != null) 
+                GameEventsRaiser.RaiseEvent(GameEventCodes.EndMatchEventCode, survivingTeam.Code);
+        }
+
+        private PhotonTeam CheckIsGameEnded()
+        {
+            var allTeams = _photonTeamsManager.GetAllTeams();
+            var aliveTeams = allTeams.Values.Where(team => team.IsAlive).ToList();
+
+            if (aliveTeams.Count == 1)
+                return aliveTeams[0];
+    
+            return null;
         }
 
         private void OnStartMatch(object eventContent)

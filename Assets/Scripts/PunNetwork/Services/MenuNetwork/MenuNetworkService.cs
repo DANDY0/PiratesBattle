@@ -17,7 +17,7 @@ namespace PunNetwork.Services.MenuNetwork
         private string _gameVersion = "1";
         private bool _isConnecting;
         private IPhotonTeamsManager _photonTeamsManager;
-        private IRoomPlayerService _roomPlayerService;
+        private IRoomPlayersService _roomPlayersService;
         private LoadingController _loadingController;
         private IPlayerDataService _playerDataService;
 
@@ -26,13 +26,13 @@ namespace PunNetwork.Services.MenuNetwork
         private void Construct
         (
             IPhotonTeamsManager photonTeamsManager,
-            IRoomPlayerService roomPlayerService,
+            IRoomPlayersService roomPlayersService,
             LoadingController loadingController,
             IPlayerDataService playerDataService
         )
         {
             _photonTeamsManager = photonTeamsManager;
-            _roomPlayerService = roomPlayerService;
+            _roomPlayersService = roomPlayersService;
             _loadingController = loadingController;
             _playerDataService = playerDataService;
         }
@@ -50,6 +50,7 @@ namespace PunNetwork.Services.MenuNetwork
         }
 
         public void SetMaxPlayers(byte count) => _maxPlayersPerRoom = count;
+
 
         public void Connect()
         {
@@ -116,9 +117,10 @@ namespace PunNetwork.Services.MenuNetwork
 
         private void PlayerJoinedTeam(Player player, PhotonTeam team)
         {
-            if (PhotonNetwork.CurrentRoom.PlayerCount != _maxPlayersPerRoom) return;
+            if (PhotonNetwork.CurrentRoom.PlayerCount != _maxPlayersPerRoom)
+                return;
             
-            _roomPlayerService.EnterRoom(PhotonNetwork.CurrentRoom.Players.Values);
+            _roomPlayersService.EnterRoom(PhotonNetwork.CurrentRoom.Players.Values);
             _loadingController.Show();
 
             _playerDataService.SendImmutableData();

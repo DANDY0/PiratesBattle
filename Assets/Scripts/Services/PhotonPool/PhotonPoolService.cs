@@ -13,16 +13,16 @@ namespace Services.GamePools
 {
     public class PhotonPoolService : IPhotonPoolService
     {
-        private readonly IRoomPlayerService _roomPlayerService;
+        private readonly IRoomPlayersService _roomPlayersService;
         private readonly Dictionary<string, PhotonPoolVo> _poolDictionary = new();
         private bool _isPoolsPrepared;
 
         public PhotonPoolService
         (
-            IRoomPlayerService roomPlayerService
+            IRoomPlayersService roomPlayersService
         )
         {
-            _roomPlayerService = roomPlayerService;
+            _roomPlayersService = roomPlayersService;
         }
 
         public void PreparePools()
@@ -103,7 +103,7 @@ namespace Services.GamePools
 
             _isPoolsPrepared = true;
 
-            _roomPlayerService.SendLocalPoolsPrepared();
+            _roomPlayersService.SendLocalPoolsPrepared();
         }
     }
 }

@@ -1,13 +1,10 @@
 ﻿using System.Collections;
+using System.Linq;
 using Controllers;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
-using PunNetwork.Services.CustomProperties;
 using PunNetwork.Services.RoomPlayer;
-using PunNetwork.Services.SpawnPoints;
-using Services.Data;
-using States.Core;
 using UnityEngine;
 using Utils;
 using Utils.Extensions;
@@ -17,28 +14,29 @@ namespace PunNetwork.Services.GameNetwork
 {
     public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService
     {
-        private IRoomPlayerService _roomPlayerService;
+        private IRoomPlayersService _roomPlayersService;
         private LoadingController _loadingController;
-
+        private IPhotonTeamsManager _photonTeamsManager;
 
         private bool _isMatchEnded;
 
         [Inject]
         private void Construct
         (
-            ICustomPropertiesService customPropertiesService,
-            IRoomPlayerService roomPlayerService,
-            ISpawnPointsService spawnPointsService,
-            IDataService dataService,
-            IGameStateMachine stateMachine,
+            IRoomPlayersService roomPlayersService,
             LoadingController loadingController
         )
         {
-            _roomPlayerService = roomPlayerService;
+            _roomPlayersService = roomPlayersService;
             _loadingController = loadingController;
         }
         
         public void LeaveGame() => StartCoroutine(HandleGameEnd());
+
+        public override void OnPlayerLeftRoom(Player other)
+        {
+            CheckIfGameEnded();
+        }
 
         private IEnumerator HandleGameEnd()
         {
@@ -51,21 +49,12 @@ namespace PunNetwork.Services.GameNetwork
                 PhotonNetwork.LeaveRoom();
 
                 while (PhotonNetwork.InRoom)
-                {
                     yield return null;
-                }
             }
-
-            //yield return new WaitForSeconds(0.5f);
-
+            
             PhotonNetwork.LoadLevel(SceneNames.Menu);
 
             _loadingController.Show();
-        }
-
-        public override void OnPlayerLeftRoom(Player other)
-        {
-            CheckIfGameEnded();
         }
 
         private void CheckIfGameEnded()
@@ -76,7 +65,7 @@ namespace PunNetwork.Services.GameNetwork
             if (!PhotonNetwork.IsMasterClient)
                 return;
 
-            var alivePlayers = _roomPlayerService.PlayerViews
+            var alivePlayers = _roomPlayersService.PlayerViews
                 .Where(p => p.CurrentHealthPoints > 0)
                 .Select(playerView => playerView.Player)
                 .ToList();
@@ -87,7 +76,7 @@ namespace PunNetwork.Services.GameNetwork
                 return;
             }
 
-            var firstPlayerTeam = alivePlayers.First().GetPhotonTeam().Code;
+            byte firstPlayerTeam = alivePlayers.First().GetPhotonTeam().Code;
             var allSameTeam = alivePlayers.All(player => player.GetPhotonTeam().Code == firstPlayerTeam);
 
             if (!allSameTeam) 
