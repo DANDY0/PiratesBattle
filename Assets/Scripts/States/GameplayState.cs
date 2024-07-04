@@ -1,6 +1,5 @@
 ﻿using Controllers;
-using PunNetwork.Services.ObjectsInRoom;
-using PunNetwork.Services.ProjectNetwork;
+using PunNetwork.Services.RoomPlayer;
 using Services.Input;
 using States.Core;
 
@@ -9,35 +8,31 @@ namespace States
     public class GameplayState : IState
     {
         private readonly MatchInfoController _matchInfoController;
-        private readonly IProjectNetworkService _projectNetworkService;
         private readonly IInputService _inputService;
-        private readonly IObjectsInRoomService _objectsInRoomService;
+        private readonly IRoomPlayerService _roomPlayerService;
 
         public GameplayState
         (
             MatchInfoController matchInfoController,
-            IProjectNetworkService projectNetworkService,
             IInputService inputService,
-            IObjectsInRoomService objectsInRoomService
+            IRoomPlayerService roomPlayerService
         )
         {
             _matchInfoController = matchInfoController;
-            _projectNetworkService = projectNetworkService;
             _inputService = inputService;
-            _objectsInRoomService = objectsInRoomService;
+            _roomPlayerService = roomPlayerService;
         }
 
         public void Enter()
         {
             _inputService.Enable();
-            foreach (var playerView in _objectsInRoomService.PlayerViews)
+            foreach (var playerView in _roomPlayerService.PlayerViews)
                 playerView.SubscribeOnInput();
             _matchInfoController.Show();
         }
 
         public void Exit()
         {
-            _projectNetworkService.IsGameStarted = false;
         }
     }
 }

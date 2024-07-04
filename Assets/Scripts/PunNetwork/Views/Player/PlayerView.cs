@@ -1,8 +1,10 @@
 ﻿using DG.Tweening;
 using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using PunNetwork.NetworkData;
-using PunNetwork.Services.ObjectsInRoom;
+using PunNetwork.Services.PlayersStats;
+using PunNetwork.Services.RoomPlayer;
 using Services.GamePools;
 using Services.Input;
 using UnityEngine;
@@ -29,7 +31,7 @@ namespace PunNetwork.Views.Player
 
         private IInputService _inputService;
         private IPhotonPoolService _photonPoolService;
-        private IObjectsInRoomService _objectsInRoomService;
+        private IRoomPlayerService _roomPlayerService;
 
         private Rigidbody _rigidbody;
         private CharacterController _characterController;
@@ -46,19 +48,22 @@ namespace PunNetwork.Views.Player
         private bool _isFiring;
 
         public float CurrentHealthPoints { get; private set; }
-        public Photon.Realtime.Player Player;
+        public Photon.Realtime.Player Player;   
+        private IPlayersStatsService _playersStatsService;
 
         [Inject]
         private void Construct
         (
             IInputService inputService,
             IPhotonPoolService photonPoolService,
-            IObjectsInRoomService objectsInRoomService
+            IRoomPlayerService roomPlayerService,
+            IPlayersStatsService playersStatsService
         )
         {
             _inputService = inputService;
             _photonPoolService = photonPoolService;
-            _objectsInRoomService = objectsInRoomService;
+            _roomPlayerService = roomPlayerService;
+            _playersStatsService = playersStatsService;
         }
 
         public void SubscribeOnInput()
@@ -196,9 +201,9 @@ namespace PunNetwork.Views.Player
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             Player = info.Sender;
-            _objectsInRoomService.OnPlayerSpawned(info.Sender, this);
+            _roomPlayerService.SendLocalPlayersSpawned(info.Sender, this);
         }
-
+        
 
         [PunRPC]
         public void RegisterHit(float damage)
@@ -208,7 +213,7 @@ namespace PunNetwork.Views.Player
             var newHealthPoints = CurrentHealthPoints - damage;
             var resultHealthPoints = newHealthPoints <= 0 ? 0 : newHealthPoints;
 
-            PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.PlayerHP, resultHealthPoints);
+            _playersStatsService.SendPlayerHp(resultHealthPoints);
 
             if (resultHealthPoints == 0)
                 PhotonView.RPC(nameof(DestroyPlayer), RpcTarget.All);
@@ -242,7 +247,7 @@ namespace PunNetwork.Views.Player
 
         public void SetUpInfo()
         {
-            if (Player.TryGetCustomProperty<NetworkDataModel.ReadyPlayerInfo>(PlayerProperty.ReadyPlayerInfo,
+            if (Player.TryGetCustomProperty<NetworkDataModel.PlayerImmutableDataVo>(PlayerProperty.PlayerImmutableData,
                     out var info))
                 _playerUI.SetNickName(info.Nickname);
         }

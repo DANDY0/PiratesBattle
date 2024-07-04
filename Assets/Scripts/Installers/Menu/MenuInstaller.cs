@@ -1,4 +1,5 @@
 ﻿using Controllers.MainMenu;
+using PunNetwork.Services.PlayerData;
 using States.Core;
 using Utils.Extensions;
 using Zenject;
@@ -16,6 +17,7 @@ namespace Installers.Menu
 
         private void BindServices()
         {
+            Container.BindInterfacesTo<PlayerDataService>().AsSingle();
             Container.BindInterfacesTo<MenuEntryPoint>().AsSingle();
         }
 

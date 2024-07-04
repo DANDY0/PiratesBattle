@@ -1,6 +1,8 @@
 ﻿using System;
 using ExitGames.Client.Photon;
 using Newtonsoft.Json;
+using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using UnityEngine;
 using static Utils.Enumerators;
@@ -49,5 +51,18 @@ namespace Utils.Extensions
         
         public static void ResetCustomProperties(this Player player) => 
             player.SetCustomProperties(new Hashtable());
+
+        public static TeamRole GetTeamRole(this Player player)
+        {
+            TeamRole teamRole;
+            if (player.IsLocal)
+                teamRole = TeamRole.MyPlayer;
+            else
+                teamRole = player.GetPhotonTeam().Code == PhotonNetwork.LocalPlayer.GetPhotonTeam().Code
+                    ? TeamRole.AllyPlayer
+                    : TeamRole.EnemyPlayer;
+            return teamRole;
+        }
+
     }
 }

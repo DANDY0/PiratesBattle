@@ -4,6 +4,7 @@ using System.Linq;
 using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.Pun;
 using PunNetwork.ObjectPooling;
+using PunNetwork.Services.RoomPlayer;
 using UnityEngine;
 using Utils.Extensions;
 using static Utils.Enumerators;
@@ -12,8 +13,17 @@ namespace Services.GamePools
 {
     public class PhotonPoolService : IPhotonPoolService
     {
+        private readonly IRoomPlayerService _roomPlayerService;
         private readonly Dictionary<string, PhotonPoolVo> _poolDictionary = new();
         private bool _isPoolsPrepared;
+
+        public PhotonPoolService
+        (
+            IRoomPlayerService roomPlayerService
+        )
+        {
+            _roomPlayerService = roomPlayerService;
+        }
 
         public void PreparePools()
         {
@@ -92,7 +102,8 @@ namespace Services.GamePools
             if (!isAllReady) return;
 
             _isPoolsPrepared = true;
-            PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.IsPoolsPrepared, true);
+
+            _roomPlayerService.SendLocalPoolsPrepared();
         }
     }
 }

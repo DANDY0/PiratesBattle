@@ -1,8 +1,6 @@
 ﻿using Core.Abstracts;
 using PunNetwork.Services.MenuNetwork;
-using Services.Data;
 using UniRx;
-using UnityEngine;
 using Views.MainMenuView;
 
 namespace Controllers.MainMenu
@@ -10,20 +8,17 @@ namespace Controllers.MainMenu
     public class MainMenuController : Controller<MainMenuView>
     {
         private readonly IMenuNetworkService _menuNetworkService;
-        private readonly IDataService _dataService;
         private readonly SelectedCharacterHandler _selectedCharacterHandler;
         private readonly MenuProfileHandler _menuProfileHandler;
 
         public MainMenuController
         (
             IMenuNetworkService menuNetworkService,
-            IDataService dataService,
             SelectedCharacterHandler selectedCharacterHandler,
             MenuProfileHandler menuProfileHandler
         )
         {
             _menuNetworkService = menuNetworkService;
-            _dataService = dataService;
             _selectedCharacterHandler = selectedCharacterHandler;
             _menuProfileHandler = menuProfileHandler;
         }

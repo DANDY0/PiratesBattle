@@ -12,11 +12,10 @@
 
         public enum PlayerProperty
         {
-            IsPlayersSpawned,
+            LocalPlayersSpawned,
             PlayerHP,
-            ReadyPlayerInfo,
-            CharacterName,
-            IsPoolsPrepared
+            PlayerImmutableData,
+            LocalPoolsPrepared
         }
         
         public enum Character

@@ -1,192 +1,71 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
 using Controllers;
-using ExitGames.Client.Photon;
-using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using PunNetwork.Services.CustomProperties;
-using PunNetwork.Services.ObjectsInRoom;
+using PunNetwork.Services.RoomPlayer;
 using PunNetwork.Services.SpawnPoints;
 using Services.Data;
-using States;
 using States.Core;
 using UnityEngine;
 using Utils;
 using Utils.Extensions;
 using Zenject;
-using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
-using static PunNetwork.NetworkData.NetworkDataModel;
-using static Utils.Enumerators;
 
 namespace PunNetwork.Services.GameNetwork
 {
-    public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService, IDisposable, IInitializable
+    public class GameNetworkService : MonoBehaviourPunCallbacks, IGameNetworkService
     {
-        private ICustomPropertiesService _customPropertiesService;
-        private IObjectsInRoomService _objectsInRoomService;
-        private ISpawnPointsService _spawnPointsService;
-        private IGameStateMachine _gameStateMachine;
+        private IRoomPlayerService _roomPlayerService;
         private LoadingController _loadingController;
-        private IDataService _dataService;
 
-        private const float MaxHealthPoints = 100;
-        
-        public GameResult GameResult { get; private set; }
 
-        private List<ReadyPlayerInfo> _readyPlayersData = new List<ReadyPlayerInfo>();
         private bool _isMatchEnded;
 
         [Inject]
         private void Construct
         (
             ICustomPropertiesService customPropertiesService,
-            IObjectsInRoomService objectsInRoomService,
+            IRoomPlayerService roomPlayerService,
             ISpawnPointsService spawnPointsService,
             IDataService dataService,
             IGameStateMachine stateMachine,
             LoadingController loadingController
         )
         {
-            _customPropertiesService = customPropertiesService;
-            _objectsInRoomService = objectsInRoomService;
-            _spawnPointsService = spawnPointsService;
-            _dataService = dataService;
-            _gameStateMachine = stateMachine;
+            _roomPlayerService = roomPlayerService;
             _loadingController = loadingController;
         }
-
-        public void Initialize()
-        {
-            _customPropertiesService.PlayerHealthPointsChangedEvent += OnPlayerHealthPointsChanged;
-            _customPropertiesService.GetReadyPlayerInfoEvent +=  GetReadyPlayerInfoHandler;
-            PhotonNetwork.NetworkingClient.EventReceived += OnEventReceived;
-        }
-
-        public void Dispose()
-        {
-            _customPropertiesService.PlayerHealthPointsChangedEvent -= OnPlayerHealthPointsChanged;
-            _customPropertiesService.GetReadyPlayerInfoEvent -=  GetReadyPlayerInfoHandler;
-            PhotonNetwork.NetworkingClient.EventReceived -= OnEventReceived;
-        }
-
-        public void Setup()
-        {
-            if (!PhotonNetwork.IsConnected)
-            {
-                PhotonNetwork.LoadLevel(SceneNames.Menu);
-                return;
-            }
-
-            if (PhotonNetwork.InRoom)
-            {
-                Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
-                SendReadyPlayerInfo();
-            }
-            else
-            {
-                Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
-            }
-        }
-
-        private void GetReadyPlayerInfoHandler(Player player, ReadyPlayerInfo data)
-        {
-            CheckIsAllPlayersReady(data);
-        }
-
-        private void CheckIsAllPlayersReady(ReadyPlayerInfo data)
-        {
-            _readyPlayersData.Add(data);
-            
-            if(!PhotonNetwork.IsMasterClient)
-                return;
-            
-            if (_readyPlayersData.Count == PhotonNetwork.CurrentRoom.PlayerCount) 
-                GameEventsRaiser.RaiseEvent(GameEventCodes.AllPlayersReady, null);
-        }
-
-        private void SendReadyPlayerInfo()
-        {
-            var playerSpawnedData = new ReadyPlayerInfo(PhotonNetwork.LocalPlayer.ActorNumber,
-                _dataService.CachedUserLocalData.NickName, _dataService.CachedUserLocalData.SelectedCharacter.ToString(),1);
-            var json = JsonConvert.SerializeObject(playerSpawnedData);
-
-            PhotonNetwork.LocalPlayer.SetCustomProperty(PlayerProperty.ReadyPlayerInfo, json);
-        }
-
+        
         public void LeaveGame() => StartCoroutine(HandleGameEnd());
 
-        public override void OnPlayerEnteredRoom(Player other)
+        private IEnumerator HandleGameEnd()
         {
-            Debug.Log("OnPlayerEnteredRoom() " + other.NickName); // not seen if you're the player connecting
-
-            if (PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.InRoom)
             {
-                Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}",
-                    PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
+                if (PhotonNetwork.LocalPlayer.GetPhotonTeam() != null) 
+                    PhotonNetwork.LocalPlayer.LeaveCurrentTeam();
+
+                PhotonNetwork.LocalPlayer.ResetCustomProperties();
+                PhotonNetwork.LeaveRoom();
+
+                while (PhotonNetwork.InRoom)
+                {
+                    yield return null;
+                }
             }
+
+            //yield return new WaitForSeconds(0.5f);
+
+            PhotonNetwork.LoadLevel(SceneNames.Menu);
+
+            _loadingController.Show();
         }
 
-        /// <summary>
-        /// Called when a Photon Player got disconnected. We need to load a smaller scene.
-        /// </summary>
-        /// <param name="other">Other.</param>
         public override void OnPlayerLeftRoom(Player other)
         {
-            Debug.Log("OnPlayerLeftRoom() " + other.NickName); // seen when other disconnects
-
-            _objectsInRoomService.PlayerLeftRoom(other);
             CheckIfGameEnded();
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}",
-                    PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-            }
-        }
-
-        /// <summary>
-        /// Called when the local player left the room. We need to load the launcher scene.
-        /// </summary>
-        private void OnEventReceived(EventData photonEvent)
-        {
-            switch (photonEvent.Code)
-            {
-                case GameEventCodes.StartMatchEventCode:
-                    _gameStateMachine.Enter<GameplayState>();
-                    break;
-                case GameEventCodes.EndMatchEventCode:
-                {
-                    var winningTeam = (byte)photonEvent.CustomData;
-                    GameResult = winningTeam == PhotonNetwork.LocalPlayer.GetPhotonTeam().Code ? GameResult.Win : GameResult.Lose;
-                    _gameStateMachine.Enter<GameResultsState>();
-                    break;
-                }
-                case GameEventCodes.AllPlayersReady:
-                {
-                    SpawnPlayer();
-                    break;
-                }
-            }
-        }
-
-        private void OnPlayerHealthPointsChanged(Player player, float newHealthPoints)
-        {
-            _objectsInRoomService.UpdateHealthPoints(player, newHealthPoints);
-            if (newHealthPoints != MaxHealthPoints)
-                CheckIfGameEnded();
-        }
-
-        private void SpawnPlayer()
-        {
-            var photonTeam = PhotonNetwork.LocalPlayer.GetPhotonTeam();
-            var playerPosition = _spawnPointsService.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1, photonTeam);
-            
-            PhotonNetwork.LocalPlayer.TryGetCustomProperty<ReadyPlayerInfo>(PlayerProperty.ReadyPlayerInfo, out var info);
-            PhotonNetwork.Instantiate(info.CharacterName, playerPosition, Quaternion.identity);
         }
 
         private void CheckIfGameEnded()
@@ -197,7 +76,7 @@ namespace PunNetwork.Services.GameNetwork
             if (!PhotonNetwork.IsMasterClient)
                 return;
 
-            var alivePlayers = _objectsInRoomService.PlayerViews
+            var alivePlayers = _roomPlayerService.PlayerViews
                 .Where(p => p.CurrentHealthPoints > 0)
                 .Select(playerView => playerView.Player)
                 .ToList();
@@ -219,29 +98,6 @@ namespace PunNetwork.Services.GameNetwork
             Debug.LogError($"Raise EndMatchEvent {PhotonNetwork.LocalPlayer.ActorNumber}");
             
             GameEventsRaiser.RaiseEvent(GameEventCodes.EndMatchEventCode, firstPlayerTeam);
-        }
-        
-        private IEnumerator HandleGameEnd()
-        {
-            if (PhotonNetwork.InRoom)
-            {
-                if (PhotonNetwork.LocalPlayer.GetPhotonTeam() != null) 
-                    PhotonNetwork.LocalPlayer.LeaveCurrentTeam();
-
-                PhotonNetwork.LocalPlayer.ResetCustomProperties();
-                PhotonNetwork.LeaveRoom();
-
-                while (PhotonNetwork.InRoom)
-                {
-                    yield return null;
-                }
-            }
-
-            yield return new WaitForSeconds(0.5f);
-
-            PhotonNetwork.LoadLevel(SceneNames.Menu);
-
-            _loadingController.Show();
         }
     }
 }

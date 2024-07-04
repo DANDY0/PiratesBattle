@@ -1,30 +1,40 @@
 ﻿using System;
+using Controllers;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
+using PunNetwork.Services.PlayerData;
+using PunNetwork.Services.RoomPlayer;
+using Services.Data;
 using UnityEngine;
-using Utils;
 using Zenject;
 
 namespace PunNetwork.Services.MenuNetwork
 {
     public class MenuNetworkService : MonoBehaviourPunCallbacks, IMenuNetworkService, IInitializable, IDisposable
     {
-        public event Action RoomFilledEvent;
-        
         private byte _maxPlayersPerRoom;
         private string _gameVersion = "1";
         private bool _isConnecting;
         private IPhotonTeamsManager _photonTeamsManager;
+        private IRoomPlayerService _roomPlayerService;
+        private LoadingController _loadingController;
+        private IPlayerDataService _playerDataService;
 
 
         [Inject]
         private void Construct
         (
-            IPhotonTeamsManager photonTeamsManager
+            IPhotonTeamsManager photonTeamsManager,
+            IRoomPlayerService roomPlayerService,
+            LoadingController loadingController,
+            IPlayerDataService playerDataService
         )
         {
             _photonTeamsManager = photonTeamsManager;
+            _roomPlayerService = roomPlayerService;
+            _loadingController = loadingController;
+            _playerDataService = playerDataService;
         }
 
         public void Initialize()
@@ -38,7 +48,7 @@ namespace PunNetwork.Services.MenuNetwork
             _photonTeamsManager.PlayerJoinedTeam -= PlayerJoinedTeam;
             _photonTeamsManager.PlayerLeftTeam -= PlayerLeftTeam;
         }
-        
+
         public void SetMaxPlayers(byte count) => _maxPlayersPerRoom = count;
 
         public void Connect()
@@ -106,15 +116,17 @@ namespace PunNetwork.Services.MenuNetwork
 
         private void PlayerJoinedTeam(Player player, PhotonTeam team)
         {
-            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == _maxPlayersPerRoom)
-            {
-                Debug.Log("We load the Game scene");
-                // PhotonNetwork.LoadLevel(SceneNames.Game);
-                PhotonNetwork.CurrentRoom.IsOpen = false;
-                RoomFilledEvent?.Invoke();
-            }
-        }
+            if (PhotonNetwork.CurrentRoom.PlayerCount != _maxPlayersPerRoom) return;
+            
+            _roomPlayerService.EnterRoom(PhotonNetwork.CurrentRoom.Players.Values);
+            _loadingController.Show();
 
+            _playerDataService.SendImmutableData();
+
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+        }
+        
         private void PlayerLeftTeam(Player player, PhotonTeam team)
         {
         }

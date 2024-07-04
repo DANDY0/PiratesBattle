@@ -5,6 +5,7 @@ using DG.Tweening;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.Services.GameNetwork;
+using PunNetwork.Services.MatchInfo;
 using Views;
 using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 using static Utils.Enumerators;
@@ -17,24 +18,27 @@ namespace Controllers
         private readonly LoadingController _loadingController;
         private readonly ICoroutineRunner _coroutineRunner;
         private readonly IGameNetworkService _gameNetworkService;
+        private readonly IMatchInfoService _matchInfoService;
 
         public MatchResultsController
         (
             LoadingController loadingController,
             ICoroutineRunner coroutineRunner,
-            IGameNetworkService gameNetworkService
+            IGameNetworkService gameNetworkService,
+            IMatchInfoService matchInfoService
         )
         {
             _loadingController = loadingController;
             _coroutineRunner = coroutineRunner;
             _gameNetworkService = gameNetworkService;
+            _matchInfoService = matchInfoService;
         }
         
-        public void Show(GameResult gameResult)
+        public void Show()
         {
             View.Reset();
             View.Show();
-            View.PlayAnimation(gameResult).OnComplete(() => _gameNetworkService.LeaveGame());
+            View.PlayAnimation(_matchInfoService.GameResult).OnComplete(() => _gameNetworkService.LeaveGame());
         }
         
     }

@@ -1,19 +1,26 @@
-﻿using System;
-using Core.Abstracts;
+﻿using Core.Abstracts;
 using DG.Tweening;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
-using States;
-using States.Core;
+using PunNetwork.MasterEvent;
 using Utils;
 using Views;
-using Zenject;
 
 namespace Controllers
 {
     public class PreviewMatchAnimationController : Controller<PreviewMatchAnimationView>
     {
+        private readonly IMasterEventService _masterEventService;
+
+        public PreviewMatchAnimationController
+        (
+            IMasterEventService masterEventService
+        )
+        {
+            _masterEventService = masterEventService;
+        }
+        
         public void Start()
         {
             View.Reset();
@@ -21,13 +28,7 @@ namespace Controllers
             
             View.PlayAnimation()
                 .AppendInterval(.1f)
-                .OnComplete(() =>
-                {
-                    if (!PhotonNetwork.IsMasterClient) return;
-                    var raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-                    var sendOptions = new SendOptions { Reliability = true };
-                    PhotonNetwork.RaiseEvent(GameEventCodes.StartMatchEventCode, null, raiseEventOptions, sendOptions);
-                });
+                .OnComplete(() => _masterEventService.RaiseEvent(GameEventCodes.StartMatchEventCode));
         }
 
         public void Hide()
