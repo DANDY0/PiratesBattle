@@ -36,14 +36,14 @@ namespace PunNetwork.Services.MatchInfo
         public void Initialize()
         {
             _masterEventService.Subscribe(GameEventCodes.StartMatchEventCode, OnStartMatch);
-            _masterEventService.Subscribe(GameEventCodes.EndMatchEventCode, OnEndMatch);
+            _masterEventService.Subscribe<byte>(GameEventCodes.EndMatchEventCode, OnEndMatch);
             _photonTeamsManager.TeamDeadEvent += TeamDeadHandler;
         }
 
         public void Dispose()
         {
             _masterEventService.Unsubscribe(GameEventCodes.StartMatchEventCode, OnStartMatch);
-            _masterEventService.Unsubscribe(GameEventCodes.EndMatchEventCode, OnEndMatch);
+            _masterEventService.Unsubscribe<byte>(GameEventCodes.EndMatchEventCode, OnEndMatch);
             _photonTeamsManager.TeamDeadEvent -= TeamDeadHandler;
         }
 
@@ -51,7 +51,7 @@ namespace PunNetwork.Services.MatchInfo
         {
             var survivingTeam = CheckIsGameEnded();
             if (survivingTeam != null) 
-                GameEventsRaiser.RaiseEvent(GameEventCodes.EndMatchEventCode, survivingTeam.Code);
+                _masterEventService.RaiseEvent(GameEventCodes.EndMatchEventCode, survivingTeam.Code);
         }
 
         private PhotonTeam CheckIsGameEnded()
@@ -70,9 +70,8 @@ namespace PunNetwork.Services.MatchInfo
             _gameStateMachine.Enter<GameplayState>();
         }
 
-        private void OnEndMatch(object eventContent)
+        private void OnEndMatch(byte winningTeam)
         {
-            var winningTeam = (byte)eventContent;
             GameResult = winningTeam == PhotonNetwork.LocalPlayer.GetPhotonTeam().Code
                 ? GameResult.Win
                 : GameResult.Lose;

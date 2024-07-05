@@ -15,7 +15,7 @@ namespace PunNetwork.Services.PlayersStats
     {
         private readonly ICustomPropertiesService _customPropertiesService;
         private readonly IRoomPlayersService _roomPlayersService;
-        public readonly Dictionary<Player, StatsValuesVo> PlayersStats = new();
+        private readonly Dictionary<Player, StatsValuesVo> _playersStats = new();
 
         public PlayersStatsService
         (
@@ -30,7 +30,7 @@ namespace PunNetwork.Services.PlayersStats
         public void Initialize()
         {
             foreach (var player in _roomPlayersService.Players)
-                PlayersStats.Add(player, _roomPlayersService.GetPlayerInfo(player).ImmutableDataVo.InitialStats);
+                _playersStats.Add(player, _roomPlayersService.GetPlayerInfo(player).ImmutableDataVo.InitialStats);
 
             SendPersonalInitialStats();
 
@@ -46,7 +46,7 @@ namespace PunNetwork.Services.PlayersStats
 
         public void SendPlayerHp(float healthPoints)
         {
-            PlayersStats[PhotonNetwork.LocalPlayer].HealthPoints = healthPoints;
+            _playersStats[PhotonNetwork.LocalPlayer].HealthPoints = healthPoints;
             PhotonNetwork.LocalPlayer.SetCustomProperty(Enumerators.PlayerProperty.PlayerHP, healthPoints);
             
             if(healthPoints <= 0)
@@ -55,13 +55,13 @@ namespace PunNetwork.Services.PlayersStats
 
         private void SendPersonalInitialStats()
         {
-            var healthPoints = PlayersStats[PhotonNetwork.LocalPlayer].HealthPoints;
+            var healthPoints = _playersStats[PhotonNetwork.LocalPlayer].HealthPoints;
             PhotonNetwork.LocalPlayer.SetCustomProperty(Enumerators.PlayerProperty.PlayerHP, healthPoints);
         }
 
         private void SendPlayerDead()
         {
-            PlayersStats[PhotonNetwork.LocalPlayer].IsDead = true;
+            _playersStats[PhotonNetwork.LocalPlayer].IsDead = true;
             PhotonNetwork.LocalPlayer.SetCustomProperty(Enumerators.PlayerProperty.IsDead, true);
         }
 
@@ -70,7 +70,7 @@ namespace PunNetwork.Services.PlayersStats
             if (player.IsLocal)
                 return;
 
-            PlayersStats[player].HealthPoints = hp;
+            _playersStats[player].HealthPoints = hp;
         }
 
         private void OnPlayerDead(Player player, bool state)
@@ -78,7 +78,7 @@ namespace PunNetwork.Services.PlayersStats
             if (player.IsLocal)
                 return;
 
-            PlayersStats[player].IsDead = state;
+            _playersStats[player].IsDead = state;
         }
     }
 

@@ -15,7 +15,7 @@ namespace PunNetwork.MasterEvent
     public class MasterEventService : IMasterEventService, IInitializable, IDisposable
     {
         private readonly IGameStateMachine _gameStateMachine;
-        private readonly Dictionary<byte, List<Action<object>>> _eventSubscriptions = new();
+        private readonly Dictionary<byte, List<Delegate>> _eventSubscriptions = new();
 
         private bool _isAllPlayersSpawned;
         private bool _isAllPoolsPrepared;
@@ -38,12 +38,29 @@ namespace PunNetwork.MasterEvent
             PhotonNetwork.NetworkingClient.EventReceived -= OnEventReceived;
         }
 
+        public void Subscribe<T>(byte eventCode, Action<T> handler)
+        {
+            if (!_eventSubscriptions.ContainsKey(eventCode)) 
+                _eventSubscriptions[eventCode] = new List<Delegate>();
+
+            _eventSubscriptions[eventCode].Add(handler);
+        }
+
         public void Subscribe(byte eventCode, Action<object> handler)
         {
             if (!_eventSubscriptions.ContainsKey(eventCode)) 
-                _eventSubscriptions[eventCode] = new List<Action<object>>();
+                _eventSubscriptions[eventCode] = new List<Delegate>();
 
             _eventSubscriptions[eventCode].Add(handler);
+        }
+
+        public void Unsubscribe<T>(byte eventCode, Action<T> handler)
+        {
+            if (!_eventSubscriptions.TryGetValue(eventCode, out var subscription)) 
+                return;
+            subscription.Remove(handler);
+            if (_eventSubscriptions[eventCode].Count == 0) 
+                _eventSubscriptions.Remove(eventCode);
         }
 
         public void Unsubscribe(byte eventCode, Action<object> handler)
@@ -99,9 +116,10 @@ namespace PunNetwork.MasterEvent
 
         private void OnEventReceived(EventData photonEvent)
         {
-            if (!_eventSubscriptions.TryGetValue(photonEvent.Code, out var subscribers)) return;
+            if (!_eventSubscriptions.TryGetValue(photonEvent.Code, out var subscribers)) 
+                return;
             foreach (var subscriber in subscribers)
-                subscriber?.Invoke(photonEvent.CustomData);
+                subscriber.DynamicInvoke(photonEvent.CustomData);
         }
     }
 }
