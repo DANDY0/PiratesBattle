@@ -37,6 +37,7 @@ namespace Photon.Pun.UtilityScripts
         event Action<Player, PhotonTeam> PlayerJoinedTeam;
         event Action<Player, PhotonTeam> PlayerLeftTeam;
         event Action TeamDeadEvent;
+        void PlayerDeadHandler(Player player, bool state);
     }
 
     [Serializable]
@@ -60,8 +61,7 @@ namespace Photon.Pun.UtilityScripts
     /// There are no rules when / if you can join a team. You could add this in JoinTeam or something.
     /// </remarks>
     [DisallowMultipleComponent]
-    public class PhotonTeamsManager : MonoBehaviour, IMatchmakingCallbacks, IInRoomCallbacks, IPhotonTeamsManager,
-        IInitializable
+    public class PhotonTeamsManager : MonoBehaviour, IMatchmakingCallbacks, IInRoomCallbacks, IPhotonTeamsManager
     {
 #if UNITY_EDITOR
 #pragma warning disable 0414
@@ -115,12 +115,7 @@ namespace Photon.Pun.UtilityScripts
 
         #region MonoBehaviour
 
-        public void Initialize()
-        {
-            _customPropertiesService.Subscribe<bool>(PlayerProperty.IsDead, PlayerDeadHandler);
-        }
-
-        private void PlayerDeadHandler(Player player, bool state)
+        public void PlayerDeadHandler(Player player, bool state)
         {
             var photonTeam = TeamsByCode[player.GetPhotonTeam().Code];
             var teamPlayers = _playersPerTeam[photonTeam.Code];
@@ -129,6 +124,8 @@ namespace Photon.Pun.UtilityScripts
                 p.TryGetCustomProperty(PlayerProperty.IsDead, out bool isDead) && isDead);
 
             photonTeam.IsAlive = !isAllTeamPlayersDead;
+            if (!photonTeam.IsAlive) 
+                TeamDeadEvent?.Invoke();
         }
 
         private void Awake()

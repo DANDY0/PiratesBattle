@@ -40,23 +40,22 @@ namespace PunNetwork.Services.GameNetwork
 
         private IEnumerator HandleGameEnd()
         {
-            if (PhotonNetwork.InRoom)
-            {
+            /*if (PhotonNetwork.InRoom)
+            {*/
                 if (PhotonNetwork.LocalPlayer.GetPhotonTeam() != null) 
                     PhotonNetwork.LocalPlayer.LeaveCurrentTeam();
 
                 PhotonNetwork.LocalPlayer.ResetCustomProperties();
                 PhotonNetwork.LeaveRoom();
 
-                while (PhotonNetwork.InRoom)
+                while (PhotonNetwork.InRoom || PhotonNetwork.NetworkClientState == ClientState.Leaving)
                     yield return null;
-            }
-            
-            PhotonNetwork.LoadLevel(SceneNames.Menu);
+//           }
 
             _loadingController.Show();
-        }
 
+            PhotonNetwork.LoadLevel(SceneNames.Menu);
+        }
         private void CheckIfGameEnded()
         {
             if(_isMatchEnded)

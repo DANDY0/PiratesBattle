@@ -7,7 +7,7 @@
 // </summary>
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
-
+#if UNITY_EDITOR
 using System;
 using UnityEngine;
 using System.Collections.Generic;
@@ -40,8 +40,8 @@ namespace Photon.Pun.UtilityScripts
         private void OnEnable()
         {
             photonTeams = target as PhotonTeamsManager;
-            teamsListSp = serializedObject.FindProperty("teamsList");
-            listFoldIsOpenSp = serializedObject.FindProperty("listFoldIsOpen");
+            teamsListSp = serializedObject.FindProperty("_teamsList");
+            listFoldIsOpenSp = serializedObject.FindProperty("_listFoldIsOpen");
             isOpen = listFoldIsOpenSp.boolValue;
             removeTexture = LoadTexture(removeTextureName, proSkinString, lightSkinString);
         }
@@ -244,3 +244,4 @@ namespace Photon.Pun.UtilityScripts
         }
     }
 }
+#endif

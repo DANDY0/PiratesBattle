@@ -32,7 +32,7 @@ namespace PunNetwork.Services.MatchInfo
             _gameStateMachine = gameStateMachine;
             _photonTeamsManager = photonTeamsManager;
         }
-        
+
         public void Initialize()
         {
             _masterEventService.Subscribe(GameEventCodes.StartMatchEventCode, OnStartMatch);
@@ -50,7 +50,7 @@ namespace PunNetwork.Services.MatchInfo
         private void TeamDeadHandler()
         {
             var survivingTeam = CheckIsGameEnded();
-            if (survivingTeam != null) 
+            if (survivingTeam != null)
                 _masterEventService.RaiseEvent(GameEventCodes.EndMatchEventCode, survivingTeam.Code);
         }
 
@@ -59,10 +59,7 @@ namespace PunNetwork.Services.MatchInfo
             var allTeams = _photonTeamsManager.GetAllTeams();
             var aliveTeams = allTeams.Values.Where(team => team.IsAlive).ToList();
 
-            if (aliveTeams.Count == 1)
-                return aliveTeams[0];
-    
-            return null;
+            return aliveTeams.Count == 1 ? aliveTeams[0] : null;
         }
 
         private void OnStartMatch(object eventContent)

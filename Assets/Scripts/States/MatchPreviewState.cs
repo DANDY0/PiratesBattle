@@ -1,8 +1,6 @@
 ﻿using Controllers;
-using Photon.Pun;
+using PunNetwork.Services.PlayersStats;
 using States.Core;
-using Utils;
-using Utils.Extensions;
 
 
 namespace States
@@ -10,17 +8,21 @@ namespace States
     public class MatchPreviewState : IState
     {
         private readonly PreviewMatchAnimationController _previewMatchAnimationController;
-        
+        private readonly IPlayersStatsService _playersStatsService;
+
         public MatchPreviewState
         (
-            PreviewMatchAnimationController previewMatchAnimationController
+            PreviewMatchAnimationController previewMatchAnimationController,
+            IPlayersStatsService playersStatsService
         )
         {
             _previewMatchAnimationController = previewMatchAnimationController;
+            _playersStatsService = playersStatsService;
         }
 
         public void Enter()
         {
+            _playersStatsService.SendPersonalInitialStats();
             _previewMatchAnimationController.Start();
         }
 

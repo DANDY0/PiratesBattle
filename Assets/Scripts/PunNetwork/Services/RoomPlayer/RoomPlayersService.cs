@@ -73,8 +73,7 @@ namespace PunNetwork.Services.RoomPlayer
             foreach (var player in players)
                 _playersDictionary.Add(player, new PlayerInfoVo());
 
-            _customPropertiesService.Subscribe<string>(PlayerProperty.PlayerImmutableData,
-                OnPlayerImmutableDataChanged);
+            _customPropertiesService.Subscribe<string>(PlayerProperty.PlayerImmutableData, OnPlayerImmutableDataChanged);
             _customPropertiesService.Subscribe<bool>(PlayerProperty.LocalPlayersSpawned, OnLocalPlayersSpawnedChanged);
             _customPropertiesService.Subscribe<bool>(PlayerProperty.LocalPoolsPrepared, OnLocalPoolsPreparedChanged);
 
@@ -121,9 +120,7 @@ namespace PunNetwork.Services.RoomPlayer
                     OnLocalPoolsPreparedChanged);
             }
             else
-            {
                 _playersDictionary.Remove(player);
-            }
         }
 
         private void OnPlayerImmutableDataChanged(Player player, string value)

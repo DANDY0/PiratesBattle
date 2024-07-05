@@ -3,6 +3,7 @@ using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using PunNetwork.NetworkData;
+using PunNetwork.Services.CustomProperties;
 using PunNetwork.Services.PlayersStats;
 using PunNetwork.Services.RoomPlayer;
 using Services.GamePools;
@@ -48,7 +49,7 @@ namespace PunNetwork.Views.Player
         private bool _isFiring;
 
         public float CurrentHealthPoints { get; private set; }
-        public Photon.Realtime.Player Player;   
+        public Photon.Realtime.Player Player;
         private IPlayersStatsService _playersStatsService;
 
         [Inject]
@@ -173,7 +174,7 @@ namespace PunNetwork.Views.Player
             {
                 _initialShootingDelay -= Time.deltaTime;
                 if (_initialShootingDelay <= 0)
-                    _shootingTimer = 0; 
+                    _shootingTimer = 0;
                 return;
             }
 
@@ -184,7 +185,8 @@ namespace PunNetwork.Views.Player
                 var position = transform.position;
                 var rotation = transform.rotation;
 
-                var bullet = _photonPoolService.ActivatePoolItem<Bullet.Bullet>(Enumerators.GameObjectEntryKey.Bullet.ToString(),
+                var bullet = _photonPoolService.ActivatePoolItem<Bullet.Bullet>(
+                    Enumerators.GameObjectEntryKey.Bullet.ToString(),
                     position,
                     rotation);
                 bullet.Fire(position);
@@ -202,8 +204,9 @@ namespace PunNetwork.Views.Player
         {
             Player = info.Sender;
             _roomPlayersService.SendLocalPlayersSpawned(info.Sender, this);
+            SetupInfo();
         }
-        
+
 
         [PunRPC]
         public void RegisterHit(float damage)
@@ -245,11 +248,9 @@ namespace PunNetwork.Views.Player
             _teamMarker.material.color = markerColor;
         }
 
-        public void SetUpInfo()
+        private void SetupInfo()
         {
-            if (Player.TryGetCustomProperty<NetworkDataModel.PlayerImmutableDataVo>(PlayerProperty.PlayerImmutableData,
-                    out var info))
-                _playerUI.SetNickName(info.Nickname);
+            _playerUI.SetNickName(_roomPlayersService.GetPlayerInfo(Player).ImmutableDataVo.Nickname);
         }
 
         public void UpdateHealthPoints(float healthPoints)

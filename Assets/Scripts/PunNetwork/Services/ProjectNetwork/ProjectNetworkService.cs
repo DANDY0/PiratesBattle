@@ -10,7 +10,7 @@ namespace PunNetwork.Services.ProjectNetwork
 
         public event Action<Player> PlayerLeftRoomEvent;
         public event Action ConnectedToMasterEvent;
-        
+
         public void EnterRoom()
         {
             _isInRoom = true;
@@ -22,8 +22,14 @@ namespace PunNetwork.Services.ProjectNetwork
         {
             if (!_isInRoom)
                 return;
-            _isInRoom = false;
             PlayerLeftRoomEvent?.Invoke(otherPlayer);
+        }
+
+        public override void OnLeftRoom()
+        {
+            PlayerLeftRoomEvent?.Invoke(PhotonNetwork.LocalPlayer);
+
+            _isInRoom = false;
         }
     }
 }
