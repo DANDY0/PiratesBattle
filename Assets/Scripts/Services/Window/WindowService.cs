@@ -39,7 +39,8 @@ namespace Services.Window
         {
             var windowVo = _windows[windowName];
             windowVo.Window.Open();
-            if (!windowVo.IsFocusable) return;
+            if (!windowVo.IsFocusable) 
+                return;
 
             if (_focusedWindow != null && _focusedWindow != windowName)
                 _windows[_focusedWindow.Value].Window.Close();
