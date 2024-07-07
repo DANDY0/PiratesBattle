@@ -4919,8 +4919,9 @@ MonoBehaviour:
   _teamMarker: {fileID: 8045841505837438500}
   _destruction: {fileID: 19801310}
   _playerUI: {fileID: 964776327015624607}
-  _enemiesTriggerCollider: {fileID: 7191676111026217330}
   _collider: {fileID: 13675448}
+  _rigidBody: {fileID: 5473192}
+  _enemiesTriggerCollider: {fileID: 7191676111026217330}
 --- !u!114 &2902740994556107111
 MonoBehaviour:
   m_ObjectHideFlags: 0

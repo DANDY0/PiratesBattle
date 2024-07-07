@@ -21,7 +21,6 @@ namespace PunNetwork.Services.MenuNetwork
         private LoadingController _loadingController;
         private IPlayerDataService _playerDataService;
 
-
         [Inject]
         private void Construct
         (
