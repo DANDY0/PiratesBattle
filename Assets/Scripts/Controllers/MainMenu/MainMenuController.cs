@@ -1,8 +1,10 @@
 ﻿using Core.Abstracts;
 using PunNetwork.Services.MenuNetwork;
+using Services.Window;
 using UniRx;
 using Views.MainMenuView;
 using UnityEngine;
+using Utils;
 
 namespace Controllers.MainMenu
 {
@@ -11,17 +13,20 @@ namespace Controllers.MainMenu
         private readonly IMenuNetworkService _menuNetworkService;
         private readonly SelectedCharacterHandler _selectedCharacterHandler;
         private readonly MenuProfileHandler _menuProfileHandler;
+        private readonly IWindowService _windowService;
 
         public MainMenuController
         (
             IMenuNetworkService menuNetworkService,
             SelectedCharacterHandler selectedCharacterHandler,
-            MenuProfileHandler menuProfileHandler
+            MenuProfileHandler menuProfileHandler,
+            IWindowService windowService
         )
         {
             _menuNetworkService = menuNetworkService;
             _selectedCharacterHandler = selectedCharacterHandler;
             _menuProfileHandler = menuProfileHandler;
+            _windowService = windowService;
         }
 
         public override void Initialize()
@@ -44,7 +49,7 @@ namespace Controllers.MainMenu
 
         public void Setup()
         {
-            View.Show();
+            _windowService.Open(Enumerators.EWindow.MainMenu);
         }
 
         private void ConnectOne()
