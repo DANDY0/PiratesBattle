@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6318198936468450831}
   - component: {fileID: 6917841153022550442}
   - component: {fileID: 5180807159913125216}
+  - component: {fileID: 7279541766909674322}
   m_Layer: 0
   m_Name: CoconutHalf
   m_TagString: Untagged
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7279541766909674322
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6693774947611030709}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1949927, y: 0.19354108, z: 0.18121181}
+  m_Center: {x: -0.011588245, y: -0.0040870756, z: -0.032005873}
