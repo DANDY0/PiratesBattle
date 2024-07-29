@@ -15,5 +15,6 @@ namespace PunNetwork.Services.RoomPlayer
         PlayerInfoVo GetPlayerInfo(Player player);
         IEnumerable<Player> Players { get; }
         public IEnumerable<PlayerView> PlayerViews { get; }
+        PlayerView LocalView { get; }
     }
 }

@@ -29,6 +29,8 @@ namespace PunNetwork.Services.RoomPlayer
         private bool IsAllPlayersSpawnedLocal => _playersDictionary.Values.All(info => info.View != null);
         private bool IsAllDataGet => _playersDictionary.Values.All(info => info.ImmutableDataVo != null);
 
+        
+        public PlayerView LocalView => GetPlayerInfo(PhotonNetwork.LocalPlayer).View;
         public IEnumerable<Player> Players => _playersDictionary.Keys;
         public IEnumerable<PlayerView> PlayerViews => Players.Select(p=> GetPlayerInfo(p).View);
 

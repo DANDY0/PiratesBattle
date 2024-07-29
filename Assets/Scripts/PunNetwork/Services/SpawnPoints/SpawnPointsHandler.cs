@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace PunNetwork.Services.SpawnPoints
 {
-    public class SpawnPointsService : MonoBehaviour, ISpawnPointsService
+    public class SpawnPointsHandler : MonoBehaviour, ISpawnPointsHandler
     {
         [SerializeField] private Transform _leftSpawnArea;
         [SerializeField] private Transform _rightSpawnArea;

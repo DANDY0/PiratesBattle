@@ -9,23 +9,23 @@ namespace PunNetwork.Services.SpawnPlayer
     public class SpawnPlayerService : ISpawnPlayerService
     {
         private readonly IRoomPlayersService _roomPlayersService;
-        private readonly ISpawnPointsService _spawnPointsService;
+        private readonly ISpawnPointsHandler _spawnPointsHandler;
 
         public SpawnPlayerService
         (
             IRoomPlayersService roomPlayersService,
-            ISpawnPointsService spawnPointsService
+            ISpawnPointsHandler spawnPointsHandler
         )
         {
             _roomPlayersService = roomPlayersService;
-            _spawnPointsService = spawnPointsService;
+            _spawnPointsHandler = spawnPointsHandler;
         }
 
         public void SpawnPlayer()
         {
             var photonTeam = PhotonNetwork.LocalPlayer.GetPhotonTeam();
             var playerPosition =
-                _spawnPointsService.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1, photonTeam);
+                _spawnPointsHandler.GetPlayerPosition(PhotonNetwork.LocalPlayer.ActorNumber - 1, photonTeam);
 
             PhotonNetwork.Instantiate(
                 _roomPlayersService.GetPlayerInfo(PhotonNetwork.LocalPlayer).ImmutableDataVo.CharacterName, playerPosition,

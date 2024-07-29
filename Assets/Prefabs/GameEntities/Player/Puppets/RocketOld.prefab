@@ -4838,7 +4838,7 @@ GameObject:
   - component: {fileID: 8551271256453806009}
   - component: {fileID: 13675448}
   m_Layer: 7
-  m_Name: MyPlayer
+  m_Name: RocketOld
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4918,11 +4918,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _teamMarker: {fileID: 8045841505837438500}
   _destruction: {fileID: 19801310}
-  _heartImages:
-  - {fileID: 2710793403650209771}
-  - {fileID: 1504927313497348704}
-  - {fileID: 2195874468294713130}
   _playerUI: {fileID: 964776327015624607}
+  _collider: {fileID: 13675448}
+  _rigidBody: {fileID: 5473192}
   _enemiesTriggerCollider: {fileID: 7191676111026217330}
 --- !u!114 &2902740994556107111
 MonoBehaviour:
@@ -8345,7 +8343,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4415094904212712186
 Transform:
   m_ObjectHideFlags: 0

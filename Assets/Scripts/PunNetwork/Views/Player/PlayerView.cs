@@ -90,7 +90,7 @@ namespace PunNetwork.Views.Player
         {
             Player = info.Sender;
             _roomPlayersService.SendLocalPlayersSpawned(info.Sender, this);
-            SetupInfo();
+            SetupView();
         }
         
         [PunRPC]
@@ -136,9 +136,10 @@ namespace PunNetwork.Views.Player
             _teamMarker.material.color = markerColor;
         }
 
-        private void SetupInfo()
+        private void SetupView()
         {
             _playerUI.SetNickName(_roomPlayersService.GetPlayerInfo(Player).ImmutableDataVo.Nickname);
+            
         }
     }
 

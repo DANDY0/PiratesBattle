@@ -104,6 +104,12 @@
             Effects = 2,
             Music = 3
         }
+
+        public enum CameraType
+        {
+            PlayerCamera,
+            OverView
+        }
         
         public enum ESoundFxName
         {

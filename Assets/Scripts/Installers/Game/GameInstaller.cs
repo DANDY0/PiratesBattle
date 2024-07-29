@@ -1,8 +1,8 @@
 ﻿using PunNetwork.Services.MatchInfo;
 using PunNetwork.Services.PlayersStats;
-using PunNetwork.Services.RoomPlayer;
 using PunNetwork.Services.SpawnPlayer;
 using PunNetwork.Services.SpawnPoints;
+using Services.GameplayService;
 using Services.GamePools;
 using Services.Input;
 using Signals;
@@ -14,7 +14,8 @@ namespace Installers.Game
 {
     public class GameInstaller : MonoInstaller
     {
-        [SerializeField] private SpawnPointsService _spawnPointsService;
+        [SerializeField] private SpawnPointsHandler _spawnPointsHandler;
+        [SerializeField] private CameraSwitcher _cameraSwitcher;
         
         public override void InstallBindings()
         {
@@ -30,12 +31,14 @@ namespace Installers.Game
         
         private void BindServices()
         {
-            Container.Bind<ISpawnPointsService>().FromInstance(_spawnPointsService).AsSingle();
+            Container.Bind<ISpawnPointsHandler>().FromInstance(_spawnPointsHandler).AsSingle();
+            Container.Bind<ICameraSwitcher>().FromInstance(_cameraSwitcher).AsSingle();
             Container.BindInterfacesTo<PhotonPoolService>().AsSingle();
             Container.BindInterfacesTo<InputService>().AsSingle();
             Container.BindInterfacesTo<SpawnPlayerService>().AsSingle();
             Container.BindInterfacesTo<MatchInfoService>().AsSingle();
             Container.BindInterfacesTo<PlayersStatsService>().AsSingle();
+            Container.BindInterfacesTo<GameplayService>().AsSingle();
 
             Container.BindInterfacesTo<GameEntryPoint>().AsSingle();
         }
