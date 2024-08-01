@@ -1,12 +1,11 @@
-﻿using System;
-using Core.Abstracts;
+﻿using Core.Abstracts;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using static Utils.Enumerators;
 
 
-namespace Views
+namespace Views.MatchResultView
 {
     public class MatchResultsView : Window
     {

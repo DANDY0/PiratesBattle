@@ -2,7 +2,7 @@
 using PunNetwork.ObjectPooling;
 using UnityEngine;
 
-namespace Services.GamePools
+namespace Services.PhotonPool
 {
     public class PhotonPoolVo
     {

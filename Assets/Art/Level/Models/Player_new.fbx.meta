@@ -33,7 +33,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Armature|Idle with shoot
+      name: Idle_With_Shoot
       takeName: Armature|Idle with shoot
       internalID: 3473192362095841825
       firstFrame: 0
@@ -62,7 +62,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|Idle without shoot
+      name: Idle
       takeName: Armature|Idle without shoot
       internalID: 7332071118178646093
       firstFrame: 0
@@ -91,7 +91,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|walk
+      name: Walk
       takeName: Armature|walk
       internalID: -4799524434163024911
       firstFrame: 0
@@ -120,7 +120,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|walk shoot
+      name: Walk_Shoot
       takeName: Armature|walk shoot
       internalID: 6018002949016429671
       firstFrame: 0

@@ -2,7 +2,8 @@
 using System.Linq;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
-using PunNetwork.MasterEvent;
+using PunNetwork.PhotonTeams;
+using PunNetwork.Services.MasterEvent;
 using States;
 using States.Core;
 using UnityEngine;

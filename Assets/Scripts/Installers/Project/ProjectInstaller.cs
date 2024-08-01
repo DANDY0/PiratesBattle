@@ -1,6 +1,6 @@
 using Photon.PhotonUnityNetworking.Code.Common.Factory;
 using Photon.Realtime;
-using PunNetwork.MasterEvent;
+using PunNetwork.Services.MasterEvent;
 using PunNetwork.Services.PlayersStats;
 using PunNetwork.Services.RoomPlayer;
 using Services.Data;

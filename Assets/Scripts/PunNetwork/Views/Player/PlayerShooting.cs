@@ -1,6 +1,6 @@
 ﻿using Photon.PhotonUnityNetworking.Code.Common;
-using Services.GamePools;
 using Services.Input;
+using Services.PhotonPool;
 using UnityEngine;
 
 namespace PunNetwork.Views.Player

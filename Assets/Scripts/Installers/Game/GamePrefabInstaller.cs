@@ -5,6 +5,9 @@ using Services.Window;
 using UnityEngine;
 using Utils.Extensions;
 using Views;
+using Views.MatchInfoView;
+using Views.MatchResultView;
+using Views.PreviewMatchAnimationView;
 using Zenject;
 
 namespace Installers.Game

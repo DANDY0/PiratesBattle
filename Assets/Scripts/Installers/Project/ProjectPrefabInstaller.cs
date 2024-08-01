@@ -6,6 +6,7 @@ using Helpers;
 using Photon.PhotonUnityNetworking.Code.Common.PrefabRegistry;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
+using PunNetwork.PhotonTeams;
 using PunNetwork.Services.CustomProperties;
 using PunNetwork.Services.ProjectNetwork;
 using Services.Window;
@@ -13,6 +14,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Utils.Extensions;
 using Views;
+using Views.LoadingView;
 using Zenject;
 
 namespace Installers.Project

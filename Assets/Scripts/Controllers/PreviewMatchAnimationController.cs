@@ -3,9 +3,10 @@ using DG.Tweening;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
-using PunNetwork.MasterEvent;
+using PunNetwork.Services.MasterEvent;
 using Utils;
 using Views;
+using Views.PreviewMatchAnimationView;
 
 namespace Controllers
 {

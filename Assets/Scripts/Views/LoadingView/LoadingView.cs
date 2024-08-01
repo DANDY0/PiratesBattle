@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Utils.Enumerators;
 
-namespace Views
+namespace Views.LoadingView
 {
     public class LoadingView : Window
     {

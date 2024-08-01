@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PunNetwork.MasterEvent
+namespace PunNetwork.Services.MasterEvent
 {
     public interface IMasterEventService
     {

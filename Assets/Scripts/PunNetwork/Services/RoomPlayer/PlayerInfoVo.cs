@@ -3,7 +3,7 @@ using PunNetwork.Views.Player;
 using static Utils.Enumerators;
 
 
-namespace Models
+namespace PunNetwork.Services.RoomPlayer
 {
     public class PlayerInfoVo
     {
