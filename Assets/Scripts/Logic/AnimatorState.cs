@@ -3,8 +3,9 @@ namespace Logic
     public enum AnimatorState
     {
         Unknown,
-        Idle,
-        Walk,
-        Aiming,
+        // Idle,
+        // Walk,
+        Move,
+        Aim,
     }
 }

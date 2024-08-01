@@ -28,6 +28,7 @@ namespace PunNetwork.Views.Player
         [SerializeField] private PlayerUI _playerUI;
         [SerializeField] private Collider _collider;
         [SerializeField] private Rigidbody _rigidBody;
+        [SerializeField] private PlayerAnimator _playerAnimator;
         [SerializeField] private EnemiesTriggerCollider _enemiesTriggerCollider;
 
         private IInputService _inputService;
@@ -51,8 +52,8 @@ namespace PunNetwork.Views.Player
             _roomPlayersService = roomPlayersService;
             _playersStatsService = playersStatsService;
 
-            PlayerMovement = new PlayerMovement(this, _inputService);
-            PlayerShooting = new PlayerShooting(this, _inputService, _photonPoolService, _enemiesTriggerCollider);
+            PlayerMovement = new PlayerMovement(this, _inputService, _playerAnimator);
+            PlayerShooting = new PlayerShooting(this, _inputService, _photonPoolService, _enemiesTriggerCollider, _playerAnimator);
             PlayerEffects = new PlayerEffects(this, _destruction, _collider);
         }
 

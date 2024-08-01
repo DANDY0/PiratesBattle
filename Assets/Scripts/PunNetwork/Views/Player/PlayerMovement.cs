@@ -6,16 +6,18 @@ namespace PunNetwork.Views.Player
     public class PlayerMovement
     {
         private PlayerView _playerView;
+        private PlayerAnimator _playerAnimator;
         private IInputService _inputService;
         private CharacterController _characterController;
         private Rigidbody _rigidbody;
         private float _rotationSpeed = 150f;
         private float _speed = 3f;
 
-        public PlayerMovement(PlayerView playerView, IInputService inputService)
+        public PlayerMovement(PlayerView playerView, IInputService inputService, PlayerAnimator playerAnimator)
         {
             _playerView = playerView;
             _inputService = inputService;
+            _playerAnimator = playerAnimator;
         }
 
         public void Initialize()
@@ -31,7 +33,8 @@ namespace PunNetwork.Views.Player
 
         public void HandleMovement()
         {
-            var move = new Vector3(_inputService.MoveAxis.x, 0, _inputService.MoveAxis.y);
+            var inputVector = new Vector3(_inputService.MoveAxis.x, 0, _inputService.MoveAxis.y);
+            var move = inputVector;
             if (move.sqrMagnitude > 1)
                 move.Normalize();
 
@@ -39,6 +42,8 @@ namespace PunNetwork.Views.Player
             _characterController.Move(move * Time.deltaTime);
 
             HandleRotation(move);
+            
+            _playerAnimator.MoveAnimation(inputVector.magnitude > 0);
         }
 
         private void HandleRotation(Vector3 move)
