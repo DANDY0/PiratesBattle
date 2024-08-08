@@ -111,6 +111,22 @@
             OverView
         }
         
+        public enum AnimatorState
+        {
+            Unknown,
+            Idle,
+            Walk,
+            IdleAim,
+            WalkAim,
+        }
+        
+        public enum RigAnimatorState
+        {
+            Unknown,
+            Calm,
+            Firing
+        }
+        
         public enum ESoundFxName
         {
             NewMessage = 0,

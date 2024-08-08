@@ -1,9 +1,11 @@
+using Utils;
+
 namespace Logic
 {
     public interface IAnimationStateReader
     {
         void EnteredState(int stateHash);
         void ExitedState(int stateHash);
-        AnimatorState State { get; }
+        Enumerators.AnimatorState State { get; }
     }
 }
