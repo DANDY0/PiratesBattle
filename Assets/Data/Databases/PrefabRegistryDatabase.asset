@@ -16,11 +16,11 @@ MonoBehaviour:
   - Key: 0
     GameObject: {fileID: 152888, guid: 8ab4b24d072eeb54bace514b7382343e, type: 3}
   - Key: 1
-    GameObject: {fileID: 7896600589830860376, guid: f7d057792affb32499cfdae33d455710,
+    GameObject: {fileID: 6817369702550005176, guid: e7936bdede8d9144c8c22360b6b33db9,
       type: 3}
   - Key: 2
-    GameObject: {fileID: 6390595583319227051, guid: dd4079a425a388741b414568140a00b9,
+    GameObject: {fileID: 6817369702550005176, guid: e7936bdede8d9144c8c22360b6b33db9,
       type: 3}
   - Key: 3
-    GameObject: {fileID: 8208805829204025161, guid: 98c152ffd8c88f64ea8fcd7cd5d84b1b,
+    GameObject: {fileID: 6817369702550005176, guid: e7936bdede8d9144c8c22360b6b33db9,
       type: 3}
