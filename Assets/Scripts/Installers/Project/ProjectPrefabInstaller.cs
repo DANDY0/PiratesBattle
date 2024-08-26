@@ -6,6 +6,7 @@ using Helpers;
 using Photon.PhotonUnityNetworking.Code.Common.PrefabRegistry;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
+using PunNetwork.PhotonTeams;
 using PunNetwork.Services.CustomProperties;
 using PunNetwork.Services.ProjectNetwork;
 using Services.Window;
@@ -13,6 +14,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Utils.Extensions;
 using Views;
+using Views.LoadingView;
 using Zenject;
 
 namespace Installers.Project
@@ -28,6 +30,7 @@ namespace Installers.Project
         [SerializeField] private DataManagementDatabase _dataManagementDatabase;
         [SerializeField] private CharactersVisualDatabase _charactersVisualDatabase;
         [SerializeField] private PrefabRegistryDatabase _prefabRegistryDatabase;
+        [SerializeField] private AnimationConfigurationsDatabase _animationConfigurationsDatabase;
 
         [Header("Common")] 
         [SerializeField] private CoroutineRunner _coroutineRunner;
@@ -91,6 +94,7 @@ namespace Installers.Project
             Container.Bind<IDataManagementDatabase>().FromInstance(_dataManagementDatabase).AsSingle();
             Container.Bind<ICharactersVisualDatabase>().FromInstance(_charactersVisualDatabase).AsSingle();
             Container.Bind<IPrefabRegistryDatabase>().FromInstance(_prefabRegistryDatabase).AsSingle();
+            Container.Bind<IAnimationConfigurationsDatabase>().FromInstance(_animationConfigurationsDatabase).AsSingle();
         }
     }
 }

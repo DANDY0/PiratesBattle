@@ -1,11 +1,10 @@
-﻿using System;
-using Core.Abstracts;
+﻿using Core.Abstracts;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using static Utils.Enumerators;
 
-namespace Views
+namespace Views.PreviewMatchAnimationView
 {
     public class PreviewMatchAnimationView : Window
     {

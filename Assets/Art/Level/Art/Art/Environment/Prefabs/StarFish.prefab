@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3808407764335755690}
   - component: {fileID: 249374985307393551}
   - component: {fileID: 2634889953104722629}
+  - component: {fileID: 1612990917912778308}
   m_Layer: 0
   m_Name: StarFish
   m_TagString: Untagged
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1612990917912778308
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4580721587193568016}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.51662034, y: 0.097317174, z: 0.49138513}
+  m_Center: {x: 0.004339576, y: 0.026637997, z: 0.024840534}

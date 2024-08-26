@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Utils.Enumerators;
 
-namespace Views
+namespace Views.MatchInfoView
 {
     public class MatchInfoView : Window
     {

@@ -15,17 +15,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using Photon.Pun;
 using Photon.Realtime;
 using PunNetwork.Services.CustomProperties;
-using UnityEngine.Serialization;
+using UnityEngine;
 using Utils.Extensions;
 using Zenject;
 using static Utils.Enumerators;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
-using Object = System.Object;
 
-namespace Photon.Pun.UtilityScripts
+namespace PunNetwork.PhotonTeams
 {
     public interface IPhotonTeamsManager
     {

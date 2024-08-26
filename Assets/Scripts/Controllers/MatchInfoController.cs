@@ -3,6 +3,7 @@ using PunNetwork.Services.GameNetwork;
 using UniRx;
 using UnityEngine.UI;
 using Views;
+using Views.MatchInfoView;
 
 namespace Controllers
 {
