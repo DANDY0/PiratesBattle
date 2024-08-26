@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using Databases;
+using Photon.Pun;
 using PunNetwork.Services.PlayersStats;
 using PunNetwork.Services.RoomPlayer;
 using Services.Input;
@@ -45,14 +46,15 @@ namespace PunNetwork.Views.Player
             IInputService inputService,
             IPhotonPoolService photonPoolService,
             IRoomPlayersService roomPlayersService,
-            IPlayersStatsService playersStatsService)
+            IPlayersStatsService playersStatsService,
+            IAnimationConfigurationsDatabase animationConfigurationsDatabase)
         {
             _inputService = inputService;
             _photonPoolService = photonPoolService;
             _roomPlayersService = roomPlayersService;
             _playersStatsService = playersStatsService;
 
-            PlayerMovement = new PlayerMovement(this, _inputService, _playerAnimator);
+            PlayerMovement = new PlayerMovement(this, _inputService, _playerAnimator, animationConfigurationsDatabase);
             PlayerShooting = new PlayerShooting(this, _inputService, _photonPoolService, _enemiesTriggerCollider, _playerAnimator);
             PlayerEffects = new PlayerEffects(this, _destruction, _collider);
         }

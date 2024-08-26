@@ -9297,6 +9297,7 @@ GameObject:
   - component: {fileID: 2577558178228384283}
   - component: {fileID: 8731285490030311649}
   - component: {fileID: 1714304547027738882}
+  - component: {fileID: 6303776411132475296}
   m_Layer: 0
   m_Name: Player_new
   m_TagString: Untagged
@@ -9355,6 +9356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68d161a33be02ae49b685880f5482bf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rigStateHandler: {fileID: 6303776411132475296}
 --- !u!114 &8731285490030311649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9383,6 +9385,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 486c69818dffcd14f96ce64502516bbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6303776411132475296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6834881406429667953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 591fe3d74bfc4fb294dd5e9760d3a675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WeaponTransform: {fileID: 6437490261172715055}
+  RightIKRef: {fileID: 7358154359804000193}
+  RightIKHint: {fileID: 7259290008624571275}
+  LeftIKRef: {fileID: 7844030987221933143}
+  LeftIKHint: {fileID: 7307062371019096065}
 --- !u!1 &6973294848213241714
 GameObject:
   m_ObjectHideFlags: 0

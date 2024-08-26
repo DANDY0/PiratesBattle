@@ -1,4 +1,5 @@
-﻿using Services.Input;
+﻿using Databases;
+using Services.Input;
 using UnityEngine;
 
 namespace PunNetwork.Views.Player
@@ -10,14 +11,16 @@ namespace PunNetwork.Views.Player
         private IInputService _inputService;
         private CharacterController _characterController;
         private Rigidbody _rigidbody;
-        private float _rotationSpeed = 150f;
+        private float _rotationSpeed = 12f;
         private float _speed = 3f;
 
-        public PlayerMovement(PlayerView playerView, IInputService inputService, PlayerAnimator playerAnimator)
+        public PlayerMovement(PlayerView playerView, IInputService inputService, PlayerAnimator playerAnimator,
+            IAnimationConfigurationsDatabase animationConfigurationsDatabase)
         {
             _playerView = playerView;
             _inputService = inputService;
             _playerAnimator = playerAnimator;
+            _playerAnimator.Initialize(animationConfigurationsDatabase);
         }
 
         public void Initialize()

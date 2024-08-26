@@ -1,4 +1,5 @@
 ﻿using System;
+using Databases;
 using Logic;
 using UnityEngine;
 using static Utils.Enumerators;
@@ -7,6 +8,7 @@ namespace PunNetwork.Views.Player
 {
     public class PlayerAnimator : MonoBehaviour, IAnimationStateReader
     {
+        [SerializeField] private RigStateHandler _rigStateHandler;
         private Animator _animator;
         
         private static readonly int Move = Animator.StringToHash("Move");
@@ -20,9 +22,15 @@ namespace PunNetwork.Views.Player
         public event Action<AnimatorState> StateEntered;
         public event Action<AnimatorState> StateExited;
         public AnimatorState State { get; private set; }
+
         public RigAnimatorState RigState { get; private set; }
 
         private void Awake() => _animator = GetComponent<Animator>();
+
+        public void Initialize(IAnimationConfigurationsDatabase animationConfigurationsDatabase)
+        {
+            _rigStateHandler.Initialize(animationConfigurationsDatabase);
+        }
 
         public void MoveAnimation(bool isMoving) => _animator.SetBool(Move, isMoving);
 
@@ -31,6 +39,8 @@ namespace PunNetwork.Views.Player
         public void EnteredState(int stateHash)
         {
             State = StateFor(stateHash);
+            _rigStateHandler.OnRigStateChanged(RigState);
+            
             StateEntered?.Invoke(State);
         }
 
@@ -44,17 +54,19 @@ namespace PunNetwork.Views.Player
             if (stateHash == _idleStateHash)
             {
                 state = AnimatorState.Idle;
-                RigState = RigAnimatorState.Calm;
+                // RigState = RigAnimatorState.Calm;
+                RigState = RigAnimatorState.Firing;
             }
             else if (stateHash == _walkStateHash)
             {
                 state = AnimatorState.Walk;
+                // RigState = RigAnimatorState.Calm;
                 RigState = RigAnimatorState.Firing;
             }
             else if (stateHash == _idleAimStateHash)
             {
                 state = AnimatorState.IdleAim;
-                RigState = RigAnimatorState.Calm;
+                RigState = RigAnimatorState.Firing;
             }
             else if (stateHash == _walkAimStateHash)
             {
@@ -64,6 +76,7 @@ namespace PunNetwork.Views.Player
             else
                 state = AnimatorState.Unknown;
 
+            
             Debug.LogWarning($"StateFor: {state}");
             return state;
         }

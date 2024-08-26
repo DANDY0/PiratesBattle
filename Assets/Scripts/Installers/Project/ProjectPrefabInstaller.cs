@@ -30,6 +30,7 @@ namespace Installers.Project
         [SerializeField] private DataManagementDatabase _dataManagementDatabase;
         [SerializeField] private CharactersVisualDatabase _charactersVisualDatabase;
         [SerializeField] private PrefabRegistryDatabase _prefabRegistryDatabase;
+        [SerializeField] private AnimationConfigurationsDatabase _animationConfigurationsDatabase;
 
         [Header("Common")] 
         [SerializeField] private CoroutineRunner _coroutineRunner;
@@ -93,6 +94,7 @@ namespace Installers.Project
             Container.Bind<IDataManagementDatabase>().FromInstance(_dataManagementDatabase).AsSingle();
             Container.Bind<ICharactersVisualDatabase>().FromInstance(_charactersVisualDatabase).AsSingle();
             Container.Bind<IPrefabRegistryDatabase>().FromInstance(_prefabRegistryDatabase).AsSingle();
+            Container.Bind<IAnimationConfigurationsDatabase>().FromInstance(_animationConfigurationsDatabase).AsSingle();
         }
     }
 }
