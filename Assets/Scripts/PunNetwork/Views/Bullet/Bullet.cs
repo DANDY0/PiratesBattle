@@ -34,11 +34,18 @@ namespace PunNetwork.Views.Bullet
         [PunRPC]
         private void RPCFire(Vector3 position, PhotonMessageInfo info)
         {
-            var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
-            transform.position = position + transform.forward * BulletSpeed * lag;
+            // lag include
+            /*
+            float lag = (float)(PhotonNetwork.Time - info.SentServerTime);
+            float pingInSeconds = PhotonNetwork.GetPing() * 0.001f;
+            lag += pingInSeconds * 0.5f; 
+            */
+            
+            transform.position = position /*+ transform.forward * BulletSpeed * lag*/;
 
             _isActive = true;
         }
+
 
         [PunRPC]
         private void RPCDeactivate()
@@ -76,8 +83,11 @@ namespace PunNetwork.Views.Bullet
                 
                 Deactivate();
             }
-            else if (other.gameObject.layer == LayerMask.NameToLayer("Obstacle")) 
+            else if (other.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+            {
+                Debug.Log("OBSTACLE");
                 Deactivate();
+            }
         }
     }
 }

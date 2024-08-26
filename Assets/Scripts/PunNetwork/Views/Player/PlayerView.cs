@@ -22,10 +22,12 @@ namespace PunNetwork.Views.Player
         public PhotonView PhotonView { get; private set; }
         public EnemiesTriggerCollider EnemiesTriggerCollider => _enemiesTriggerCollider;
         public PlayerUI PlayerUI => _playerUI;
+        public Transform GunSight => _gunSight;
         public float CurrentHealthPoints { get; private set; }
 
         [SerializeField] private MeshRenderer _teamMarker;
         [SerializeField] private ParticleSystem _destruction;
+        [SerializeField] private Transform _gunSight;
         [SerializeField] private PlayerUI _playerUI;
         [SerializeField] private Collider _collider;
         [SerializeField] private Rigidbody _rigidBody;

@@ -67,9 +67,9 @@ namespace PunNetwork.Views.Player
 
             if (_shootingTimer <= 0)
             {
-                _shootingTimer = .2f;
+                _shootingTimer = .3f;
 
-                var position = _playerView.transform.position;
+                var position = _playerView.GunSight.position;
                 var rotation = _playerView.transform.rotation;
 
                 var bullet = _photonPoolService.ActivatePoolItem<Bullet.Bullet>(
