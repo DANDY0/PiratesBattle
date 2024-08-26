@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Controllers;
 using ExitGames.Client.Photon;
 using Photon.Pun;
-using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using States;
 using States.Core;
 using Utils;
 using Zenject;
 
-namespace PunNetwork.MasterEvent
+namespace PunNetwork.Services.MasterEvent
 {
     public class MasterEventService : IMasterEventService, IInitializable, IDisposable
     {

@@ -2,7 +2,7 @@
 using PunNetwork.Services.GameNetwork;
 using PunNetwork.Services.ProjectNetwork;
 using PunNetwork.Services.SpawnPlayer;
-using Services.GamePools;
+using Services.PhotonPool;
 using States.Core;
 
 namespace States

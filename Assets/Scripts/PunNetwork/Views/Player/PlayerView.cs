@@ -1,8 +1,9 @@
-﻿using Photon.Pun;
+﻿using Databases;
+using Photon.Pun;
 using PunNetwork.Services.PlayersStats;
 using PunNetwork.Services.RoomPlayer;
-using Services.GamePools;
 using Services.Input;
+using Services.PhotonPool;
 using UnityEngine;
 using Zenject;
 using static Utils.Enumerators;
@@ -28,6 +29,7 @@ namespace PunNetwork.Views.Player
         [SerializeField] private PlayerUI _playerUI;
         [SerializeField] private Collider _collider;
         [SerializeField] private Rigidbody _rigidBody;
+        [SerializeField] private PlayerAnimator _playerAnimator;
         [SerializeField] private EnemiesTriggerCollider _enemiesTriggerCollider;
 
         private IInputService _inputService;
@@ -44,15 +46,16 @@ namespace PunNetwork.Views.Player
             IInputService inputService,
             IPhotonPoolService photonPoolService,
             IRoomPlayersService roomPlayersService,
-            IPlayersStatsService playersStatsService)
+            IPlayersStatsService playersStatsService,
+            IAnimationConfigurationsDatabase animationConfigurationsDatabase)
         {
             _inputService = inputService;
             _photonPoolService = photonPoolService;
             _roomPlayersService = roomPlayersService;
             _playersStatsService = playersStatsService;
 
-            PlayerMovement = new PlayerMovement(this, _inputService);
-            PlayerShooting = new PlayerShooting(this, _inputService, _photonPoolService, _enemiesTriggerCollider);
+            PlayerMovement = new PlayerMovement(this, _inputService, _playerAnimator, animationConfigurationsDatabase);
+            PlayerShooting = new PlayerShooting(this, _inputService, _photonPoolService, _enemiesTriggerCollider, _playerAnimator);
             PlayerEffects = new PlayerEffects(this, _destruction, _collider);
         }
 
@@ -90,7 +93,7 @@ namespace PunNetwork.Views.Player
         {
             Player = info.Sender;
             _roomPlayersService.SendLocalPlayersSpawned(info.Sender, this);
-            SetupInfo();
+            SetupView();
         }
         
         [PunRPC]
@@ -136,9 +139,10 @@ namespace PunNetwork.Views.Player
             _teamMarker.material.color = markerColor;
         }
 
-        private void SetupInfo()
+        private void SetupView()
         {
             _playerUI.SetNickName(_roomPlayersService.GetPlayerInfo(Player).ImmutableDataVo.Nickname);
+            
         }
     }
 

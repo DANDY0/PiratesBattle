@@ -7,7 +7,7 @@ using UnityEngine;
 using Utils;
 using Views.MainMenuView;
 using Views.SelectCharacterView;
-using Enumerators = Utils.Enumerators;
+using static Utils.Enumerators;
 
 namespace Controllers.MainMenu
 {
@@ -40,22 +40,20 @@ namespace Controllers.MainMenu
         
         protected override void Initialize()
         {
-            Debug.Log("CharacterPageHandler initialized");
-            
             View.SelectButton.onClick.AddListener(SelectClickHandler);
             View.BackButton.onClick.AddListener(BackButtonClick);
         }
 
         private void SelectClickHandler()
         {
-            Enumerators.Character selectedCharacter = _charactersListHandler.SelectedCharacter;
+            var selectedCharacter = _charactersListHandler.SelectedCharacter;
             var characterVisualData = _charactersVisualDatabase.CharactersDataData.CharactersData.Find(
                 c=>c.Character == selectedCharacter);
             
             _dataService.CachedUserLocalData.SelectedCharacter = selectedCharacter;
             _mainMenuView.SelectedCharacterPanel.SetCharacterImage(characterVisualData.FullImage, selectedCharacter.ToString());
             
-            _windowService.Open(Enumerators.EWindow.MainMenu);
+            _windowService.Open(EWindow.MainMenu);
             _selectCharacterView.EnableCharacterPagePanel(false);
         }
 

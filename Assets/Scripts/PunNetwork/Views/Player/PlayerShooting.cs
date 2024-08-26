@@ -1,6 +1,6 @@
 ﻿using Photon.PhotonUnityNetworking.Code.Common;
-using Services.GamePools;
 using Services.Input;
+using Services.PhotonPool;
 using UnityEngine;
 
 namespace PunNetwork.Views.Player
@@ -11,16 +11,19 @@ namespace PunNetwork.Views.Player
         private IInputService _inputService;
         private IPhotonPoolService _photonPoolService;
         private EnemiesTriggerCollider _enemiesTriggerCollider;
+        private PlayerAnimator _playerAnimator;
         private float _initialShootingDelay;
         private float _shootingTimer;
         private bool _isFiring;
 
-        public PlayerShooting(PlayerView playerView, IInputService inputService, IPhotonPoolService photonPoolService, EnemiesTriggerCollider enemiesTriggerCollider)
+        public PlayerShooting(PlayerView playerView, IInputService inputService, IPhotonPoolService photonPoolService,
+            EnemiesTriggerCollider enemiesTriggerCollider, PlayerAnimator playerAnimator)
         {
             _playerView = playerView;
             _inputService = inputService;
             _photonPoolService = photonPoolService;
             _enemiesTriggerCollider = enemiesTriggerCollider;
+            _playerAnimator = playerAnimator;
         }
 
         public void Initialize()
@@ -31,11 +34,16 @@ namespace PunNetwork.Views.Player
         public void FireJoystickTriggered(bool state)
         {
             if (state)
+            {
                 StartFiring();
+                _playerAnimator.FireAim(true);
+            }
             else
             {
                 _isFiring = false;
+                _playerAnimator.FireAim(false);
             }
+            
         }
 
         private void StartFiring()
@@ -69,6 +77,7 @@ namespace PunNetwork.Views.Player
                     position,
                     rotation);
                 bullet.Fire(position);
+                
             }
 
             if (_shootingTimer > 0)

@@ -15,7 +15,7 @@ namespace Services.Input
         private const string LookHorizontal = "ShootHorizontal";
         private const string LookVertical = "ShootVertical";
 
-        public void Enable()
+        public void Activate()
         {
             SimpleInput.FireTriggeredEvent += OnFireTriggeredEvent;
         }

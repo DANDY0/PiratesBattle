@@ -9,12 +9,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 #if UNITY_EDITOR
 using System;
-using UnityEngine;
 using System.Collections.Generic;
+using Photon.Pun;
 using Photon.Realtime;
 using UnityEditor;
+using UnityEngine;
 
-namespace Photon.Pun.UtilityScripts
+namespace PunNetwork.PhotonTeams
 {
     [CustomEditor(typeof(PhotonTeamsManager))]
     public class PhotonTeamsManagerEditor : Editor

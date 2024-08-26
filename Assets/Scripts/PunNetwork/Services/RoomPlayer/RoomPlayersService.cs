@@ -1,5 +1,4 @@
 ﻿using Models;
-using PunNetwork.MasterEvent;
 using PunNetwork.Services.CustomProperties;
 using PunNetwork.Services.ProjectNetwork;
 using PunNetwork.Views.Player;
@@ -10,6 +9,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Realtime;
+using PunNetwork.Services.MasterEvent;
 using static PunNetwork.NetworkData.NetworkDataModel;
 using static Utils.Enumerators;
 
@@ -29,6 +29,8 @@ namespace PunNetwork.Services.RoomPlayer
         private bool IsAllPlayersSpawnedLocal => _playersDictionary.Values.All(info => info.View != null);
         private bool IsAllDataGet => _playersDictionary.Values.All(info => info.ImmutableDataVo != null);
 
+        
+        public PlayerView LocalView => GetPlayerInfo(PhotonNetwork.LocalPlayer).View;
         public IEnumerable<Player> Players => _playersDictionary.Keys;
         public IEnumerable<PlayerView> PlayerViews => Players.Select(p=> GetPlayerInfo(p).View);
 

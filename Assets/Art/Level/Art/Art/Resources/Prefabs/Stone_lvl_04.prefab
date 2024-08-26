@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1624264320963018060}
   - component: {fileID: 2388403542421959401}
   - component: {fileID: 486853956191421987}
+  - component: {fileID: -7934711636019238766}
   m_Layer: 0
   m_Name: Stone_lvl_04
   m_TagString: Untagged
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &-7934711636019238766
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2144095398948972534}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.7142017, y: 0.5495821, z: 0.6999597}
+  m_Center: {x: 0.0004911423, y: 0.26243603, z: 0.012496859}

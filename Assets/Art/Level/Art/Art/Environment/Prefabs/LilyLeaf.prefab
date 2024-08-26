@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6594558772658515096}
   - component: {fileID: 7794411364406010685}
   - component: {fileID: 5462787866241325047}
+  - component: {fileID: 2727765033929676767}
   m_Layer: 0
   m_Name: LilyLeaf
   m_TagString: Untagged
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2727765033929676767
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5822948637508859426}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5639195, y: 0.045520972, z: 0.55981606}
+  m_Center: {x: -0.0075437874, y: 0.024344409, z: -0.0041189343}

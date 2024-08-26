@@ -6,10 +6,8 @@ using Photon.Pun;
 using PunNetwork.ObjectPooling;
 using PunNetwork.Services.RoomPlayer;
 using UnityEngine;
-using Utils.Extensions;
-using static Utils.Enumerators;
 
-namespace Services.GamePools
+namespace Services.PhotonPool
 {
     public class PhotonPoolService : IPhotonPoolService
     {

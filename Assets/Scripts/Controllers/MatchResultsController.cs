@@ -7,6 +7,7 @@ using Photon.Pun.UtilityScripts;
 using PunNetwork.Services.GameNetwork;
 using PunNetwork.Services.MatchInfo;
 using Views;
+using Views.MatchResultView;
 using static Photon.PhotonUnityNetworking.Code.Common.Enumerators;
 using static Utils.Enumerators;
 

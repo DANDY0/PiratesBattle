@@ -1,6 +1,6 @@
 ﻿using Photon.PhotonUnityNetworking.Code.Common;
 using Photon.Pun;
-using Services.GamePools;
+using Services.PhotonPool;
 using UnityEngine;
 using Zenject;
 

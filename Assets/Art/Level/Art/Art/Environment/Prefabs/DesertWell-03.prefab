@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 21637255634989502}
   - component: {fileID: 4027068459354865179}
   - component: {fileID: 1155158068092619473}
+  - component: {fileID: 6266748440114198520}
   m_Layer: 0
   m_Name: DesertWell-03
   m_TagString: Untagged
@@ -84,3 +85,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6266748440114198520
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 794619616192752388}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.9770162, y: 1.200042, z: 1.1379588}
+  m_Center: {x: 0.000000014901165, y: 0.5489503, z: -0.0036724517}

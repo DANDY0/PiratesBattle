@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Core.Abstracts
+﻿namespace Core.Abstracts
 {
     public abstract class Handler<T> where T : View
     {
@@ -15,6 +13,9 @@ namespace Core.Abstracts
         public void Show() => View.Show();
         public void Hide() => View.Hide();
 
-        protected abstract void Initialize();
+        protected virtual void Initialize()
+        {
+            
+        }
     }
 }

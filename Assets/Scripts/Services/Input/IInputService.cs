@@ -7,7 +7,7 @@ namespace Services.Input
     {
         event Action<bool> FireTriggeredEvent;
 
-        void Enable();
+        void Activate();
         public Vector2 MoveAxis { get; }
         public Vector2 LookAxis { get; }
     }

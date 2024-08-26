@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1804173612203815884}
   - component: {fileID: 3361494852448926825}
   - component: {fileID: 667265619960613027}
+  - component: {fileID: -2617878673144597289}
   m_Layer: 0
   m_Name: SeaShell
   m_TagString: Untagged
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &-2617878673144597289
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315727273633704310}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.4247432, y: 0.14125851, z: 0.39320093}
+  m_Center: {x: -0.000000014901161, y: 0.15367182, z: 0.0011500642}
