@@ -10,19 +10,16 @@ namespace PunNetwork.Views.Player
         private PlayerView _playerView;
         private IInputService _inputService;
         private IPhotonPoolService _photonPoolService;
-        private EnemiesTriggerCollider _enemiesTriggerCollider;
         private PlayerAnimator _playerAnimator;
         private float _initialShootingDelay;
         private float _shootingTimer;
-        private bool _isFiring;
+        public bool IsFiring { get; private set; }
 
-        public PlayerShooting(PlayerView playerView, IInputService inputService, IPhotonPoolService photonPoolService,
-            EnemiesTriggerCollider enemiesTriggerCollider, PlayerAnimator playerAnimator)
+        public PlayerShooting(PlayerView playerView, IInputService inputService, IPhotonPoolService photonPoolService, PlayerAnimator playerAnimator)
         {
             _playerView = playerView;
             _inputService = inputService;
             _photonPoolService = photonPoolService;
-            _enemiesTriggerCollider = enemiesTriggerCollider;
             _playerAnimator = playerAnimator;
         }
 
@@ -40,7 +37,7 @@ namespace PunNetwork.Views.Player
             }
             else
             {
-                _isFiring = false;
+                IsFiring = false;
                 _playerAnimator.FireAim(false);
             }
             
@@ -48,13 +45,13 @@ namespace PunNetwork.Views.Player
 
         private void StartFiring()
         {
-            _isFiring = true;
+            IsFiring = true;
             _initialShootingDelay = 0.25f;
         }
 
         public void HandleShooting()
         {
-            if (!_isFiring)
+            if (!IsFiring)
                 return;
 
             if (_initialShootingDelay > 0)

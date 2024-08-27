@@ -56,8 +56,8 @@ namespace PunNetwork.Views.Player
             _roomPlayersService = roomPlayersService;
             _playersStatsService = playersStatsService;
 
-            PlayerMovement = new PlayerMovement(this, _inputService, _playerAnimator, animationConfigurationsDatabase);
-            PlayerShooting = new PlayerShooting(this, _inputService, _photonPoolService, _enemiesTriggerCollider, _playerAnimator);
+            PlayerShooting = new PlayerShooting(this, _inputService, _photonPoolService, _playerAnimator);
+            PlayerMovement = new PlayerMovement(this, _inputService, PlayerShooting, _enemiesTriggerCollider, _playerAnimator, animationConfigurationsDatabase);
             PlayerEffects = new PlayerEffects(this, _destruction, _collider);
         }
 
